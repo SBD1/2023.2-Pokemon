@@ -7,14 +7,15 @@ Repositório da matéria de Sistemas de Bancos de Dados 1 sobre a modelagem do b
 
 | Nome                             | Matrícula | Github                                         |
 | -------------------------------- | --------- | ---------------------------------------------- |
-| XXXALUNOXXX        | XXXALUNOXXX | XXXALUNOXXX         |
-| XXXALUNOXXX       | XXXALUNOXXX | [XXXALUNOXXX |
-| XXXALUNOXXX            | XXXALUNOXXX | XXXALUNOXXX   |
-| Murilo Perazzo Barbosa Souto | 190129221 | [@murilopbs](https://github.com/murilopbs) |
+| Felipe de Sousa Coelho           | 211061707 | [@fsousac](https://github.com/fsousac)         |
+| XXXALUNOXXX                      | XXXALUNOXXX | XXXALUNOXXX                                  |
+| XXXALUNOXXX                      | XXXALUNOXXX | XXXALUNOXXX                                  |
+| Murilo Perazzo Barbosa Souto     | 190129221 | [@murilopbs](https://github.com/murilopbs)     |
 
 ## Sobre
 
 O objetivo deste projeto é desenvolver um sistema de banco de dados ao criar um jogo envolvendo o universo Pokémon. Neste projeto, aplicaremos os princípios fundamentais de gerenciamento de banco de dados na prática. O desafio consiste em desenvolver um sistema de banco de dados sólido que representará o mundo Pokémon, incluindo treinadores, Pokémon, batalhas. 
 ## Entregas
 
-- Módulo 1
+### Módulo 1
+  Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo, incluindo o Modelo Entidade-Relacionamento (MER), o Modelo Relacional (MR) e o Dicionário de Dados (DD).
