@@ -17,5 +17,5 @@ Repositório da matéria de Sistemas de Bancos de Dados 1 sobre a modelagem do b
 O objetivo deste projeto é desenvolver um sistema de banco de dados ao criar um jogo envolvendo o universo Pokémon. Neste projeto, aplicaremos os princípios fundamentais de gerenciamento de banco de dados na prática. O desafio consiste em desenvolver um sistema de banco de dados sólido que representará o mundo Pokémon, incluindo treinadores, Pokémon, batalhas. 
 ## Entregas
 
-### Módulo 1
+### [Módulo 1](https://miro.com/app/board/uXjVMhnb5go=/?share_link_id=944002834733)
   Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo, incluindo o Modelo Entidade-Relacionamento (MER), o Modelo Relacional (MR) e o Dicionário de Dados (DD).
