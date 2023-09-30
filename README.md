@@ -156,4 +156,4 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | :----: | :--------: | -------------------------- | ---------------------------------------------- |
 | `1.0`  | 24/09/2023 | Criação do README          | [Murilo Perazzo](https://github.com/murilopbs) |
 | `1.1`  | 27/09/2023 | Inserção do MER,DER e MREL | [Felipe de Sousa](https://github.com/fsousac)  |
-| `1.1`  | 30/09/2023 | Inserção do DD             | [Felipe de Sousa](https://github.com/fsousac)  |
+| `1.2`  | 30/09/2023 | Inserção do DD             | [Felipe de Sousa](https://github.com/fsousac)  |
