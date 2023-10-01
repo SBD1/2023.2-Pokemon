@@ -46,14 +46,13 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 - **Batalha:** Representa uma batalha entre dois Pokémon.
 - **Treinador:** Representa um treinador Pokémon.
 - **Pokedex:** Representa a Pokédex, um dispositivo que registra informações sobre Pokémon.
-- **Captura:** Representa um relacionamento um-para-um entre um Pokémon e uma pokebola, indicando que a pokebola capturou aquele Pokémon.
-- **NPCs:** Representam personagens não jogáveis que podem ser encontrados no mundo Pokémon.
+- **NPC:** Representam personagens não jogáveis que podem ser encontrados no mundo Pokémon.
 
 **Relacionamentos:**
 
 - **Local - Shop:** Um-para-um. Um local pode ter somete um shop.
 - **Local - Ginasio:** Um-para-um. Uma cidade pode ter somente um ginásio.
-- **Local - NPCs:** Um-para-um. Um NPC ocupa somente um local.
+- **Local - NPC:** Um-para-um. Um NPC ocupa somente um local.
 - **Local - Loot:** Um-para-muitos. Um local pode ter muitos loots.
 - **Local - Pokemon:** Um-para-muitos. Um local pode ter muitos pokemon.
 - **Loot - TMs:** Um-para-muitos. Um loot pode ter muitos TMs.
@@ -61,8 +60,8 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 - **Loot - Itens Chave:** Um-para-muitos. Um loot pode ter muitos itens chave.
 - **Loot - Ervas:** Um-para-muitos. Um loot pode ter muitas ervas.
 - **Loot - Pokebolas:** Um-para-muitos. Um loot pode ter muitas pokebolas.
-- **Ginasio - NPCs:** Um-para-muitos. Um ginásio pode ter muitos treinadores NPCs.
-- **Ginasio - NPCs:** Um-para-um. Um ginásio pode somente um líder NPC.
+- **Ginasio - NPC:** Um-para-muitos. Um ginásio pode ter muitos treinadores NPC.
+- **Ginasio - NPC:** Um-para-um. Um ginásio pode somente um líder NPC.
 - **Ginasio - Treinador:** Um-para-um. Um treinador pode enfrentar vários ginásios.
 - **Ginasio - Loot:** Um-para-muitos. Um ginásio pode ter vários pacotes de loot.
 - **Shop - Itens Chave:** Um-para-muitos. Uma loja pode ter muitos itens chave.
@@ -77,7 +76,7 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 - **Pokemon - Pokebola:** Um-para-muitos. Um tipo de pokebola registra vários pokemons.
 - **Treinador - Pokemon:** Um-para-muitos. Um treinador pode ter muitos Pokémon.
 - **Treinador - Pokedex:** Um-para-um. Um treinador pode ter somente uma Pokedex.
-- **Treinador - NPCs:** Um-para-um. Um treinador pode ser somente um NPC.
+- **Treinador - NPC:** Um-para-um. Um treinador pode ser somente um NPC.
 - **Treinador - Itens Chave:** Um-para-muitos. Um treinador pode ter muitos itens chave.
 - **Treinador - Itens Comuns:** Um-para-muitos. Um treinador pode ter muitos itens de posse.
 - **Treinador - Pokebolas:** Um-para-muitos. Um treinador pode ter muitas Pokébolas.
@@ -87,11 +86,14 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 # DER:
 
-![image](https://github.com/SBD1/2023.2-Pokemon/assets/95441810/2706085f-5923-4aa6-853c-fddd7e590d93)
+![image](https://github.com/SBD1/2023.2-Pokemon/assets/95441810/e27ed44b-c0cf-43a0-8206-ea4bf873614c)
+
 
 # MREL:
 
-![image](https://github.com/SBD1/2023.2-Pokemon/assets/95441810/399687aa-1326-4270-91ef-e7a5ce844dba)
+![image](https://github.com/SBD1/2023.2-Pokemon/assets/95441810/bcdf41b9-9d26-43fb-8940-379298251a5b)
+
+
 
 # Dicionário de Dados:
 
@@ -105,10 +107,10 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 | Nome Variável |     Tipo     |         Descrição         | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :----------: | :-----------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  localização  | varchar[50]  | Localização das entidades |       ASCII        |          não           |    PK    |                   |
+|  localização  | varchar[12]  | Localização das entidades |       ASCII        |          não           |    PK    |                   |
 |     nome      | varchar[50]  |       Nome do local       |       ASCII        |          não           |          |                   |
-|       x       |     int      |       Coordenada X        |      1-25000       |          não           |    PK    |                   |
-|       y       |     int      |       Coordenada Y        |      1-25000       |          não           |    PK    |                   |
+|       x       |     int      |       Coordenada X        |      0-25000       |          não           |          |                   |
+|       y       |     int      |       Coordenada Y        |      0-25000       |          não           |          |                   |
 |     info      | varchar[255] | Informações sobre o Local |       ASCII        |          não           |          |                   |
 
 ## Entidade: Ginasio
@@ -120,11 +122,11 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | Nome Variável |    Tipo     |         Descrição          | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :---------: | :------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
 | nome_ginasio  | varchar[50] |      Nome do ginásio       |       ASCII        |          não           |    PK    |                   |
-|   lider_id    |     int     | Id do NPC lider do ginásio |      1-25000       |          não           |    FK    |                   |
+|   lider_id    |     int     | Id do NPC lider do ginásio |      0-25000       |          não           |    FK    |                   |
 |     tipo1     | varchar[10] |       Tipo primário        |       ASCII        |          não           |          |                   |
 |     tipo2     | varchar[10] |      Tipo Secundário       |       ASCII        |          sim           |          |                   |
 |    cidade     | varchar[50] | Cidade que sitia o ginásio |       ASCII        |          não           |    FK    |                   |
-|     loot      |     int     |   Id do loot do ginásio    |      1-25000       |          não           |    FK    |                   |
+|     loot      |     int     |   Id do loot do ginásio    |      0-25000       |          não           |    FK    |                   |
 
 ## Entidade: TMs
 
@@ -137,7 +139,7 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 |   nome_item   | varchar[60] |              Nome do TM              |       ASCII        |          não           |    PK    |                   |
 |     dono      |     int     |          Id do Dono ou NULL          |      1-25000       |          sim           |  PK FK   |                   |
 |  quantidade   |     int     | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
-| habilidade_id |     int     |   Id da habilidade que ele ensina    |      1-25000       |          não           |    FK    |      UNIQUE       |
+| habilidade_id |     int     |   Id da habilidade que ele ensina    |      0-25000       |          não           |  SK FK   |                   |
 
 ## Entidade: Itens-Comuns
 
@@ -195,13 +197,13 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 #### Descrição: A entidade `Shop` descreve uma loja que pode ser encontrada no mundo Pokémon, onde o treinador pode comprar e vender itens.
 
-#### Observação: Esta entidade é chave estrangeira para `Vendedor`, onde mostra quais NPCs vendedores trabalham na loja.
+#### Observação: Esta entidade é chave estrangeira para `Vendedor`, onde mostra quais NPC vendedores trabalham na loja.
 
 | Nome Variável |     Tipo     |                         Descrição                         | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :----------: | :-------------------------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    shop_id    |     int      |                        Id da loja                         |      1-25000       |          não           |    PK    |                   |
+|    shop_id    |     int      |                        Id da loja                         |      0-25000       |          não           |    PK    |                   |
 |     nome      | varchar[60]  |                       Nome da loja                        |       ASCII        |          não           |          |                   |
-|    cidade     |     int      |            Local em que a cidade está sitiada             |      1-25000       |          não           |    FK    |      UNIQUE       |
+|     local     | varchar[12]  |            Local em que a cidade está sitiada             |       ASCII        |          não           |  SK FK   |                   |
 |     info      | varchar[150] | Informações sobre o que a loja vende e como ela se parece |       ASCII        |          não           |          |                   |
 
 ## Entidade: Loot
@@ -210,12 +212,12 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 #### Observação: Neste banco de dados não estamos considerando que batalhas pokemon não associadas à um ginásio podem dar loot.
 
-| Nome Variável | Tipo |           Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :--: | :----------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    loot_id    | int  |           Id do loot           |      1-25000       |          não           |    PK    |                   |
-|    item_id    | int  |        Id do item dado         |      1-25000       |          não           |  PK FK   |                   |
-|  quantidade   | int  |    Quantidade do item dado     |      1-25000       |          não           |    FK    |                   |
-|     local     | int  | Local onde o loot é encontrado |      1-25000       |          não           |    FK    |                   |
+| Nome Variável |    Tipo     |           Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :---------: | :----------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    loot_id    |     int     |           Id do loot           |      0-25000       |          não           |    PK    |                   |
+|   nome_item   | varchar[60] |       Nome do item dado        |       ASCII        |          não           |  PK FK   |                   |
+|  quantidade   |     int     |    Quantidade do item dado     |      1-25000       |          não           |    FK    |                   |
+|     local     | varchar[12] | Local onde o loot é encontrado |       ASCII        |          não           |    FK    |                   |
 
 ## Entidade: Habilidades
 
@@ -255,8 +257,8 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 | Nome Variável |    Tipo     |                Descrição                 | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :---------: | :--------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  pokemon_id   |     int     |              Id do pokemon               |      1-25000       |          não           |    PK    |                   |
-|   treinador   |     int     |       Nome do treinador do pokemon       |      1-25000       |          não           |  PK FK   |                   |
+|  pokemon_id   |     int     |              Id do pokemon               |      0-25000       |          não           |    PK    |                   |
+|   treinador   |     int     |        Id do treinador do pokemon        |      0-25000       |          não           |  PK FK   |                   |
 | nome_pokemon  | varchar[60] |             Nome do pokemon              |       ASCII        |          não           |          |                   |
 |     tipo1     | varchar[10] |         Tipo primário do pokemon         |       ASCII        |          não           |          |                   |
 |     tipo2     | varchar[10] |        Tipo secundário do pokemon        |       ASCII        |          sim           |          |                   |
@@ -276,6 +278,85 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 |     sexo      | varchar[1]  |             Sexo do pokemon              |       ASCII        |          não           |          |                   |
 |    status     | varchar[10] |            Status do pokemon             |       ASCII        |          sim           |          |                   |
 |   pokebola    | varchar[60] |     Pokebola que capturou o pokemon      |       ASCII        |          não           |    FK    |                   |
+
+## Entidade: Batalha
+
+#### Descrição: A entidade `Batalha` descreve uma batalha entre dois pokemons.
+
+#### Observação: Nesta bese de dados não estamos considerando que há batalhas entre mais de dois pokemons. A entidade possui duas chaves estrageiras de `Pokemon`, onde mostra quais pokemons estão batalhando.
+
+| Nome Variável | Tipo |       Descrição       | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :--: | :-------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+|  batalha_id   | int  |     Id da batalha     |      1-25000       |          não           |    PK    |                   |
+|   pokemon1    | int  | 1º pokemon da batalha |      1-25000       |          não           |    FK    |                   |
+|   pokemon2    | int  | 2º pokemon da batalha |      1-25000       |          não           |    FK    |                   |
+
+## Entidade: Treinador
+
+#### Descrição: A entidade `Treinador` descreve um treinador Pokemon.
+
+#### Observação: `Treinador` é chave estrangeira para todos os tipos de item e para a entidade `NPC`. O atributo sexo recebe apenas um char, sendo ele: 'F' para feminino e 'M' para masculino.
+
+|  Nome Variável  |    Tipo     |               Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-------------: | :---------: | :------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+|  treinador_id   |     int     |            Id do treinador             |      0-25000       |          não           |    PK    |                   |
+|      nome       | varchar[60] |           Nome do treinador            |       ASCII        |          não           |          |                   |
+| ultima_insignia | varchar[60] | Última insignia que o treinador ganhou |       ASCII        |          não           |          |                   |
+|  tamanho_time   |     int     |            Tamanho do time             |        0-6         |          não           |          |                   |
+|      sexo       | varchar[1]  |           Sexo do treinador            |       ASCII        |          não           |          |                   |
+|    dinheiro     |     int     |         Dinheiro do treinador          |     0-1000000      |          não           |          |                   |
+
+## Entidade: Pokedex
+
+#### Descrição: A entidade `Pokedex` descreve um catálogo de todos os pokemons vistos e capiturados pelo treinador.
+
+#### Observação: `Pokedex` recebe uma chave estrangeira de `Pokemon` para consultar seus atributos.
+
+| Nome Variável |     Tipo     |             Descrição             | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :----------: | :-------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+| treinador_id  |     int      |          Id do treinador          |      0-25000       |          não           |    PK    |                   |
+|    pokemon    |     int      |           Id do pokemon           |      0-25000       |          não           |    PK    |                   |
+|  localidade   | varchar[60]  | Local onde o pokemon é encontrado |       ASCII        |          sim           |          |                   |
+|     info      | varchar[255] |    Informações sobre o pokemon    |       ASCII        |          não           |          |      UNIQUE       |
+
+## Entidade: NPC
+
+#### Descrição: A entidade `NPC` descreve um personagem não jogável do jogo.
+
+#### Observação: A entidade `NPC` recebe uma chave estrangeira de `Treinador` para consultar seus atributos, porém nem todo NPC é treinador. `NPC` recebe uma chave estrangeira de `Ginasio` pois há NPCs que participam dos ginásios mesmo não sendo líderes. Quanto ao atributo sexo, ele recebe apenas um char, sendo ele: 'F' para feminino e 'M' para masculino.
+
+| Nome Variável |     Tipo     |              Descrição              | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :----------: | :---------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    npc_id     |     int      |              Id do NPC              |      0-25000       |          não           |    PK    |                   |
+|   treinador   |     int      |           Id do treinador           |      0-25000       |          sim           |    FK    |                   |
+|  localidade   | varchar[12]  |        Local onde o NPC fica        |       ASCII        |          não           |    FK    |                   |
+|     sexo      |  varchar[1]  |             Sexo do NPC             |       ASCII        |          não           |          |                   |
+|    ginasio    | varchar[50]  | Nome do ginásio que o NPC participa |       ASCII        |          sim           |    FK    |                   |
+|     info      | varchar[150] |       Informações sobre o NPC       |       ASCII        |          não           |          |                   |
+
+## Entidade: Itens-vendidos
+
+#### Descrição: A entidade `Itens-vendidos` descreve os itens vendidos por uma loja.
+
+#### Observação: A entidade `Itens-vendidos` recebe uma chave estrangeira de `Shop` para identificá-la e outra de alguma entidate-item. A quantidade nula significa infinitos itens a venda.
+
+| Nome Variável |    Tipo     |                Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :---------: | :-------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    shop_id    |     int     |               Id da loja                |      0-25000       |          não           |  PK FK   |                   |
+|   nome_item   | varchar[60] |          Nome do item vendido           |       ASCII        |          não           |  PK FK   |                   |
+|  quantidade   |     int     | Quantidade de itens disponíveis a venda |      1-25000       |          sim           |          |                   |
+|     preco     |     int     |              Preço do item              |      0-25000       |          não           |          |                   |
+
+## Entidade: Vendedor
+
+#### Descrição: A entidade `Vendedor` identifica a loja e o NPC que trabalha nela.
+
+#### Observação: A entidade `Vendedor` recebe uma chave estrangeira de `Shop` para identificá-la e outra de `NPC` para identificar o NPC que trabalha na loja.
+
+| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    shop_id    | int  | Id da loja |      0-25000       |          não           |  PK FK   |                   |
+|    npc_id     | int  | Id do NPC  |      0-25000       |          não           |  PK FK   |                   |
 
 ## Histórico de versões
 
