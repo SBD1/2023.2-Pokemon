@@ -256,26 +256,26 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | Nome Variável |    Tipo     |                Descrição                 | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :---------: | :--------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
 |  pokemon_id   |     int     |              Id do pokemon               |      1-25000       |          não           |    PK    |                   |
-|   treinador   |     int     |       Nome do treinador do pokemon       |      1-25000       |          não           |          |                   |
+|   treinador   |     int     |       Nome do treinador do pokemon       |      1-25000       |          não           |  PK FK   |                   |
 | nome_pokemon  | varchar[60] |             Nome do pokemon              |       ASCII        |          não           |          |                   |
 |     tipo1     | varchar[10] |         Tipo primário do pokemon         |       ASCII        |          não           |          |                   |
-|     tipo2     | varchar[10] |        Tipo secundário do pokemon        |       ASCII        |          sim           |    PK    |                   |
-|  habilidade1  | varchar[60] |              1ª habilidade               |       ASCII        |          não           |          |                   |
-|  habilidade2  | varchar[60] |              2ª habilidade               |       ASCII        |          sim           |          |                   |
-|  habilidade3  | varchar[60] |              3ª habilidade               |       ASCII        |          sim           |          |                   |
-|  habilidade4  | varchar[60] |              4ª habilidade               |       ASCII        |          sim           |    PK    |                   |
+|     tipo2     | varchar[10] |        Tipo secundário do pokemon        |       ASCII        |          sim           |          |                   |
+|  habilidade1  | varchar[60] |              1ª habilidade               |       ASCII        |          não           |    FK    |                   |
+|  habilidade2  | varchar[60] |              2ª habilidade               |       ASCII        |          sim           |    FK    |                   |
+|  habilidade3  | varchar[60] |              3ª habilidade               |       ASCII        |          sim           |    FK    |                   |
+|  habilidade4  | varchar[60] |              4ª habilidade               |       ASCII        |          sim           |    FK    |                   |
 |    nature     | varchar[10] |            Nature do pokemon             |       ASCII        |          não           |          |                   |
 |     nivel     |  small int  |             Nível do pokemon             |        1-80        |          não           |          |                   |
 |      hp       |  small int  |      Quantidade de vida do pokemon       |       1-2000       |          não           |          |                   |
-|    defesa     |  small int  |     Quantidade de defesa do pokemon      |       1-2000       |          não           |    PK    |                   |
+|    defesa     |  small int  |     Quantidade de defesa do pokemon      |       1-2000       |          não           |          |                   |
 |    ataque     |  small int  |     Quantidade de ataque do pokemon      |       1-2000       |          não           |          |                   |
 |   sp_defesa   |  small int  | Quantidade de defesa especial do pokemon |       1-2000       |          não           |          |                   |
 |   sp_ataque   |  small int  | Quantidade de ataque especial do pokemon |       1-2000       |          não           |          |                   |
-|  velocidade   |  small int  |   Quantidade de velocidade do pokemon    |       1-2000       |          não           |    PK    |                   |
+|  velocidade   |  small int  |   Quantidade de velocidade do pokemon    |       1-2000       |          não           |          |                   |
 |   acuracia    |  small int  |           Acurácia do pokemon            |       1-2000       |          não           |          |                   |
 |     sexo      | varchar[1]  |             Sexo do pokemon              |       ASCII        |          não           |          |                   |
 |    status     | varchar[10] |            Status do pokemon             |       ASCII        |          sim           |          |                   |
-|   pokebola    | varchar[60] |     Pokebola que capturou o pokemon      |       ASCII        |          não           |          |                   |
+|   pokebola    | varchar[60] |     Pokebola que capturou o pokemon      |       ASCII        |          não           |    FK    |                   |
 
 ## Histórico de versões
 
