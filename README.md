@@ -302,7 +302,7 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 |  treinador_id   |     int     |            Id do treinador             |      0-25000       |          não           |    PK    |                   |
 |      nome       | varchar[60] |           Nome do treinador            |       ASCII        |          não           |          |                   |
 | ultima_insignia | varchar[60] | Última insignia que o treinador ganhou |       ASCII        |          não           |          |                   |
-|  tamanho_time   |     int     |            Tamanho do time             |        0-6         |          não           |          |                   |
+|  tamanho_time   |   tinyint   |            Tamanho do time             |        0-6         |          não           |          |                   |
 |      sexo       | varchar[1]  |           Sexo do treinador            |       ASCII        |          não           |          |                   |
 |    dinheiro     |     int     |         Dinheiro do treinador          |     0-1000000      |          não           |          |                   |
 
