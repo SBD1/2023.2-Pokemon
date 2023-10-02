@@ -3,31 +3,33 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 
 
 **Entidades:**
-
-- **Local:** Representa um local no mundo Pokémon.
+- **Mapa:** Representa o conjunto de todos os locais do mundo Pokémon.
+- **Região:** Representa uma região no mundo Pokémon.
 - **Ginasio:** Representa um ginásio Pokémon.
+- **PokeMart** Representa um PokeMart (loja) Pokémon.
+- **PokeCenter** Representa um PokeCenter ("hospital") para Pokémons.
 - **TMs:** Representam as técnicas de movimentos especiais que um Pokémon pode aprender.
 - **Itens Comuns:** Representam itens comuns que podem ser encontrados no mundo Pokémon.
 - **Itens Chave:** Representam itens chave que são necessários para acessar um local.
-- **Pokebolas:** Representam Pokébolas, itens usados para capturar Pokémon.
-- **Ervas:** Representam ervas que podem ser encontradas no mundo Pokémon.
-- **Shop:** Representa uma loja Pokémon.
-- **Loot:** Representa um pacote de itens.
-- **Habilidades:** Representa as habilidades que um Pokémon pode ter.
-- **Efeitos:** Representa os efeitos que uma habilidade pode aferir.
+- **Pokebola:** Representam Pokébolas, itens usados para capturar Pokémon.
+- **Frutas:** Representam frutas que podem ser encontradas no mundo Pokémon.
+- **Ataque:** Representa os ataques que um Pokémon pode ter.
+- **Tipo:** Representa o tipo que o Pokémon pertence.
 - **Pokemon:** Representa um Pokémon.
 - **Batalha:** Representa uma batalha entre dois Pokémon.
-- **Treinador:** Representa um treinador Pokémon.
+- **PC:** Representa um treinador Pokémon controlado por um humano.
 - **Pokedex:** Representa a Pokédex, um dispositivo que registra informações sobre Pokémon.
 - **NPC:** Representam personagens não jogáveis que podem ser encontrados no mundo Pokémon.
+- **Mochila:** Representa a mochila do jogador, que guarda os itens para ele.
 
 **Relacionamentos:**
 
-- **Local - Shop:** Um-para-um. Um local pode ter somete um shop.
-- **Local - Ginasio:** Um-para-um. Uma cidade pode ter somente um ginásio.
-- **Local - NPC:** Um-para-um. Um NPC ocupa somente um local.
-- **Local - Loot:** Um-para-muitos. Um local pode ter muitos loots.
-- **Local - Pokemon:** Um-para-muitos. Um local pode ter muitos pokemon.
+- **Mapa - Região:** Um-para-muitos. O mapa pode possuir uma ou várias regiões.
+- **Região - PokeMart:** Um-para-um. Uma Região pode conter no máximo um PokeMart.
+- **Região - Ginasio:** Um-para-um. Uma Região pode conter no máximo um Ginásio. 
+- **Região - NPC:** Um-para-um. Um NPC ocupa somente um local.
+- **Região - Loot:** Um-para-muitos. Um local pode ter muitos loots.
+- **Região - Pokemon:** Um-para-muitos. Um local pode ter muitos pokemon.
 - **Loot - TMs:** Um-para-muitos. Um loot pode ter muitos TMs.
 - **Loot - Itens Comuns:** Um-para-muitos. Um loot pode ter muitos itens comuns.
 - **Loot - Itens Chave:** Um-para-muitos. Um loot pode ter muitos itens chave.
@@ -37,11 +39,11 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 - **Ginasio - NPC:** Um-para-um. Um ginásio pode somente um líder NPC.
 - **Ginasio - Treinador:** Um-para-um. Um treinador pode enfrentar vários ginásios.
 - **Ginasio - Loot:** Um-para-muitos. Um ginásio pode ter vários pacotes de loot.
-- **Shop - Itens Chave:** Um-para-muitos. Uma loja pode ter muitos itens chave.
-- **Shop - Ervas:** Um-para-muitos. Uma loja pode ter muitas ervas.
-- **Shop - Itens Comuns:** Um-para-muitos. Uma loja pode ter muitos itens comuns.
-- **Shop - Pokebolas:** Um-para-muitos. Uma loja pode ter muitas pokebolas.
-- **Shop - TMs:** Um-para-muitos. Uma loja pode ter muitos TMs.
+- **PokeMart - Itens Chave:** Um-para-muitos. Uma loja pode ter muitos itens chave.
+- **PokeMart - Frutas:** Um-para-muitos. Uma loja pode ter muitas Frutas.
+- **PokeMart - Itens Comuns:** Um-para-muitos. Uma loja pode ter muitos itens comuns.
+- **PokeMart - Pokebolas:** Um-para-muitos. Uma loja pode ter muitas pokebolas.
+- **PokeMart - TMs:** Um-para-muitos. Uma loja pode ter muitos TMs.
 - **Habilidade - Efeito:** Um-para-um. Uma habilidade pode causar apenas um efeito no máximo.
 - **Pokemon - Habilidades:** Um-para-muitos. Um Pokémon pode ter muitas habilidades.
 - **Pokemon - Pokemon:** Um-para-um. Um pokemon batalha apenas com um pokemon.
@@ -54,12 +56,12 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 - **Treinador - Itens Comuns:** Um-para-muitos. Um treinador pode ter muitos itens de posse.
 - **Treinador - Pokebolas:** Um-para-muitos. Um treinador pode ter muitas Pokébolas.
 - **Treinador - TMs:** Um-para-muitos. Um treinador pode ter muitos TMs.
-- **Treinador - Ervas:** Um-para-muitos. Um treinador pode ter muitas ervas.
+- **Treinador - Frutas:** Um-para-muitos. Um treinador pode ter muitas Frutas.
 - **Treinador - Treinador:** Um-para-um. Um treinador batalha apenas com um treinador.
 
 # DER:
 
-![image](https://github.com/SBD1/2023.2-Pokemon/assets/95441810/e27ed44b-c0cf-43a0-8206-ea4bf873614c)
+![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/derV3.png)
 
 
 ## Histórico de versões
@@ -69,3 +71,4 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 | `1.0`  | 25/09/2023 | Criação do DER                                      | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.1`  | 28/09/2023 | Criação do MER                                      | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.2`  | 01/10/2023 | Modularização do documento para um arquivo separado | [Felipe de Sousa](https://github.com/fsousac)  |
+| `1.3`  | 02/10/2023 | Atualização do MER e do DER                         | [Murilo Souto](https://github.com/murilopbs)  |
