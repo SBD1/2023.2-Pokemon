@@ -9,8 +9,8 @@ Repositório da matéria de Sistemas de Bancos de Dados 1 sobre a modelagem do b
 | Nome                         | Matrícula   | Github                                     |
 | ---------------------------- | ----------- | ------------------------------------------ |
 | Felipe de Sousa Coelho       | 211061707   | [@fsousac](https://github.com/fsousac)     |
-| Ian da Costa Gama            | 190125829   | [@ian-dcg](https://github.com/ian-dcg)                               |
-| XXXALUNOXXX                  | XXXALUNOXXX | XXXALUNOXXX                                |
+| Ian da Costa Gama            | 190125829   | [@ian-dcg](https://github.com/ian-dcg)     |
+| Isabelle da Costa            | 211039500   | [@isacostaf](https://github.com/isacostaf) |
 | Murilo Perazzo Barbosa Souto | 190129221   | [@murilopbs](https://github.com/murilopbs) |
 
 ## Sobre
