@@ -61,7 +61,7 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 
 # DER:
 
-![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/derV3.png)
+![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/derV4.png)
 
 
 ## Histórico de versões
@@ -72,3 +72,4 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 | `1.1`  | 28/09/2023 | Criação do MER                                      | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.2`  | 01/10/2023 | Modularização do documento para um arquivo separado | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.3`  | 02/10/2023 | Atualização do MER e do DER                         | [Murilo Souto](https://github.com/murilopbs)  |
+| `1.4`  | 02/10/2023 | Atualização do DER                                  | [Ian Costa](https://github.com/ian-dcg)  |
