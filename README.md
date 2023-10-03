@@ -39,4 +39,6 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | `1.1`  | 27/09/2023 | Inserção do MER,DER e MREL            | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.2`  | 30/09/2023 | Inserção do DD                        | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.3`  | 30/09/2023 | Modularização para arquivos separados | [Felipe de Sousa](https://github.com/fsousac)  |
+| `1.4`  | 02/10/2023 | Atualização do DER                    | [Murilo Perazzo ](https://github.com/murilopbs)|
+| `1.5`  | 02/10/2023 | Atualização do MREL                   | [Ian da Costa ](https://github.com/ian-dcg)|
 
