@@ -97,15 +97,15 @@
 |  quantidade   |     int      | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
 |    efeito     | varchar[150] |        Efeito ao usar a erva         |       ASCII        |          não           |          |                   |
 
-## Entidade: Shop
+## Entidade: PokeMart
 
-#### Descrição: A entidade `Shop` descreve uma loja que pode ser encontrada no mundo Pokémon, onde o treinador pode comprar e vender itens.
+#### Descrição: A entidade `PokeMart` descreve uma loja que pode ser encontrada no mundo Pokémon, onde o treinador pode comprar e vender itens.
 
 #### Observação: Esta entidade é chave estrangeira para `Vendedor`, onde mostra quais NPC vendedores trabalham na loja.
 
 | Nome Variável |     Tipo     |                         Descrição                         | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :----------: | :-------------------------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    shop_id    |     int      |                        Id da loja                         |      0-25000       |          não           |    PK    |                   |
+|    pokemart_id    |     int      |                        Id da loja                         |      0-25000       |          não           |    PK    |                   |
 |     nome      | varchar[60]  |                       Nome da loja                        |       ASCII        |          não           |          |                   |
 |     local     | varchar[12]  |            Local em que a cidade está sitiada             |       ASCII        |          não           |  SK FK   |                   |
 |     info      | varchar[150] | Informações sobre o que a loja vende e como ela se parece |       ASCII        |          não           |          |                   |
@@ -242,11 +242,11 @@
 
 #### Descrição: A entidade `Itens-vendidos` descreve os itens vendidos por uma loja.
 
-#### Observação: A entidade `Itens-vendidos` recebe uma chave estrangeira de `Shop` para identificá-la e outra de alguma entidate-item. A quantidade nula significa infinitos itens a venda.
+#### Observação: A entidade `Itens-vendidos` recebe uma chave estrangeira de `PokeMart` para identificá-la e outra de alguma entidate-item. A quantidade nula significa infinitos itens a venda.
 
 | Nome Variável |    Tipo     |                Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :---------: | :-------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    shop_id    |     int     |               Id da loja                |      0-25000       |          não           |  PK FK   |                   |
+|    pokemart_id    |     int     |               Id da loja                |      0-25000       |          não           |  PK FK   |                   |
 |   nome_item   | varchar[60] |          Nome do item vendido           |       ASCII        |          não           |  PK FK   |                   |
 |  quantidade   |     int     | Quantidade de itens disponíveis a venda |      1-25000       |          sim           |          |                   |
 |     preco     |     int     |              Preço do item              |      0-25000       |          não           |          |                   |
@@ -255,12 +255,41 @@
 
 #### Descrição: A entidade `Vendedor` identifica a loja e o NPC que trabalha nela.
 
-#### Observação: A entidade `Vendedor` recebe uma chave estrangeira de `Shop` para identificá-la e outra de `NPC` para identificar o NPC que trabalha na loja.
+#### Observação: A entidade `Vendedor` recebe uma chave estrangeira de `PokeMart` para identificá-la e outra de `NPC` para identificar o NPC que trabalha na loja.
 
 | Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
 | :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    shop_id    | int  | Id da loja |      0-25000       |          não           |  PK FK   |                   |
+|    pokemart_id    | int  | Id da loja |      0-25000       |          não           |  PK FK   |                   |
 |    npc_id     | int  | Id do NPC  |      0-25000       |          não           |  PK FK   |                   |
+
+## Entidade: PokeCenter
+
+#### Descrição: A entidade `PokeCenter` descreve um "hospital" que pode ser encontrada no mundo Pokémon, onde o treinador pode curar seus Pokémons.
+
+
+#### Observação: A entidade `PokeCenter` recebe uma chave estrangeira de `Local` para identificá-la.
+
+| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    pokecenter_id    | int  | Id do PokeCenter |      0-25000       |          não           |  PK   |                   |
+|    cura_disponivel     | int  | Quantidade de cura disponível  |      0-25000       |          não           |     |      |
+|  localidade   | varchar[12]  |        Local onde o PokeCenter fica        |       ASCII        |          não           |   SK FK    |                   |
+|     info      | varchar[150] |       Informações sobre o NPC       |       ASCII        |          não           |          |                   |
+
+
+## Entidade: Mochila
+
+#### Descrição: A entidade `Mochila` descreve um meio de armazenar itens do universo Pokemon.
+
+
+#### Observação: A entidade `Mochila` recebe uma chave estrangeira de `Treinador` para identificá-la.
+
+| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
+|    classificação_item    | int  | Classificação do item |      0-25000       |          não           |  PK   |                   |
+| dono  |     int      |          Id do treinador          |      0-25000       |          não           |    PK    |                   |
+|    slot    | int  | Slot disponível para item |      0-25000       |          não           |     |                   |                  |
+
 
 
 ## Histórico de versões
@@ -268,4 +297,5 @@
 | Versão |    Data    | Descrição                                           | Autor                                          |
 | :----: | :--------: | --------------------------                          | ---------------------------------------------- |
 | `1.0`  | 01/10/2023 | Criação do DD                                       | [Felipe de Sousa](https://github.com/fsousac)  |
-| `1.1`  | 01/10/2023 | Modularização do documento para um arquivo separado | [Felipe de Sousa](https://github.com/fsousac)  |
+| `1.1`  | 01/10/2023 | Modularização do documento para um arquivo separado | [Felipe de Sousa](https://github.com/fsousac) |
+| `1.2`  | 02/10/2023 | Adição de dados | [Murilo Perazzo](https://github.com/murilopbs) |
