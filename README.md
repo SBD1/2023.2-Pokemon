@@ -35,7 +35,7 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 ### Módulo 2
 
-#### [Normalização]()
+#### [Normalização](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/normalizacao_pokemon.md)
 
 #### [Criação do banco]()
 
