@@ -52,4 +52,5 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | `1.4`  | 02/10/2023 | Atualização do DER                    | [Murilo Perazzo ](https://github.com/murilopbs)|
 | `1.5`  | 02/10/2023 | Atualização do MREL                   | [Ian da Costa ](https://github.com/ian-dcg)    |
 | `2.0`  | 20/10/2023 | Criação dos tópicos para a entrega 2  | [Felipe de Sousa](https://github.com/fsousac)  |
+| `2.1`  | 30/10/2023 | Adicionando o DML para a entrega 2    | [Murilo Perazzo](https://github.com/murilopbs)  |
 
