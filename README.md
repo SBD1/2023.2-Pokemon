@@ -37,9 +37,15 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 #### [Normalização](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/normalizacao_pokemon.md)
 
-#### [Criação do banco]()
+#### [Criação do banco](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/ddl.sql)
 
-#### [Consultas no banco]()
+#### [Consultas no banco](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/dml.sql)
+
+### Módulo 3
+
+#### [Triggers e Stored Procedures](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/tsp.sql)
+
+#### [Criação do FrontEnd]()
 
 ## Histórico de versões
 
@@ -53,4 +59,5 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | `1.5`  | 02/10/2023 | Atualização do MREL                   | [Ian da Costa ](https://github.com/ian-dcg)    |
 | `2.0`  | 20/10/2023 | Criação dos tópicos para a entrega 2  | [Felipe de Sousa](https://github.com/fsousac)  |
 | `2.1`  | 30/10/2023 | Adicionando o DML para a entrega 2    | [Murilo Perazzo](https://github.com/murilopbs)  |
+| `3.0`  | 30/11/2023 | Inserindo links da entrega 2 e 3    | [Felipe de Sousa](https://github.com/fsousac)  |
 
