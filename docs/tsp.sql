@@ -18,7 +18,7 @@ CREATE OR REPLACE
 FUNCTION EVOLUI_POKEMON(ID_EVOLUIDO int, NUM_POKEDEX_EV int) RETURNS VOID AS $evolui_pokemon$
 declare
 	prox_pokedex int;
-begin 
+begin
 	select sucessor into prox_pokedex from evolucoes where antecessor = num_pokedex_ev;
 	INSERT into pokemon (
 		 numero_pokedex,
@@ -61,7 +61,7 @@ declare
 	xp_atual smallint;
 	nivel_atual smallint;
 	nivel_ev SMALLINT;
-begin 
+begin
 	-- vencedor = pokemon id do vencedor
 	select xp into xp_atual from pokemon where pokemon_id = vencedor;
 	if xp_atual + 10 >= 100 then
@@ -121,7 +121,7 @@ CREATE OR REPLACE
 FUNCTION CHECK_NOVA_BATALHA() RETURNS TRIGGER AS $check_nova_batalha$
 DECLARE
 	pokemons_existentes INTEGER;
-BEGIN 
+BEGIN
 	SELECT COUNT(*) INTO pokemons_existentes FROM pokemon WHERE pokemon_id = NEW.pokemon1 OR pokemon_id = NEW.pokemon2;
 	IF pokemons_existentes < 2 THEN
 		RAISE EXCEPTION 'Pokemons inválidos';
@@ -136,7 +136,7 @@ DECLARE
 	treinador INTEGER;
 	numero_dex INTEGER;
 	quant_descoberto INTEGER;
-BEGIN 
+BEGIN
 	select treinador_id into treinador from pokemon WHERE pokemon.pokemon_id = new.pokemon1;
 	select numero_pokedex into numero_dex from pokemon where pokemon.pokemon_id = NEW.pokemon1;
 	select count(*) into quant_descoberto from pokemons_descobertos WHERE treinador_id = treinador and numero_pokemon = numero_dex;
@@ -181,9 +181,12 @@ FUNCTION ATACA_BATALHA(POKEMON1 int, POKEMON2 int, ID_HABILIDADE int) RETURNS VO
 declare
 	vida_pokemon smallint;
 	dano_habilidade smallint;
-BEGIN 
+	alvo char(1);
+BEGIN
 	select hp into vida_pokemon from pokemon where pokemon.pokemon_id = pokemon2;
 	select dano into dano_habilidade from habilidade where habilidade.habilidade_id = id_habilidade;
+	select tipo_dano into alvo from habilidade where habilidade.habilidade_id = id_habilidade;
+	if alvo = 'D'
 
 	if dano_habilidade > vida_pokemon then
 		update pokemon set hp = 0, status = 'Desmaiado' where pokemon.pokemon_id = pokemon2;
@@ -198,27 +201,33 @@ $ataca_batalha$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE
 FUNCTION CAPTURA_POKEMON(POKEMON int, POKEBOLA VARCHAR(60),TREINADOR int) RETURNS VOID AS $captura_pokemon$
-BEGIN 
+BEGIN
 	update pokemon set pokemon.treinador = treinador, pokemon.pokebola = pokebola WHERE pokemon.pokemon_id = pokemon;
 
 END;
 $captura_pokemon$ LANGUAGE PLPGSQL;
-CREATE OR REPLACE
-FUNCTION JOGA_POKEBOLA(POKEMON int, POKEBOLA VARCHAR(60),TREINADOR int) RETURNS VOID AS $joga_pokebola$
+
+CREATE OR REPLACE FUNCTION JOGA_POKEBOLA(POKEMON int, POKEBOLA VARCHAR(60), TREINADOR int) RETURNS VOID AS $joga_pokebola$
 DECLARE
-	consegue BOOLEAN;
-	taxa_cap smallint;
+    consegue BOOLEAN;
+    taxa_cap smallint;
+    forca_bola smallint;
 BEGIN
-	if (select treinador from pokemon where pokemon.pokemon_id = pokemon) != NULL THEN
-		raise exception 'Este pokemon já possui um treinador';
-		return;
-	end if;
-	update mochila set mochila.quantidade = mochila.quantidade - 1 WHERE mochila.dono = treinador and mochila.nome_item = pokebola;
-	SELECT into consegue round(CAST (random()*100 AS Integer),0);
-	select taxa_captura into taxa_cap from pokedex where numero_pokedex = (select numero_pokedex from pokemon WHERE pokemon_id = pokemon);
-	IF consegue <= taxa_cap then
-		select captura_pokemon(pokemon, pokebola, treinador);
-	end if;
-	commit;
+    IF (SELECT treinador FROM pokemon WHERE pokemon.pokemon_id = POKEMON) IS NOT NULL THEN
+        RAISE EXCEPTION 'Este pokemon já possui um treinador';
+        RETURN;
+    ELSIF (SELECT quantidade FROM mochila WHERE mochila.dono = TREINADOR AND mochila.nome_item = POKEBOLA) < 1 THEN
+        RAISE EXCEPTION 'O treinador não possui pokebolas suficientes';
+        RETURN;
+    END IF;
+
+    UPDATE mochila SET quantidade = quantidade - 1 WHERE mochila.dono = TREINADOR AND mochila.nome_item = POKEBOLA;
+    SELECT forca INTO forca_bola FROM pokebolas WHERE pokebolas.nome_item = POKEBOLA;
+    SELECT round(CAST (random()*100 AS Integer) - forca_bola, 0) INTO consegue;
+    SELECT taxa_captura INTO taxa_cap FROM pokedex WHERE numero_pokedex = (SELECT numero_pokedex FROM pokemon WHERE pokemon_id = POKEMON);
+
+    IF consegue <= taxa_cap THEN
+        SELECT captura_pokemon(POKEMON, POKEBOLA, TREINADOR);
+    END IF;
 END;
 $joga_pokebola$ LANGUAGE PLPGSQL;
