@@ -1,105 +1,126 @@
--- Inserir dados na tabela "Treinador"
-INSERT INTO Treinador (treinador_id, nome_treinador, localizacao, insignias, pokemons_capturados, registros_pokedex, dinheiro, sexo)
-VALUES (1, 'Ash', 'Pallet', 8, 151, 151, 10000, 'M');
+-- Inserir dados na tabela LOCALIDADE
+INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
+  ( 'Quarto do Ash', 'Quarto onde o ash cresceu.', 'Mapa001'),
+  ( 'Sala do Ash', 'Sala da casa de Ash.', 'Mapa002'),
+  ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
+  ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004');
 
--- Inserir dados na tabela "Itens_Comuns"
-INSERT INTO Itens_Comuns (nome_item, efeito)
-VALUES ('Potion', 'Restaura 20 HP de um Pokémon');
+-- Inserir dados na tabela CAMINHO
+INSERT INTO CAMINHO (SALA_ATUAL, PROXIMA_SALA) VALUES
+  (1, 2),
+  (2, 3),
+  (3, 4);
 
--- Inserir dados na tabela "Itens_Chave"
-INSERT INTO Itens_Chave (nome_item, utilidade)
-VALUES ('Bike', 'Permite que o treinador se mova mais rápido');
 
--- Inserir dados na tabela "Frutas"
-INSERT INTO Frutas (nome_item, efeito)
-VALUES ('Oran Berry', 'Restaura 10 HP quando consumida');
+insert into tipo_item (nome_item,tipo_item) VALUES
+  ('TM01', 'T'),
+  ('Pokebola Comum', 'P'),
+  ('Fruta Cítrica', 'F'),
+  ('Chave da Cidade', 'K'),
+  ('Poção', 'C');
 
--- Inserir dados na tabela "Tipo"
-INSERT INTO Tipo (tipo_id, nome_tipo)
-VALUES (1, 'Fogo');
+-- Inserir dados na tabela TREINADOR
+INSERT INTO TREINADOR (NOME_TREINADOR, SEXO, LOCALIZACAO, QUANT_INSIGNIAS, QUANT_PK_CAPTURADOS, DINHEIRO) VALUES
+  ('Ash Ketchum', 'M', 1, 0, 0, 1000),
+  ('Adivsnoisd', 'F', 1, 0, 0, 1000);
 
--- Inserir dados na tabela "Efeito"
-INSERT INTO Efeito (efeito_id, nome_efeito, acuracia, dano, info)
-VALUES (1, 'Queimadura', 85, 20, 'Causa dano ao longo do tempo');
+-- Inserir dados na tabela ITEM_COMUM
+INSERT INTO ITEM_COMUM (NOME_ITEM, EFEITO) VALUES
+  ('Poção', 'Cura 20 pontos de HP');
 
--- Inserir dados na tabela "Habilidade"
-INSERT INTO Habilidade (habilidade_id, nome_habilidade, alcance, dano, tipo, acuracia, efeito, info)
-VALUES (1, 'Ember', 'P', 40, 1, 100, 1, 'Lança pequenas chamas no oponente');
+-- Inserir dados na tabela ITEM_CHAVE
+INSERT INTO ITEM_CHAVE (NOME_ITEM, UTILIDADE) VALUES
+  ('Chave da Cidade', 'Abre portas na cidade');
 
--- Inserir dados na tabela "TMs"
-INSERT INTO TMs (nome_item, habilidade_id)
-VALUES ('TM35', 1);
+-- Inserir dados na tabela FRUTA
+INSERT INTO FRUTA (NOME_ITEM, EFEITO) VALUES
+  ('Fruta Cítrica', 'Cura paralisia');
 
--- Inserir dados na tabela "Pokebolas"
-INSERT INTO Pokebolas (nome_item, forca)
-VALUES ('Ultra Ball', 2);
+-- Inserir dados na tabela TIPO
+INSERT INTO TIPO (NOME_TIPO) VALUES
+  ('Fogo'), ('Água'), ('Grama'), ('Elétrico'), ('Pedra'), ('Normal');
 
--- Inserir dados na tabela "Mochila"
-INSERT INTO Mochila (dono, nome_item, quantidade, origem)
-VALUES (1, 'Ultra Ball', 5, 'Pokebolas');
+-- Inserir dados na tabela EFEITO
+INSERT INTO EFEITO (NOME_EFEITO, ACURACIA, DANO, INFO) VALUES
+  ('Queimar', 80, 10, 'Causa dano ao longo do tempo');
 
--- Inserir dados na tabela "Pokemon"
-INSERT INTO Pokemon (pokemon_id, numero_pokedex, nature, nivel, hp, defesa, habilidade1, treinador_id)
-VALUES (1, 25, 'Brave', 50, 150, 75, 'Ember', 1);
+-- Inserir dados na tabela HABILIDADE
+INSERT INTO HABILIDADE (NOME_HABILIDADE, TIPO_DANO, DANO, TIPO, ACURACIA, EFEITO, INFO) VALUES
+  ('Investida', 'F', 20, 'Normal', 95, NULL, 'Ataque básico de investida');
 
--- Inserir dados na tabela "Equipe"
-INSERT INTO Equipe (treinador_id, pokemon)
-VALUES (1, 1);
+-- Inserir dados na tabela TM
+INSERT INTO TM (NOME_ITEM, HABILIDADE_ID) VALUES
+  ('TM01', 1);
 
--- Inserir dados na tabela "Batalha"
-INSERT INTO Batalha (batalha_id, pokemon1, pokemon2)
-VALUES (1, 1, 1);
+-- Inserir dados na tabela POKEBOLA
+INSERT INTO POKEBOLA (NOME_ITEM, FORCA) VALUES
+  ('Pokebola Comum', 0);
 
--- Inserir dados na tabela "Lugar"
-INSERT INTO Lugar (localizacao, nome, x, y, info)
-VALUES ('Pallet', 'Pallet Town', 10, 20, 'Uma cidade tranquila');
+-- Inserir dados na tabela MOCHILA
+INSERT INTO MOCHILA (NOME_ITEM, DONO, QUANTIDADE) VALUES
+  ('Poção', 1, 3),
+  ('Pokebola Comum', 1, 1);
 
--- Inserir dados na tabela "Npc"
-INSERT INTO Npc (npc_id, treinador, localidade, sexo, ginasio, info)
-VALUES (1, 1, 'Pallet', 'M', 'Gym Leader', 'Líder do Ginásio');
+-- Inserir dados na tabela POKEDEX
+INSERT INTO POKEDEX (NUMERO_POKEDEX, NOME_POKEMON, TIPO1, TIPO2, NIVEL_EVOLUCAO, TAXA_CAPTURA, SOM_EMITIDO, REGIAO, INFO) VALUES
+  (1, 'Bulbasaur', 'Grama', Null, 16, 30, 1, 'Kanto', 'Um pequeno Pokémon semente'),
+  (2, 'Ivysaur', 'Grama', Null, 36, 30, 1, 'Kanto', 'Um Pokémon semente médio');
 
--- Inserir dados na tabela "Tipos"
-INSERT INTO Tipos (tipo_id, nome_tipo)
-VALUES ('Fogo', 'Fogo');
+-- Inserir dados na tabela EVOLUCAO
+INSERT INTO EVOLUCAO (ANTERIOR, SUCESSOR) VALUES
+  (1, 2);
 
--- Inserir dados na tabela "Loot"
-INSERT INTO Loot (loot_id, nome_item, quantidade, localidade)
-VALUES (1, 'Potion', 3, 'Pallet');
+-- Inserir dados na tabela REGISTRO_POKEDEX
+INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID) VALUES
+  (1, 1);
 
--- Inserir dados na tabela "Ginasio"
-INSERT INTO Ginasio (nome_ginasio, lider_id, tipo1, tipo2, cidade, loot)
-VALUES ('Gym Leader', 1, 'Fogo', 'Fogo', 'Pallet', 1);
+-- Inserir dados na tabela POKEMON
+INSERT INTO POKEMON (NUMERO_POKEDEX, TREINADOR_ID, HABILIDADE1, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE, ACURACIA, SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO) VALUES
+  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 90, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1),
+  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 90, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1);
 
--- Inserir dados na tabela "Batalhador"
-INSERT INTO Batalhador (npc_treinador_id, tipo1, localidade, loot)
-VALUES (1, 'Fogo', 'Pallet', 1);
+-- Inserir dados na tabela EQUIPE
+INSERT INTO EQUIPE (TREINADOR_ID, POKEMON) VALUES
+  (1, 1);
 
--- Inserir dados na tabela "PokeCenter"
-INSERT INTO PokeCenter (pokecenter_id, cura_disponivel, localidade, info)
-VALUES (1, 3, 'Pallet', 'Centro de Cura Pokémon');
+-- Inserir dados na tabela BATALHA
+INSERT INTO BATALHA (POKEMON1, POKEMON2) VALUES
+  (1, 2);
 
--- Inserir dados na tabela "EnfermeiraJoy"
-INSERT INTO EnfermeiraJoy (pokecenter_id, npc_id)
-VALUES (1, 1);
+-- Inserir dados na tabela NPC
+INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
+  (1, 'F', 'Guia da Cidade Inicial'),
+  (1,'F', 'Enfermeira Joy');
 
--- Inserir dados na tabela "PokeMart"
-INSERT INTO PokeMart (pokemart_id, itens_disponiveis, localidade, info)
-VALUES (1, 5, 'Pallet', 'Loja de Itens Pokémon');
+-- Inserir dados na tabela LOOT
+INSERT INTO LOOT (NOME_ITEM, QUANTIDADE, LOCALIDADE) VALUES
+  ('Potion', 1, 1);
 
--- Inserir dados na tabela "Lojista"
-INSERT INTO Lojista (pokemart_id, npc_id)
-VALUES (1, 1);
+-- Inserir dados na tabela GINASIO
+INSERT INTO GINASIO (NOME_GINASIO, LIDER_ID, TIPO1, CIDADE, LOOT) VALUES
+  ('Ginásio Inicial', 1, 'Água', 1, 1);
 
--- Inserir dados na tabela "Itens_Vendidos"
-INSERT INTO Itens_Vendidos (pokemart_id, item_id, quantidade, preco)
-VALUES (1, 'Potion', 10, 200);
+-- Inserir dados na tabela POKENPC
+INSERT INTO POKENPC (NPC_TREINADOR_ID, TREINADOR, TIPO1, LOCALIDADE, GINASIO, LOOT) VALUES
+  (1, 2, 'Água', 1, 'Ginásio Inicial', 1);
 
--- Inserir dados na tabela "Pokemons_Descobertos"
-INSERT INTO Pokemons_Descobertos (numero_pokemon, treinador_id)
-VALUES (25, 1);
+-- Inserir dados na tabela POKECENTER
+INSERT INTO POKECENTER (CURA_DISPONIVEL, LOCALIDADE, INFO) VALUES
+  (3, 1, 'Centro Pokémon da Cidade Inicial');
 
--- Inserir dados na tabela "Pokedex"
-INSERT INTO Pokedex (numero_pokedex, nome_pokemon, tipo1, regiao, info, pesquisa)
-VALUES (25, 'Pikachu', 'Elétrico', 'Kanto', 'Rato elétrico amarelo', 0);
+-- Inserir dados na tabela ENFERMEIRA
+INSERT INTO ENFERMEIRA (POKECENTER_ID, NPC_ID) VALUES
+  (1, 1);
 
-SELECT * FROM Mochila, Pokemon, Treinador
+-- Inserir dados na tabela POKEMART
+INSERT INTO POKEMART (POKEMART_ID, LOCALIDADE, INFO) VALUES
+  (1, 1, 'PokéMart da Cidade Inicial');
+
+-- Inserir dados na tabela LOJISTA
+INSERT INTO LOJISTA (POKEMART_ID, NPC_ID) VALUES
+  (1, 2);
+
+-- Inserir dados na tabela CATALOGO_POKEMART
+INSERT INTO CATALOGO_POKEMART (POKEMART_ID, ITEM_NOME, QUANTIDADE, PRECO) VALUES
+  (1, 'Poção', 5, 200);
+
