@@ -2,7 +2,7 @@
 O Modelo Relacional (MRel) é um modelo lógico que descreve o banco de dados, ou seja, representa como as tabelas serão construídas. Ele possui um nível de abstração menor que o Modelo Entidade Relacionamento (MER), se aproximando mais do nível exigido pelo Sistema de Banco de Dados (SGBD).
 
 
-![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/mrelV2.jpg)
+![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/MRELv3.png)
 
 ## Frame do Site
 <iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVMhnb5go=/?moveToViewport=-2787,-893,1274,615&embedId=979646282072" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
