@@ -5,7 +5,7 @@ FUNCTION CHECA_TIPO_POKEMON() RETURNS TRIGGER AS $checa_tipo_pokemon$
 declare
 	id_tipo Integer;
 begin
-	select Count(*) into id_tipo from Tipo where tipo_id = NEW.tipo1 or tipo_id = new.tipo2;
+	select Count(*) into id_tipo from Tipo where nome_tipo = NEW.tipo1 or nome_tipo = new.tipo2;
 	if id_tipo < 1 or (id_tipo < 2 and new.tipo2 <> NULL) then
 		Raise exception 'Tipo do pokemon inválido';
 		return null;
@@ -53,8 +53,6 @@ begin
 		 );
 END;
 $evolui_pokemon$ LANGUAGE PLPGSQL;
-DROP
-FUNCTION GANHA_BATALHA(integer);
 CREATE OR REPLACE
 FUNCTION GANHA_BATALHA(VENCEDOR int) RETURNS VOID AS $ganha_batalha$
 declare
@@ -78,6 +76,8 @@ begin
 	end if;
 END;
 $ganha_batalha$ LANGUAGE PLPGSQL;
+
+
 DROP TRIGGER IF EXISTS CHECADOR_TIPOS
 				ON POKEDEX;
 DROP TRIGGER IF EXISTS CHECADOR_TIPOS
@@ -111,7 +111,7 @@ INSERT
 
 				OR
 UPDATE
-				ON BATALHADOR
+				ON POKENPC
 
 			FOR EACH ROW EXECUTE PROCEDURE CHECA_TIPO_POKEMON();
 
@@ -130,6 +130,8 @@ BEGIN
 	RETURN NEW;
 END;
 $check_nova_batalha$ LANGUAGE PLPGSQL;
+
+
 CREATE OR REPLACE
 FUNCTION DESCOBRE_POKEMON() RETURNS TRIGGER AS $descobre_pokemon$
 DECLARE
@@ -152,6 +154,7 @@ BEGIN
 	RETURN NEW;
 END;
 $descobre_pokemon$ LANGUAGE PLPGSQL;
+
 DROP TRIGGER IF EXISTS NOVA_BATALHA
 				ON BATALHA;
 CREATE TRIGGER NOVA_BATALHA
@@ -173,6 +176,49 @@ UPDATE
 ON BATALHA
 
 			FOR EACH ROW EXECUTE PROCEDURE DESCOBRE_POKEMON();
+-- TSP Habilidade
+
+CREATE OR REPLACE
+FUNCTION nova_habilidade() RETURNS TRIGGER AS $nova_habilidade$
+BEGIN
+	new.tipo_dano:= upper(new.tipo_dano);
+	if new.tipo_dano not in ('F', 'D') THEN
+		raise exception 'Tipo de dano não é F para físico ou D para à distância';
+		return null;
+	end if;
+	RETURN NEW;
+END;
+$nova_habilidade$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER cria_habilidade before
+INSERT
+OR
+UPDATE
+ON Habilidade
+
+			FOR EACH ROW EXECUTE PROCEDURE nova_habilidade();
+
+-- TSP Tipo item
+
+CREATE OR REPLACE
+FUNCTION novo_tipo_item() RETURNS TRIGGER AS $novo_tipo_item$
+BEGIN
+	new.tipo_item:= upper(new.tipo_item);
+	if new.tipo_item not in ('C','K','F','T','P') THEN
+		raise exception 'Tipo de item rejeitado. São aceitos somente "C" para comum; "K" para chave; "P" para pokebolas; "F" para frutas e "T" para TMs.';
+		return null;
+	end if;
+	RETURN NEW;
+END;
+$novo_tipo_item$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER cria_tipo_item before
+INSERT
+OR
+UPDATE
+ON Tipo_item
+
+			FOR EACH ROW EXECUTE PROCEDURE novo_tipo_item();
 
 -- SP ataca
 
@@ -180,14 +226,25 @@ CREATE OR REPLACE
 FUNCTION ATACA_BATALHA(POKEMON1 int, POKEMON2 int, ID_HABILIDADE int) RETURNS VOID AS $ataca_batalha$
 declare
 	vida_pokemon smallint;
+	atq_pokemon smallint;
+	spatq_pokemon smallint;
+	def_pokemon smallint;
+	spdef_pokemon smallint;
 	dano_habilidade smallint;
 	alvo char(1);
 BEGIN
 	select hp into vida_pokemon from pokemon where pokemon.pokemon_id = pokemon2;
+	select defesa into def_pokemon from pokemon where pokemon.pokemon_id = pokemon2;
+	select sp_defesa into spdef_pokemon from pokemon where pokemon.pokemon_id = pokemon2;
+	select ataque into atq_pokemon from pokemon where pokemon.pokemon_id = pokemon1;
+	select sp_ataque into spatq_pokemon from pokemon where pokemon.pokemon_id = pokemon1;
 	select dano into dano_habilidade from habilidade where habilidade.habilidade_id = id_habilidade;
 	select tipo_dano into alvo from habilidade where habilidade.habilidade_id = id_habilidade;
-	if alvo = 'D'
-
+	if alvo = 'D' then
+		dano_habilidade:= dano_habilidade + (spatq_pokemon * 0.1) - (spdef_pokemon * 0.1);
+	else
+		dano_habilidade:= dano_habilidade + (atq_pokemon * 0.1) - (def_pokemon * 0.1);
+	end if;
 	if dano_habilidade > vida_pokemon then
 		update pokemon set hp = 0, status = 'Desmaiado' where pokemon.pokemon_id = pokemon2;
 		select ganha_batalha(pokemon1);
@@ -209,7 +266,7 @@ $captura_pokemon$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION JOGA_POKEBOLA(POKEMON int, POKEBOLA VARCHAR(60), TREINADOR int) RETURNS VOID AS $joga_pokebola$
 DECLARE
-    consegue BOOLEAN;
+    consegue integer;
     taxa_cap smallint;
     forca_bola smallint;
 BEGIN
@@ -231,3 +288,23 @@ BEGIN
     END IF;
 END;
 $joga_pokebola$ LANGUAGE PLPGSQL;
+
+REVOKE INSERT, UPDATE, DELETE ON TIPO_ITEM FROM PUBLIC;
+REVOKE INSERT, UPDATE, DELETE ON ITEM_COMUM FROM PUBLIC;
+REVOKE INSERT, UPDATE, DELETE ON ITEM_CHAVE FROM PUBLIC;
+REVOKE INSERT, UPDATE, DELETE ON POKEBOLA FROM PUBLIC;
+REVOKE INSERT, UPDATE, DELETE ON FRUTA FROM PUBLIC;
+REVOKE INSERT, UPDATE, DELETE ON TM FROM PUBLIC;
+
+-- SP Itens
+
+CREATE OR REPLACE FUNCTION NOVO_ITEM_COMUM(ITEM_NOME VARCHAR(60),  EFEITO VARCHAR(150)) RETURNS VOID AS $novo_item_comum$
+BEGIN
+    IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
+        RAISE EXCEPTION 'Item já registrado';
+        RETURN;
+    end if;
+    INSERT into tipo_item (nome_item,tipo_item) VALUES (item_nome, 'C');
+	INSERT into item_comum (nome_item,efeito) VALUES (item_nome, efeito);
+END;
+$novo_item_comum$ LANGUAGE PLPGSQL;
