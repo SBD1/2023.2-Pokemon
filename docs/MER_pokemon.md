@@ -2,27 +2,36 @@
 O MER é um modelo conceitual de alto nível de abstração que representa as entidades com os seus atributos, além dos seus respectivos relacionamentos.
 
 
-**Entidades:**
-- **Mapa:** Representa o conjunto de todos os locais do mundo Pokémon.
-- **Região:** Representa uma região no mundo Pokémon.
-- **Ginasio:** Representa um ginásio Pokémon.
-- **PokeMart** Representa um PokeMart (loja) Pokémon.
-- **PokeCenter** Representa um PokeCenter ("hospital") para Pokémons.
+## Entidades:
+- **Treinador:** Representa um personagem que realiza batalhas Pokémon.
+- **Localidade:** Representa um local no mundo Pokémon.
+- **Mochila:** Representa a mochila do treinador, que guarda os itens para ele.
+- **Tipo_Item:** Representa todos os tipos de item do jogo.
 - **TMs:** Representam as técnicas de movimentos especiais que um Pokémon pode aprender.
 - **Itens Comuns:** Representam itens comuns que podem ser encontrados no mundo Pokémon.
 - **Itens Chave:** Representam itens chave que são necessários para acessar um local.
 - **Pokebola:** Representam Pokébolas, itens usados para capturar Pokémon.
 - **Frutas:** Representam frutas que podem ser encontradas no mundo Pokémon.
-- **Ataque:** Representa os ataques que um Pokémon pode ter.
-- **Tipo:** Representa o tipo que o Pokémon pertence.
-- **Pokemon:** Representa um Pokémon.
-- **Batalha:** Representa uma batalha entre dois Pokémon.
-- **PC:** Representa um treinador Pokémon controlado por um humano.
-- **Pokedex:** Representa a Pokédex, um dispositivo que registra informações sobre Pokémon.
+- **Pokemon:** Representa uma instância de um pokemon da pokedex.
+- **Equipe:** Representa o conjunto de Pokémon que o treinador está utilizando.
+- **Tipo:** Representa os tipos de pokemons e habilidades existentes.
+- **Habilidade:** Representa o conjunto de Habilidades que o Pokémon pode usar em batalha.
+- **Efeito:** Representa os efeitos que uma Habilidade pode causar.
 - **NPC:** Representam personagens não jogáveis que podem ser encontrados no mundo Pokémon.
-- **Mochila:** Representa a mochila do jogador, que guarda os itens para ele.
+- **Ginasio:** Representa um ginásio Pokémon.
+- **PokeNPC** Representa os NPCs que são possíveis batalhar.
+- **PokeCenter** Representa um PokeCenter ("hospital") para Pokémons.
+- **Enfermeira** Representa a profissão do NPC que cuida do pokecenter.
+- **PokeMart** Representa um PokeMart (loja) Pokémon.
+- **Lojista**  Representa a profissão do npc que cuida do PokeMart.
+- **Pokedex:** Representa um catálogo de todos os pokemons existentes no mundo.
+- **Registro_Pokedex:** Representa os Pokémon que o treinador já encontrou.
+- **Loot:** Representa os itens que o treinador pode ou não obter após vencer uma batalha.
+- **Catalogo_Pokemart:** Representa os itens que estão disponíveis para venda em diferentes PokeMart.
+- **Caminho:** Descreve qual localidade liga para qual.
 
-**Relacionamentos:**
+
+## Relacionamentos:
 
 - **Mapa - Região:** Um-para-muitos. O mapa pode possuir uma ou várias regiões.
 - **Região - PokeMart:** Um-para-um. Uma Região pode conter no máximo um PokeMart.
@@ -77,3 +86,4 @@ Para visualizar o diagrama em melhor qualidade acesse:
 | `1.3`  | 02/10/2023 | Atualização do MER e do DER                         | [Murilo Souto](https://github.com/murilopbs)  |
 | `1.4`  | 02/10/2023 | Atualização do DER                                  | [Ian Costa](https://github.com/ian-dcg)  |
 | `1.5`  | 04/12/2023 | Atualização do DER pós correção do professor        | [Ian Costa](https://github.com/ian-dcg)  |
+| `1.6`  | 04/12/2023 | Atualização das entidades pós correção do professor | [Ian Costa](https://github.com/ian-dcg)  |
