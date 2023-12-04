@@ -43,142 +43,106 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 - Um treinador descobre apenas uma Pokédex (1,1)
 - Uma pokédex é descoberta por apenas um treinador (1,1)
 
-  **Treinador _está em_ Localidade**
+**Treinador _está em_ Localidade**
 
 - Um treinador está em apenas uma localidade (1,1)
 - Uma localidade pode conter nenhum ou vários treinadores (0,N)
 
-  **Treinador _carrega_ Mochila**
+**Treinador _carrega_ Mochila**
 
 - Um treinador carrega apenas uma mochila (1,1)
 - Uma mochila é carregada por apenas um treinador (1,1)
   
-  **Pokedex _instacia_ Pokémon**
+**Pokedex _instacia_ Pokémon**
 
 - Uma pokédex instancia um ou vários pokémons (1,N)
 - Um pokémon é instanciado por nenhuma ou uma pokédex (0,1)
   
-  **Pokémon _batalha_ Pokémon**
+**Pokémon _batalha_ Pokémon**
 
 - Um pokémon batalha com apenas um pokémon (1,1)
 - (autorelacionamento)
 
-  **Pokémon _evolui_**
+**Pokémon _evolui_**
 
 - Um pokemon evoluí-se nenhuma ou várias vezes (0,N)
 - (autorelacionamento)
   
-  **Pokémon _compõe_ Equipe**
+**Pokémon _compõe_ Equipe**
 - Um Pokemon compõe nenhuma ou uma equipe (0,1)
 - Uma equipe é composta por um ou mais Pokémons (1,N)
 
-  **Pokémon _possui_ Tipo**
+**Pokémon _possui_ Tipo**
 - Um Pokemon possui um ou vários tipos (1,N)
 - Um tipo é possuido por um ou vários Pokémons (1,N)
 
-  **Pokémon _tem_ Habilidade**
+**Pokémon _tem_ Habilidade**
 - Um Pokemon tem uma ou várias habilidades (1,N)
 - Uma habilidade é tida por um ou vários pokémons (1,N)
 
-  **Habilidade _causa_ Efeito**
+**Habilidade _causa_ Efeito**
 - Uma Habilidade causa nenhum ou um efeito (0,1)
 - Um Efeito é causado por apenas uma habilidade (1,1)
 
-  **Mochila _guarda_ Tipo_Item**
+**Mochila _guarda_ Tipo_Item**
 - Uma Mochila guarda nenhum ou vários itens (0,N)
 - Um item é guardado por nenhuma ou apenas uma mochila (0,1)
 
-  **TM _contém_ Habilidade**
+**TM _contém_ Habilidade**
 - Um TM contém apenas uma habilidade (1,1)
 - Uma habilidade é contida por apenas um TM (1,1)
 
-  **Localidade _direciona_ Localidade**
+**Localidade _direciona_ Localidade**
 - Uma Localidade direciona para apenas uma localidade (1,1)
 - (autorelacionamento)
 
-  **Localidade _possui_ NPC**
+**Localidade _possui_ NPC**
 - Uma Localidade possui nenhum ou vários NPCs (0,N)
 - Um NPC é possuído por uma ou várias localidades (1,N)
 
-  **Localidade _contém_ Ginásio**
+**Localidade _contém_ Ginásio**
 - Uma Localidade contém nenhum ou um Ginásio (0,1)
 - Um Ginásio está contido em nenhuma ou uma localidade (0,1)
 
-  **Localidade _contém_ PokeCenter**
+**Localidade _contém_ PokeCenter**
 - Uma Localidade contém nenhum ou um PokeCenter (0,1)
 - Um PokeCenter está contido em nenhuma ou uma localidade (0,1)
 
-  **Localidade _contém_ PokeMart**
+**Localidade _contém_ PokeMart**
 - Uma Localidade contém nenhum ou um PokeMart (0,1)
 - Um PokeMart está contido em nenhuma ou uma localidade (0,1)
 
-  **Ginásio _gera_ Loot**
+**Ginásio _gera_ Loot**
 - Um Ginásio gera um ou vários loots (1,N)
 - Um loot é gerado por nenhum ou um Ginásio (0,1)
 
-  **Ginásio _gera_ Loot**
+**Ginásio _gera_ Loot**
 - Um Ginásio gera um ou vários loots (1,N)
 - Um loot é gerado por nenhum ou um Ginásio (0,1)
 
-  **Enfermeira _mantém_ PokeCenter**
+**Enfermeira _mantém_ PokeCenter**
 - Uma Enfermeira mantém apenas um PokeCenter (1,1)
 - Um PokeCenter é mantido por apenas uma Enfermeira (1,1)
 
-  **Lojista _mantém_ PokeMart**
+**Lojista _mantém_ PokeMart**
 - Um Lojista mantém apenas um PokeMart (1,1)
 - Um PokeMart é mantido por apenas um Lojista (1,1)
 
-  **PokeNPC _mantém_ Ginásio**
+**PokeNPC _mantém_ Ginásio**
 - Um PokeNPC mantém apenas um Ginásio (1,1)
 - Um Ginásio é mantido por apenas um ou vários PokeNPC (1,N)
 
-  **PokeNPC _gera_ Loot**
+**PokeNPC _gera_ Loot**
 - Um PokeNPC gera apenas um loot (1,1)
 - Um loot é gerado por nenhum ou um PokeNPC (0,1)
 
-  **Catalogo_PokeMart _contém_ Tipo_Item**
+**Catalogo_PokeMart _contém_ Tipo_Item**
 - Um Catalogo_PokeMart contém um ou vários Tipo_Item (1,N)
 - Um Tipo_Item é contido por nenhum ou vários Catalogo_PokeMart (0,N)
 
-  **Loot _contém_ Tipo_Item**
+**Loot _contém_ Tipo_Item**
 - Um Loot contém um ou vários Tipo_Item (1,N)
 - Um Tipo_Item é contido por nenhum ou vários Loots (0,N)
-
-
-- **Mapa - Região:** Um-para-muitos. O mapa pode possuir uma ou várias regiões.
-- **Região - PokeMart:** Um-para-um. Uma Região pode conter no máximo um PokeMart.
-- **Região - Ginasio:** Um-para-um. Uma Região pode conter no máximo um Ginásio. 
-- **Região - NPC:** Um-para-um. Um NPC ocupa somente um local.
-- **Região - Loot:** Um-para-muitos. Um local pode ter muitos loots.
-- **Região - Pokemon:** Um-para-muitos. Um local pode ter muitos pokemon.
-- **Loot - TMs:** Um-para-muitos. Um loot pode ter muitos TMs.
-- **Loot - Itens Comuns:** Um-para-muitos. Um loot pode ter muitos itens comuns.
-- **Loot - Itens Chave:** Um-para-muitos. Um loot pode ter muitos itens chave.
-- **Loot - Ervas:** Um-para-muitos. Um loot pode ter muitas ervas.
-- **Loot - Pokebolas:** Um-para-muitos. Um loot pode ter muitas pokebolas.
-- **Ginasio - NPC:** Um-para-muitos. Um ginásio pode ter muitos treinadores NPC.
-- **Ginasio - NPC:** Um-para-um. Um ginásio pode somente um líder NPC.
-- **Ginasio - Treinador:** Um-para-um. Um treinador pode enfrentar vários ginásios.
-- **Ginasio - Loot:** Um-para-muitos. Um ginásio pode ter vários pacotes de loot.
-- **PokeMart - Itens Chave:** Um-para-muitos. Uma loja pode ter muitos itens chave.
-- **PokeMart - Frutas:** Um-para-muitos. Uma loja pode ter muitas Frutas.
-- **PokeMart - Itens Comuns:** Um-para-muitos. Uma loja pode ter muitos itens comuns.
-- **PokeMart - Pokebolas:** Um-para-muitos. Uma loja pode ter muitas pokebolas.
-- **PokeMart - TMs:** Um-para-muitos. Uma loja pode ter muitos TMs.
-- **Habilidade - Efeito:** Um-para-um. Uma habilidade pode causar apenas um efeito no máximo.
-- **Pokemon - Habilidades:** Um-para-muitos. Um Pokémon pode ter muitas habilidades.
-- **Pokemon - Pokemon:** Um-para-um. Um pokemon batalha apenas com um pokemon.
-- **Pokemon - Pokedex:** Um-para-muitos. Uma pokedex registra vários pokemons.
-- **Pokemon - Pokebola:** Um-para-muitos. Um tipo de pokebola registra vários pokemons.
-- **Treinador - Pokemon:** Um-para-muitos. Um treinador pode ter muitos Pokémon.
-- **Treinador - Pokedex:** Um-para-um. Um treinador pode ter somente uma Pokedex.
-- **Treinador - NPC:** Um-para-um. Um treinador pode ser somente um NPC.
-- **Treinador - Itens Chave:** Um-para-muitos. Um treinador pode ter muitos itens chave.
-- **Treinador - Itens Comuns:** Um-para-muitos. Um treinador pode ter muitos itens de posse.
-- **Treinador - Pokebolas:** Um-para-muitos. Um treinador pode ter muitas Pokébolas.
-- **Treinador - TMs:** Um-para-muitos. Um treinador pode ter muitos TMs.
-- **Treinador - Frutas:** Um-para-muitos. Um treinador pode ter muitas Frutas.
-- **Treinador - Treinador:** Um-para-um. Um treinador batalha apenas com um treinador.
 
 # DER:
 
