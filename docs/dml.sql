@@ -3,7 +3,7 @@ INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
   ( 'Quarto do Ash', 'Quarto onde o ash cresceu.', 'Mapa001'),
   ( 'Sala do Ash', 'Sala da casa de Ash.', 'Mapa002'),
   ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
-  ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004');
+  ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004'),
   ('Centro Pokémon de Pewter', 'Centro Pokémon localizado na cidade de Pewter.', 'Mapa005'),
   ('Ginásio de Brock', 'Ginásio da cidade de Pewter, liderado por Brock, especialista em Pokémon do tipo Pedra.', 'Mapa006'),
   ('Floresta de Viridian', 'Uma floresta densa localizada perto da cidade de Viridian.', 'Mapa007'),
@@ -98,8 +98,11 @@ INSERT INTO BATALHA (POKEMON1, POKEMON2) VALUES
 
 -- Inserir dados na tabela NPC
 INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
-  (1, 'F', 'Guia da Cidade Inicial'),
-  (1,'F', 'Enfermeira Joy');
+  (3, 'F', 'Guia da Cidade Inicial'),
+  (4, 'M', 'Professor Oak'),
+  (5,'F', 'Enfermeira Joy'),
+  (6, 'M', 'Brock'),
+  (11, 'F', 'Guia em Lavender');
 
 -- Inserir dados na tabela LOOT
 INSERT INTO LOOT (NOME_ITEM, QUANTIDADE, LOCALIDADE) VALUES
