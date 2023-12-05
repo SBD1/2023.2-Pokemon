@@ -101,7 +101,7 @@ INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
   (3, 'F', 'Guia da Cidade Inicial'),
   (4, 'M', 'Professor Oak'),
   (5,'F', 'Enfermeira Joy'),
-  (6, 'F', 'Lojista');
+  (6, 'F', 'Lojista'),
   (8, 'M', 'Brock'),
   (12, 'F', 'Guia em Lavender'),
   
