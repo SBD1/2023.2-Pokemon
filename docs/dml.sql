@@ -4,6 +4,15 @@ INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
   ( 'Sala do Ash', 'Sala da casa de Ash.', 'Mapa002'),
   ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
   ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004');
+  ('Centro Pokémon de Pewter', 'Centro Pokémon localizado na cidade de Pewter.', 'Mapa005'),
+  ('Ginásio de Brock', 'Ginásio da cidade de Pewter, liderado por Brock, especialista em Pokémon do tipo Pedra.', 'Mapa006'),
+  ('Floresta de Viridian', 'Uma floresta densa localizada perto da cidade de Viridian.', 'Mapa007'),
+  ('Lago Cerulean', 'Um lago sereno próximo à cidade de Cerulean, conhecido por seus Pokémon aquáticos.', 'Mapa008'),
+  ('Monte Moon', 'Uma montanha misteriosa e cavernosa onde muitos treinadores encontram Pokémon noturnos.', 'Mapa009'),
+  ('Cidade de Saffron', 'Uma cidade movimentada conhecida pelo seu Ginásio de Psíquicos e pelo Silph Co.', 'Mapa010'),
+  ('Torre Pokémon de Lavender', 'Uma torre assustadora em Lavender Town, lar de Pokémon Fantasma.', 'Mapa011'),
+  ('Ilha Cinnabar', 'Uma ilha vulcânica com um laboratório de Pokémon, conhecida por experimentos.', 'Mapa012'),
+  ('Planalto Indigo', 'Uma área elevada onde ocorrem batalhas Pokémon intensas, incluindo a Liga Pokémon.', 'Mapa013');
 
 -- Inserir dados na tabela CAMINHO
 INSERT INTO CAMINHO (SALA_ATUAL, PROXIMA_SALA) VALUES
