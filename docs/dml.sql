@@ -103,7 +103,7 @@ INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
   (5,'F', 'Enfermeira Joy'),
   (6, 'F', 'Lojista'),
   (8, 'M', 'Brock'),
-  (12, 'F', 'Guia em Lavender'),
+  (12, 'F', 'Guia em Lavender');
   
 
 -- Inserir dados na tabela LOOT
