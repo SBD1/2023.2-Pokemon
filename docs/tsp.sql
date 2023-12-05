@@ -114,6 +114,29 @@ UPDATE
 				ON POKENPC
 
 			FOR EACH ROW EXECUTE PROCEDURE CHECA_TIPO_POKEMON();
+-- TSP POKEMON
+
+CREATE OR REPLACE
+FUNCTION nomeia_pokemon() RETURNS TRIGGER AS $nomeia_pokemon$
+declare
+    current_name varchar(20);
+begin
+	if new.nome_pokemon_ins is null then
+        select nome_pokemon into current_name from pokedex where pokedex.NUMERO_POKEDEX = new.NUMERO_POKEDEX;
+        new.nome_pokemon_ins := current_name;
+    end if;
+    return new;
+END;
+$nomeia_pokemon$ LANGUAGE PLPGSQL
+DROP TRIGGER IF EXISTS aplica_nome_poke
+				ON pokemon;
+CREATE TRIGGER aplica_nome_poke
+BEFORE
+INSERT
+				OR
+UPDATE
+				ON pokemon
+			FOR EACH ROW EXECUTE PROCEDURE nomeia_pokemon();
 
 -- TSP BATALHA
 
