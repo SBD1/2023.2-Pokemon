@@ -12,7 +12,7 @@ INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
   ('Cidade de Saffron', 'Uma cidade movimentada conhecida pelo seu Ginásio de Psíquicos e pelo Silph Co.', 'Mapa010'),
   ('Torre Pokémon de Lavender', 'Uma torre assustadora em Lavender Town, lar de Pokémon Fantasma.', 'Mapa011'),
   ('Ilha Cinnabar', 'Uma ilha vulcânica com um laboratório de Pokémon, conhecida por experimentos.', 'Mapa012'),
-  ('Planalto Indigo', 'Uma área elevada onde ocorrem batalhas Pokémon intensas, incluindo a Liga Pokémon.', 'Mapa013');
+  ('Pokecenter de Pallet', 'Centro Pokémon em Pallet Town.', 'Mapa013');
 
 -- Inserir dados na tabela CAMINHO
 INSERT INTO CAMINHO (SALA_ATUAL, PROXIMA_SALA) VALUES
@@ -102,7 +102,8 @@ INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
   (4, 'M', 'Professor Oak'),
   (5,'F', 'Enfermeira Joy'),
   (6, 'M', 'Brock'),
-  (11, 'F', 'Guia em Lavender');
+  (11, 'F', 'Guia em Lavender'),
+  (13, 'F', 'Lojista');
 
 -- Inserir dados na tabela LOOT
 INSERT INTO LOOT (NOME_ITEM, QUANTIDADE, LOCALIDADE) VALUES
