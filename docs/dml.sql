@@ -1,7 +1,7 @@
 -- Inserir dados na tabela LOCALIDADE
 INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
-  ( 'Quarto do Ash', 'Quarto onde o ash cresceu.', 'Mapa001'),
-  ( 'Sala do Ash', 'Sala da casa de Ash.', 'Mapa002'),
+  ( 'Quarto do Treinador', 'Quarto onde o treinador cresceu.', 'Mapa001'),
+  ( 'Sala do Treinador', 'Sala da casa do treinador.', 'Mapa002'),
   ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
   ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004'),
   ('Centro Pokémon de Pewter', 'Centro Pokémon localizado na cidade de Pewter.', 'Mapa005'),
