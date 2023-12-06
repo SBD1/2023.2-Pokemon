@@ -1,5 +1,5 @@
 -- Inserir dados na tabela LOCALIDADE
-INSERT INTO LOCALIDADE ( NOME, INFO, MAPA) VALUES
+INSERT INTO LOCALIDADE (NOME, INFO, MAPA) VALUES
   ( 'Quarto do Treinador', 'Quarto onde o treinador cresceu.', 'Mapa001'),
   ( 'Sala do Treinador', 'Sala da casa do treinador.', 'Mapa002'),
   ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
@@ -84,9 +84,9 @@ INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID) VALUES
   (1, 1);
 
 -- Inserir dados na tabela POKEMON
-INSERT INTO POKEMON (NUMERO_POKEDEX, TREINADOR_ID, HABILIDADE1, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE, ACURACIA, SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO) VALUES
-  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 90, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1),
-  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 90, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1);
+INSERT INTO POKEMON (NUMERO_POKEDEX, TREINADOR_ID, HABILIDADE1, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE, SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO) VALUES
+  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1),
+  (1, 1, 1, 'Audaciosa', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 1);
 
 -- Inserir dados na tabela EQUIPE
 INSERT INTO EQUIPE (TREINADOR_ID, POKEMON) VALUES
@@ -137,4 +137,3 @@ INSERT INTO LOJISTA (POKEMART_ID, NPC_ID) VALUES
 -- Inserir dados na tabela CATALOGO_POKEMART
 INSERT INTO CATALOGO_POKEMART (POKEMART_ID, ITEM_NOME, QUANTIDADE, PRECO) VALUES
   (1, 'Poção', 5, 200);
-
