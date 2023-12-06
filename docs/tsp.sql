@@ -14,6 +14,7 @@ begin
 	return new;
 END;
 $checa_tipo_pokemon$ LANGUAGE PLPGSQL;
+
 CREATE OR REPLACE
 FUNCTION EVOLUI_POKEMON(ID_EVOLUIDO int, NUM_POKEDEX_EV int) RETURNS VOID AS $evolui_pokemon$
 declare
@@ -53,6 +54,7 @@ begin
 		 );
 END;
 $evolui_pokemon$ LANGUAGE PLPGSQL;
+
 CREATE OR REPLACE
 FUNCTION GANHA_BATALHA(VENCEDOR int) RETURNS VOID AS $ganha_batalha$
 declare
@@ -83,7 +85,7 @@ DROP TRIGGER IF EXISTS CHECADOR_TIPOS
 DROP TRIGGER IF EXISTS CHECADOR_TIPOS
 				ON GINASIO;
 DROP TRIGGER IF EXISTS CHECADOR_TIPOS
-				ON BATALHADOR;
+				ON POKENPC;
 CREATE TRIGGER CHECADOR_TIPOS
 
 BEFORE
@@ -114,29 +116,6 @@ UPDATE
 				ON POKENPC
 
 			FOR EACH ROW EXECUTE PROCEDURE CHECA_TIPO_POKEMON();
--- TSP POKEMON
-
-CREATE OR REPLACE
-FUNCTION nomeia_pokemon() RETURNS TRIGGER AS $nomeia_pokemon$
-declare
-    current_name varchar(20);
-begin
-	if new.nome_pokemon_ins is null then
-        select nome_pokemon into current_name from pokedex where pokedex.NUMERO_POKEDEX = new.NUMERO_POKEDEX;
-        new.nome_pokemon_ins := current_name;
-    end if;
-    return new;
-END;
-$nomeia_pokemon$ LANGUAGE PLPGSQL
-DROP TRIGGER IF EXISTS aplica_nome_poke
-				ON pokemon;
-CREATE TRIGGER aplica_nome_poke
-BEFORE
-INSERT
-				OR
-UPDATE
-				ON pokemon
-			FOR EACH ROW EXECUTE PROCEDURE nomeia_pokemon();
 
 -- TSP BATALHA
 
@@ -202,7 +181,7 @@ ON BATALHA
 -- TSP Habilidade
 
 CREATE OR REPLACE
-FUNCTION nova_habilidade() RETURNS TRIGGER AS $nova_habilidade$
+FUNCTION NOVA_HABILIDADE() RETURNS TRIGGER AS $nova_habilidade$
 BEGIN
 	new.tipo_dano:= upper(new.tipo_dano);
 	if new.tipo_dano not in ('F', 'D') THEN
@@ -213,18 +192,20 @@ BEGIN
 END;
 $nova_habilidade$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER cria_habilidade before
+DROP TRIGGER IF EXISTS CRIA_HABILIDADE
+				ON HABILIDADE;
+CREATE TRIGGER CRIA_HABILIDADE BEFORE
 INSERT
 OR
 UPDATE
-ON Habilidade
+ON HABILIDADE
 
-			FOR EACH ROW EXECUTE PROCEDURE nova_habilidade();
+			FOR EACH ROW EXECUTE PROCEDURE NOVA_HABILIDADE();
 
 -- TSP Tipo item
 
 CREATE OR REPLACE
-FUNCTION novo_tipo_item() RETURNS TRIGGER AS $novo_tipo_item$
+FUNCTION NOVO_TIPO_ITEM() RETURNS TRIGGER AS $novo_tipo_item$
 BEGIN
 	new.tipo_item:= upper(new.tipo_item);
 	if new.tipo_item not in ('C','K','F','T','P') THEN
@@ -235,13 +216,15 @@ BEGIN
 END;
 $novo_tipo_item$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER cria_tipo_item before
+DROP TRIGGER IF EXISTS CRIA_TIPO_ITEM
+				ON TIPO_ITEM;
+CREATE TRIGGER CRIA_TIPO_ITEM BEFORE
 INSERT
 OR
 UPDATE
-ON Tipo_item
+ON TIPO_ITEM
 
-			FOR EACH ROW EXECUTE PROCEDURE novo_tipo_item();
+			FOR EACH ROW EXECUTE PROCEDURE NOVO_TIPO_ITEM();
 
 -- SP ataca
 
@@ -321,13 +304,108 @@ REVOKE INSERT, UPDATE, DELETE ON TM FROM PUBLIC;
 
 -- SP Itens
 
-CREATE OR REPLACE FUNCTION NOVO_ITEM_COMUM(ITEM_NOME VARCHAR(60),  EFEITO VARCHAR(150)) RETURNS VOID AS $novo_item_comum$
+CREATE OR REPLACE FUNCTION NOVO_ITEM_COMUM(ITEM_NOME VARCHAR(60),  NEW_EFEITO VARCHAR(150)) RETURNS VOID AS $novo_item_comum$
 BEGIN
     IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
         RAISE EXCEPTION 'Item já registrado';
         RETURN;
     end if;
     INSERT into tipo_item (nome_item,tipo_item) VALUES (item_nome, 'C');
-	INSERT into item_comum (nome_item,efeito) VALUES (item_nome, efeito);
+	INSERT into item_comum (nome_item,efeito) VALUES (item_nome, NEW_EFEITO);
 END;
 $novo_item_comum$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION NOVO_ITEM_CHAVE(ITEM_NOME VARCHAR(60),  UTILIDADE_CHAVE VARCHAR(150)) RETURNS VOID AS $novo_item_chave$
+BEGIN
+    IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
+        RAISE EXCEPTION 'Item já registrado';
+        RETURN;
+    end if;
+    INSERT into tipo_item (nome_item,tipo_item) VALUES (item_nome, 'K');
+	INSERT into item_chave (nome_item,utilidade) VALUES (item_nome, utilidade_chave);
+END;
+$novo_item_chave$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION NOVA_POKEBOLA(ITEM_NOME VARCHAR(60), NEW_FORCA SMALLINT) RETURNS VOID AS $nova_pokebola$
+BEGIN
+    IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
+        RAISE EXCEPTION 'Item já registrado';
+        RETURN;
+    END IF;
+	IF NEW_FORCA<0 OR NEW_FORCA>100 THEN
+		RAISE EXCEPTION 'A força da pokebola deve estar entre 0 e 100';
+		RETURN;
+	END IF;
+    INSERT INTO TIPO_ITEM (NOME_ITEM,TIPO_ITEM) VALUES (ITEM_NOME, 'P');
+	INSERT INTO POKEBOLA (NOME_ITEM,FORCA) VALUES (ITEM_NOME, NEW_FORCA);
+END;
+$nova_pokebola$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION NOVA_FRUTA(ITEM_NOME VARCHAR(60),  NEW_EFEITO VARCHAR(150)) RETURNS VOID AS $nova_fruta$
+BEGIN
+    IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
+        RAISE EXCEPTION 'Item já registrado';
+        RETURN;
+    end if;
+    INSERT into tipo_item (nome_item,tipo_item) VALUES (item_nome, 'F');
+	INSERT into fruta (nome_item,efeito) VALUES (item_nome, NEW_EFEITO);
+END;
+$nova_fruta$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION NOVO_TM(ITEM_NOME VARCHAR(60),  TM_HABILIDADE VARCHAR(20)) RETURNS VOID AS $novo_tm$
+DECLARE
+	habilidade_new INT;
+BEGIN
+    IF (SELECT nome_item FROM tipo_item WHERE tipo_item.nome_item = item_nome) IS NOT NULL THEN
+        RAISE EXCEPTION 'Item já registrado';
+        RETURN;
+    end if;
+	if (SELECT habilidade_id from habilidade WHERE nome_habilidade = tm_habilidade) IS NULL THEN
+		RAISE EXCEPTION 'Habilidade não registrada';
+        RETURN;
+	end if;
+	SELECT habilidade_id INTO habilidade_new from habilidade WHERE nome_habilidade = tm_habilidade;
+    INSERT into tipo_item (nome_item,tipo_item) VALUES (item_nome, 'T');
+	INSERT into tm (nome_item,habilidade_id) VALUES (item_nome, habilidade_new);
+END;
+$novo_tm$ LANGUAGE PLPGSQL;
+
+-- SP Caminho
+
+CREATE OR REPLACE FUNCTION NOVO_CAMINHO(ATUAL VARCHAR(50),  PROXIMO VARCHAR(50)) RETURNS VOID AS $NOVO_CAMINHO$
+DECLARE
+	id_atual INT;
+	id_proximo INT;
+BEGIN
+    IF (SELECT nome FROM localidade WHERE localidade.nome = atual) IS NULL THEN
+        RAISE EXCEPTION 'Localidade atual não encontrada';
+        RETURN;
+    elsif (SELECT nome FROM localidade WHERE localidade.nome = proximo) IS NULL THEN
+		RAISE EXCEPTION 'Próxima localidade não encontrada';
+        RETURN;
+	end if;
+	SELECT localizacao INTO id_atual from localidade WHERE localidade.nome = atual;
+	SELECT localizacao INTO id_proximo from localidade WHERE localidade.nome = proximo;
+    INSERT into caminho (sala_atual,proxima_sala) VALUES (id_atual, id_proximo);
+END;
+$NOVO_CAMINHO$ LANGUAGE PLPGSQL;
+
+-- SP NPCs
+
+CREATE OR REPLACE FUNCTION NOVO_POKENPC(ATUAL VARCHAR(50),  PROXIMO VARCHAR(50)) RETURNS VOID AS $NOVO_CAMINHO$
+DECLARE
+	id_atual INT;
+	id_proximo INT;
+BEGIN
+    IF (SELECT nome FROM localidade WHERE localidade.nome = atual) IS NULL THEN
+        RAISE EXCEPTION 'Localidade atual não encontrada';
+        RETURN;
+    elsif (SELECT nome FROM localidade WHERE localidade.nome = proximo) IS NULL THEN
+		RAISE EXCEPTION 'Próxima localidade não encontrada';
+        RETURN;
+	end if;
+	SELECT localizacao INTO id_atual from localidade WHERE localidade.nome = atual;
+	SELECT localizacao INTO id_proximo from localidade WHERE localidade.nome = proximo;
+    INSERT into caminho (sala_atual,proxima_sala) VALUES (id_atual, id_proximo);
+END;
+$NOVO_CAMINHO$ LANGUAGE PLPGSQL;
