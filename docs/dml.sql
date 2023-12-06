@@ -2,17 +2,17 @@
 INSERT INTO LOCALIDADE (NOME, INFO, MAPA) VALUES
   ( 'Quarto do Treinador', 'Quarto onde o treinador cresceu.', 'Mapa001'),
   ( 'Sala do Treinador', 'Sala da casa do treinador.', 'Mapa002'),
-  ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde Ash inicia sua jornada.', 'Mapa003'),
-  ( 'Laboratório do professor Oak', 'Laboratório onde Ash recebe seu primeiro pokemon', 'Mapa004'),
-  ('Centro Pokémon de Pewter', 'Centro Pokémon localizado na cidade de Pewter.', 'Mapa005'),
-  ('PokeMart de Pewter localizado na cidade de Pewter.', 'Pokemart.', 'Mapa006'),
-  ('Floresta de Viridian', 'Uma floresta densa localizada perto da cidade de Viridian.', 'Mapa007'),
+  ( 'Leste de Pallet', 'Canto leste da cidade de pallet onde o Treinador inicia sua jornada.', 'Mapa003'),
+  ( 'Laboratório do professor Oak', 'Laboratório onde o treinador recebe seu primeiro pokemon', 'Mapa004'),
+  ('Floresta de Viridian', 'Uma floresta densa localizada perto da cidade de Viridian.', 'Mapa005'),
+  ('PokeCenter', 'Centro Pokémon localizado na cidade de Pewter.', 'Mapa006'),
+  ('PokeMart', 'Pokemart localizado na cidade de Pewter.', 'Mapa007'),
   ('Ginásio de Brock', 'Ginásio da cidade de Pewter, liderado por Brock, especialista em Pokémon do tipo Pedra.', 'Mapa008'),
-  ('Lago Cerulean', 'Um lago sereno próximo à cidade de Cerulean, conhecido por seus Pokémon aquáticos.', 'Mapa009'),
+  ('Rota 4', 'Uma área aberta cheia de árvores e pokémon.', 'Mapa009'),
   ('Monte Moon', 'Uma montanha misteriosa e cavernosa onde muitos treinadores encontram Pokémon noturnos.', 'Mapa010'),
-  ('Cidade de Saffron', 'Uma cidade movimentada conhecida pelo seu Ginásio de Psíquicos e pelo Silph Co.', 'Mapa011'),
-  ('Torre Pokémon de Lavender', 'Uma torre assustadora em Lavender Town, lar de Pokémon Fantasma.', 'Mapa012'),
-  ('Ilha Cinnabar', 'Uma ilha vulcânica com um laboratório de Pokémon, conhecida por experimentos.', 'Mapa013');
+  ('PokeCenter', 'Centro Pokémon localizado na cidade de Cerulean', 'Mapa011'),
+  ('PokeMart', 'Pokemart localizado na cidade de Cerulean.', 'Mapa012'),
+  ('Ginásio de Misty', 'Ginásio da cidade de Cerulean, liderada por Misty, especialista em Pokémon do tipo Água.', 'Mapa013');
 
 -- Inserir dados na tabela CAMINHO
 INSERT INTO CAMINHO (SALA_ATUAL, PROXIMA_SALA) VALUES
@@ -98,12 +98,18 @@ INSERT INTO BATALHA (POKEMON1, POKEMON2) VALUES
 
 -- Inserir dados na tabela NPC
 INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
+  (2, 'F', 'Mãe'),
   (3, 'F', 'Guia da Cidade Inicial'),
   (4, 'M', 'Professor Oak'),
-  (5,'F', 'Enfermeira Joy'),
-  (6, 'F', 'Lojista'),
+  (5,'M', 'Treinador de Campo'),
+  (6, 'F', 'Enfermeira'),
+  (7, 'M', 'Lojista'),
   (8, 'M', 'Brock'),
-  (12, 'F', 'Guia em Lavender');
+  (9, 'M', 'Treinador da Rota 4'),
+  (10, 'M', 'Climber'),
+  (11, 'F', 'Enfermeira'),
+  (12, 'M', 'Lojista'),
+  (13, 'F', 'Misty');
   
 
 -- Inserir dados na tabela LOOT
