@@ -54,9 +54,8 @@ def verificar_local_atual(conn, id_treinador):
 
         if local_atual:
             os.system('cls')
-            print("Local atual:")
             for local in local_atual:
-                print(f"Nome: {local[0]}, Descrição: {local[1]}")
+                print(f"Local atual: {local[0]}\nDescrição do local: {local[1]}")
         else:
             os.system('cls')
             print("Erro: Localidade não encontrada para o treinador.")
@@ -83,7 +82,7 @@ def verificar_se_ha_npc_na_sala(conn, id_treinador):
                 print(f"ID: {npc[0]}, Função: {npc[1]}")
         else:
             os.system('cls')
-            print("Não há NPCs nesta sala.")
+            print("Não há NPCs neste local.")
     else:
         os.system('cls')
         print("Erro: Treinador não encontrado.")
@@ -117,7 +116,7 @@ def comprar_item(conn, id_treinador):
             item_escolhido = input("\nDigite o nome do item que deseja comprar: ")
 
             # Verificar se o item escolhido está no catálogo
-            item_no_catalogo = next((item for item in catalogo if item[0] == item_escolhido), None)
+            item_no_catalogo = next((item for item in catalogo if item[0] == item_escolhido), None) 
 
             if item_no_catalogo:
                 nome_item, quantidade_disponivel, preco_item = item_no_catalogo
@@ -296,13 +295,13 @@ def escolher_pokemon(conn, id_treinador):
 
                 if pokemons:
                     print("Professor: Bem-vindo! Venha escolher o seu primeiro pokémon.\n")
-                    print("Pokémons Iniciais disponíveis:")
+                    print("Pokémons Iniciais disponíveis:\n")
                     for pokemon in pokemons:
-                        print(f"ID: {pokemon[0]}, Número Pokédex: {pokemon[1]}, Nome: {pokemon[2]}")
+                        print(f"Nome: {pokemon[2]}")
 
                     # Solicita ao treinador que escolha um Pokémon Inicial
                     while True:
-                        escolha_pokemon = input("Digite o nome do Pokémon Inicial que deseja (Bulbasaur, Charmander, Squirtle) ou 0 para sair: ")
+                        escolha_pokemon = input("\nDigite o nome do Pokémon Inicial que deseja (Bulbasaur, Charmander, Squirtle) ou 0 para sair: ")
 
                         if escolha_pokemon == '0':
                             os.system('cls')
@@ -489,21 +488,26 @@ def inserir_pokemon_base(conn):
 
     # Dados dos Pokémon iniciais
     dados_pokemon = [
-        (1, 'Bulbasaur', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
-        (4, 'Charmander', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
-        (7, 'Squirtle', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4)
+        (1, 'Bulbasaur', 1, None, None, None, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
+        (4, 'Charmander', 1, None, None, None, 'Docil', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
+        (7, 'Squirtle', 1, None, None, None, 'Bravo', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
+        (10, 'Caterpie', 1, None, None, None, 'Alegre', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (13, 'Weedle', 1, None, None, None, 'Calmo', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (16, 'Pidgey', 1, None, None, None, 'Cauteloso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (19, 'Rattata', 1, None, None, None, 'Divertido', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
     ]
 
     for pokemon in dados_pokemon:
         cursor.execute("""
             INSERT INTO POKEMON (
-                NUMERO_POKEDEX, NOME_POKEMON_INS, HABILIDADE1, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE,
+                NUMERO_POKEDEX, NOME_POKEMON_INS, HABILIDADE1, HABILIDADE2, HABILIDADE3, HABILIDADE4, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE,
                 SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO
             ) VALUES %s;
         """, (pokemon,))
 
     conn.commit()
     cursor.close()
+
 
 def ver_pokedex(conn, id_treinador):
     cursor = conn.cursor()
@@ -548,6 +552,26 @@ def ver_pokedex(conn, id_treinador):
 
     cursor.close()
 
+def ver_pokemon(conn, id_treinador):
+    cursor = conn.cursor()
+
+    # Obtém os Pokémon do treinador
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, sexo, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+    pokemons_treinador = cursor.fetchall()
+
+    if pokemons_treinador:
+        os.system('cls')
+        print("Pokémons do Treinador:")
+        for pokemon in pokemons_treinador:
+            print(f"ID: {pokemon[0]}, Nome: {pokemon[1]}, Nível: {pokemon[2]}, HP: {pokemon[3]}, Sexo: {pokemon[4]}, Status: {pokemon[5]}")
+    else:
+        os.system('cls')
+        print("O treinador não possui nenhum Pokémon.")
+
+    input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
 
 def aventura_pokemon():
     conn = connect_database()
@@ -559,18 +583,18 @@ def aventura_pokemon():
         cursor.execute("TRUNCATE treinador RESTART IDENTITY CASCADE;")
 
         conn.commit()
-        print("Olá! Bem-vindo ao Mundo Pokemon!\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
+        print("\nOlá! Bem-vindo ao Mundo Pokemon!\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
 
         genero = input("Primeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
 
-        nome_treinador = input(f"Qual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
+        nome_treinador = input(f"\nQual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
 
         # Bloco adicional para criar um treinador
         if genero in ['M', 'F'] and nome_treinador:
             novo_treinador(conn, genero, nome_treinador)
             inserir_pokemon_base(conn)
             os.system('cls')
-            print(f"{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
+            print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
             input("\nPressione Enter para continuar...")
 
         id_treinador = 1  
@@ -581,9 +605,9 @@ def aventura_pokemon():
             print("1. Interagir")
             print("2. Andar")
             print("3. Voltar")
-            print("4. Ver Pokedex")
-            print("5. Ver NPCs na sala")
-            print("6. Ver informações do treinador")
+            print("4. Ver NPCs no local")
+            print("5. Ver informações do treinador")
+            print("6. Ver Pokedex")
             print("7. Ver Pokemon")
             print("8. Ver Mochila")
             print("9. Sair")
@@ -601,14 +625,26 @@ def aventura_pokemon():
                 voltar(conn, id_treinador)
                 
             elif escolha == "4":
-                ver_pokedex(conn, id_treinador)
-            elif escolha == "5":
                 verificar_se_ha_npc_na_sala(conn, id_treinador)
                 
-            elif escolha == "6":
+            elif escolha == "5":
                 mostrar_treinador(conn, id_treinador)
+
+            elif escolha == "6":
+                ver_pokedex(conn, id_treinador)
+                
+            elif escolha == "7":
+                ver_pokemon(conn, id_treinador)
+
             elif escolha == "8":
                 ver_mochila(conn, id_treinador)
+
+            elif escolha == "9":
+                print("\nObrigado por jogar!")
+                break
+            else:
+                print("Escolha inválida. Tente novamente.")
+
                 
 
     conn.close()
