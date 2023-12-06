@@ -20,11 +20,22 @@ def mostrar_treinador(conn, id_treinador):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM treinador WHERE treinador_id = %s", (id_treinador,))
     treinador = cursor.fetchone()
+
     if treinador:
         os.system('cls')
         print("Informações do Treinador:")
         print(f"Nome: {treinador[1]}")
-        
+        print(f"Sexo: {treinador[2]}")
+        # Obter o nome da localidade por extenso
+        cursor.execute("SELECT nome FROM localidade WHERE localizacao = %s", (treinador[3],))
+        nome_localidade = cursor.fetchone()[0] if cursor.rowcount > 0 else "Desconhecida"
+        print(f"Localização: {nome_localidade}")
+
+        print(f"Quantidade de insígnias: {treinador[4]}")
+        print(f"Pokemons capturados: {treinador[5]}")
+        print(f"Dinheiro: {treinador[6]}")
+
+        input("\nPressione Enter para continuar...")
     else:
         os.system('cls')
         print("Treinador não encontrado!")
@@ -67,7 +78,7 @@ def verificar_se_ha_npc_na_sala(conn, id_treinador):
 
         if npcs_na_mesma_sala:
             os.system('cls')
-            print("\nNPCs na sala:")
+            print("NPCs na sala:")
             for npc in npcs_na_mesma_sala:
                 print(f"ID: {npc[0]}, Função: {npc[1]}")
         else:
@@ -76,6 +87,8 @@ def verificar_se_ha_npc_na_sala(conn, id_treinador):
     else:
         os.system('cls')
         print("Erro: Treinador não encontrado.")
+    
+    input("\nPressione Enter para continuar...")
 
 def comprar_item(conn, id_treinador):
     cursor = conn.cursor()
@@ -93,7 +106,7 @@ def comprar_item(conn, id_treinador):
 
         if esta_no_pokemart:
             os.system('cls')
-            print("Catálogo de itens disponíveis:")
+            print("Catálogo de itens disponíveis:\n")
             cursor.execute("SELECT item_nome, quantidade, preco FROM catalogo_pokemart")
             catalogo = cursor.fetchall()
 
@@ -101,7 +114,7 @@ def comprar_item(conn, id_treinador):
                 print(f"Item: {item[0]}, Quantidade: {item[1]}, Preço: {item[2]}")
 
             # Solicitar ao treinador que escolha um item para comprar
-            item_escolhido = input("Digite o nome do item que deseja comprar: ")
+            item_escolhido = input("\nDigite o nome do item que deseja comprar: ")
 
             # Verificar se o item escolhido está no catálogo
             item_no_catalogo = next((item for item in catalogo if item[0] == item_escolhido), None)
@@ -142,18 +155,23 @@ def comprar_item(conn, id_treinador):
                     conn.commit()
                     os.system('cls')
                     print(f"Compra realizada com sucesso! Você comprou {quantidade_desejada} {nome_item}(s).")
+                    input("\nPressione Enter para continuar...")
                 else:
                     os.system('cls')
                     print("Dinheiro insuficiente para comprar o item.")
+                    input("\nPressione Enter para continuar...")
             else:
                 os.system('cls')
                 print("Item não encontrado no catálogo.")
+                input("\nPressione Enter para continuar...")
         else:
             os.system('cls')
             print("Não está no Pokemart.")
+            input("\nPressione Enter para continuar...")
     else:
         os.system('cls')
         print("Erro: Treinador não encontrado.")
+        input("\nPressione Enter para continuar...")
 
     cursor.close()
 
@@ -272,82 +290,102 @@ def escolher_pokemon(conn, id_treinador):
             npc_id, info = npc
 
             if info == 'Professor Oak':
-                # Obtém os Pokemons disponíveis
-                cursor.execute("SELECT pokemon_id, numero_pokedex, nome FROM pokemon WHERE numero_pokedex IN (1, 4, 7)")
+                # Obtém os Pokémon Iniciais disponíveis
+                cursor.execute("SELECT pokemon_id, numero_pokedex, nome_pokemon_ins FROM pokemon WHERE numero_pokedex IN (1, 4, 7)")
                 pokemons = cursor.fetchall()
 
                 if pokemons:
-                    os.system('cls')
-                    print("Pokemons disponíveis:")
+                    print("Professor: Bem-vindo! Venha escolher o seu primeiro pokémon.\n")
+                    print("Pokémons Iniciais disponíveis:")
                     for pokemon in pokemons:
                         print(f"ID: {pokemon[0]}, Número Pokédex: {pokemon[1]}, Nome: {pokemon[2]}")
 
-                    # Solicita ao treinador que escolha um Pokemon
+                    # Solicita ao treinador que escolha um Pokémon Inicial
                     while True:
-                        escolha_pokemon = input("Digite o ID do Pokemon que deseja (1 para Bulbasaur, 4 para Charmander, 7 para Squirtle): ")
+                        escolha_pokemon = input("Digite o nome do Pokémon Inicial que deseja (Bulbasaur, Charmander, Squirtle) ou 0 para sair: ")
 
-                        try:
-                            pokemon_escolhido = int(escolha_pokemon)
-                            if pokemon_escolhido in {1, 4, 7}:
-                                break
+                        if escolha_pokemon == '0':
+                            os.system('cls')
+                            print("Escolha de Pokémon Inicial cancelada.")
+                            input("\nPressione Enter para continuar...")
+                            break
+
+                        # Verifica se o Pokémon escolhido está disponível
+                        pokemon_disponivel = next((pokemon for pokemon in pokemons if pokemon[2].lower() == escolha_pokemon.lower()), None)
+
+                        if pokemon_disponivel:
+                            pokemon_id, numero_pokedex, nome_pokemon = pokemon_disponivel
+
+                            # Verifica se o treinador já tem um Pokémon
+                            cursor.execute("SELECT pokemon_id FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+                            pokemon_treinador = cursor.fetchone()
+
+                            if pokemon_treinador:
+                                os.system('cls')
+                                print("O treinador já tem um Pokémon.")
+                                input("\nPressione Enter para continuar...")
                             else:
-                                print("Escolha inválida. Tente novamente.")
-                        except ValueError:
-                            print("Por favor, digite um número válido.")
+                                # Adiciona o Pokémon ao treinador
+                                cursor.execute("UPDATE pokemon SET treinador_id = %s WHERE pokemon_id = %s", (id_treinador, pokemon_id))
 
-                    # Verifica se o Pokemon escolhido está disponível
-                    pokemon_disponivel = next((pokemon for pokemon in pokemons if pokemon[0] == pokemon_escolhido), None)
+                                # Atualiza a quantidade de Pokémon capturados
+                                cursor.execute("UPDATE treinador SET quant_pk_capturados = quant_pk_capturados + 1 WHERE treinador_id = %s",
+                                               (id_treinador,))
+                                
+                                os.system('cls')
+                                print(f"{nome_pokemon} foi adicionado à sua equipe como seu Pokémon Inicial!")
+                                input("\nPressione Enter para continuar...")
+                                
+                                # Diálogo após a escolha do Pokémon
+                                os.system('cls')
+                                print("\nProfessor: Agora pegue isto, é uma Pokedex. Você irá utilizá-la para registrar todos os pokémons existentes no Mundo.")
+                                print("\nVocê obteve Pokédex!")
 
-                    if pokemon_disponivel:
-                        pokemon_id, numero_pokedex, nome_pokemon = pokemon_disponivel
+                                # Registra o Pokémon na Pokédex
+                                cursor.execute("INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID) VALUES (%s, %s)",
+                                               (numero_pokedex, id_treinador))
 
-                        # Verifica se o treinador já tem um Pokemon
-                        cursor.execute("SELECT pokemon_id FROM pokemon WHERE treinador_id = %s", (id_treinador,))
-                        pokemon_treinador = cursor.fetchone()
+                                conn.commit()
+                                print(f"\n{nome_pokemon} foi registrado na Pokédex!")
+                                input("\nPressione Enter para continuar...")
 
-                        if pokemon_treinador:
-                            os.system('cls')
-                            print("O treinador já tem um Pokemon.")
+                                break
                         else:
-                            # Adiciona o Pokemon ao treinador
-                            cursor.execute("UPDATE pokemon SET treinador_id = %s WHERE pokemon_id = %s", (id_treinador, pokemon_id))
-
-                            # Atualiza a quantidade de Pokemons capturados
-                            cursor.execute("UPDATE treinador SET quant_pk_capturados = quant_pk_capturados + 1 WHERE treinador_id = %s",
-                                           (id_treinador,))
-
-                            conn.commit()
-                            os.system('cls')
-                            print(f"{nome_pokemon} foi adicionado à sua equipe!")
+                            print("Escolha inválida. Tente novamente.")
+                            input("\nPressione Enter para continuar...")
 
                 else:
                     os.system('cls')
-                    print("Não há Pokemons disponíveis.")
+                    print("Não há Pokémons Iniciais disponíveis.")
+                    input("\nPressione Enter para continuar...")
             else:
                 os.system('cls')
-                print("Você não está em um local adequado para escolher um Pokemon.")
+                print("Você não está em um local adequado para escolher um Pokémon Inicial.")
+                input("\nPressione Enter para continuar...")
         else:
             os.system('cls')
             print("Não há NPCs nesta localização.")
+            input("\nPressione Enter para continuar...")
     else:
         os.system('cls')
         print("Treinador não encontrado.")
+        input("\nPressione Enter para continuar...")
 
     cursor.close()
 
-
-
 def dialogo_quarto_treinador():
-    print("Quarto do treinador:")
+    os.system('cls')
+    print("Quarto do treinador:\n")
     print("8:00 AM - Seu quarto.")
     print("(Pensamento): Que belo dia! Acho que vou descer as escadas e conversar com minha mãe!")
+    input("\nPressione Enter para continuar...")
 
 def dialogoMae():
-    print("Mãe: Bom dia, Filho! Chegou o grande dia, vá até o laboratório do Professor Carvalho para ganhar o seu primeiro Pokémon. Ah, e não se esqueça de tomar seu café!")
+    print("Mãe: Bom dia, Filho! Chegou o grande dia, vá até o laboratório do Professor Carvalho para ganhar o seu primeiro Pokémon. Ah, e não se esqueça de tomar seu café!\n")
+    input("\nPressione Enter para continuar...")
 
 def dialogo_leste_palet(conn, id_treinador):
-    print("Leste de Palet:")
-    print("Guia da cidade inicial: Olá, bem-vindo à cidade de Palet, aqui é onde sua jornada começa. Você pode ir para o norte para chegar ao laboratório do Professor Carvalho ou ir para o sul para voltar para sua casa.")
+    print("Guia da cidade inicial: Olá, bem-vindo à cidade de Pallet, aqui é onde sua jornada começa. Você pode ir seguir para o norte para chegar ao laboratório do Professor Carvalho ou voltar para o sul para ir para sua casa.\nTome aqui esse presente para te ajudar na sua jornada.\n\n")
 
     cursor = conn.cursor()
 
@@ -365,6 +403,7 @@ def dialogo_leste_palet(conn, id_treinador):
     conn.commit()
 
     print("Você recebeu 5 Pokébolas!")
+    input("\nPressione Enter para continuar...")
     cursor.close()
 
 
@@ -396,13 +435,16 @@ def interagir(conn, id_treinador):
                     print("Você está no Centro Pokemon.")
                     #curar_pokemon(conn, id_treinador)
                 elif info == 'Professor Oak':
-                   print("Hora de você escolher seu primeiro Pokemon!")
-                   # escolher_pokemon(conn, id_treinador)
+                   os.system('cls')
+                   print("Laboratório do Professor Carvalho:\n")
+                   escolher_pokemon(conn, id_treinador)
                 elif info == 'Mãe':
-                    print("Sala de Casa:")
+                    os.system('cls')
+                    print("Sala de Casa:\n")
                     dialogoMae()
                 elif info == 'Guia da Cidade Inicial':
-                    print("Leste de Palet:")
+                    os.system('cls')
+                    print("Leste de Palet:\n")
                     dialogo_leste_palet(conn, id_treinador)
                 elif info == 'Treinador de Campo':
                     print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
@@ -425,10 +467,98 @@ def interagir(conn, id_treinador):
 
     cursor.close()
 
+def ver_mochila(conn, id_treinador):
+    cursor = conn.cursor()
+
+    # Seleciona todos os itens na mochila do treinador
+    cursor.execute("SELECT nome_item, quantidade FROM mochila WHERE dono = %s", (id_treinador,))
+    itens_mochila = cursor.fetchall()
+
+    os.system('cls')
+    print("Mochila do Treinador:")
+    if itens_mochila:
+        for item in itens_mochila:
+            print(f"{item[0]}: {item[1]}")
+    else:
+        print("A mochila está vazia.")
+
+    input("\nPressione Enter para continuar...")
+
+def inserir_pokemon_base(conn):
+    cursor = conn.cursor()
+
+    # Dados dos Pokémon iniciais
+    dados_pokemon = [
+        (1, 'Bulbasaur', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
+        (4, 'Charmander', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
+        (7, 'Squirtle', 1, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4)
+    ]
+
+    for pokemon in dados_pokemon:
+        cursor.execute("""
+            INSERT INTO POKEMON (
+                NUMERO_POKEDEX, NOME_POKEMON_INS, HABILIDADE1, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE,
+                SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO
+            ) VALUES %s;
+        """, (pokemon,))
+
+    conn.commit()
+    cursor.close()
+
+def ver_pokedex(conn, id_treinador):
+    cursor = conn.cursor()
+
+    # Obtém o número de Pokémon capturados pelo treinador
+    cursor.execute("SELECT quant_pk_capturados FROM treinador WHERE treinador_id = %s", (id_treinador,))
+    quantidade_capturados = cursor.fetchone()[0]
+
+    if quantidade_capturados > 0:
+        # Obtém os Pokémon registrados na Pokédex com informações detalhadas
+        cursor.execute("""
+            SELECT rp.numero_pokemon, p.nome_pokemon, p.tipo1, p.tipo2, p.nivel_evolucao,
+                   p.taxa_captura, p.som_emitido, p.regiao, p.info
+            FROM registro_pokedex rp
+            JOIN pokedex p ON rp.numero_pokemon = p.numero_pokedex
+            WHERE rp.treinador_id = %s
+        """, (id_treinador,))
+        
+        pokemons_registrados = cursor.fetchall()
+
+        if pokemons_registrados:
+            os.system('cls')
+            print("Pokédex do Treinador:")
+            for pokemon in pokemons_registrados:
+                print(f"#{pokemon[0]} - {pokemon[1]}")
+                print(f"Tipo(s): {pokemon[2]}{' / ' + pokemon[3] if pokemon[3] else ''}")
+                print(f"Nível de Evolução: {pokemon[4]}" if pokemon[4] else "")
+                print(f"Taxa de Captura: {pokemon[5]}")
+                print(f"Som Emitido: {pokemon[6]}")
+                print(f"Região: {pokemon[7]}")
+                print(f"Informações: {pokemon[8]}")
+                print("\n" + "-"*40 + "\n")  # Adicione uma linha separadora entre os Pokémon
+
+        else:
+            os.system('cls')
+            print("A Pokédex está vazia.")
+    else:
+        os.system('cls')
+        print("O treinador não possui a Pokédex e nenhum Pokémon capturado.")
+
+    input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
 
 def aventura_pokemon():
     conn = connect_database()
     if conn:
+        cursor = conn.cursor()
+    
+
+        # Em seguida, exclua todas as tuplas da tabela treinador
+        cursor.execute("TRUNCATE treinador RESTART IDENTITY CASCADE;")
+
+        conn.commit()
         print("Olá! Bem-vindo ao Mundo Pokemon!\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
 
         genero = input("Primeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
@@ -438,17 +568,20 @@ def aventura_pokemon():
         # Bloco adicional para criar um treinador
         if genero in ['M', 'F'] and nome_treinador:
             novo_treinador(conn, genero, nome_treinador)
+            inserir_pokemon_base(conn)
             os.system('cls')
             print(f"{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
+            input("\nPressione Enter para continuar...")
 
         id_treinador = 1  
 
         while True:
+            verificar_local_atual(conn, id_treinador)
             print("\nEscolha uma ação:")
             print("1. Interagir")
             print("2. Andar")
             print("3. Voltar")
-            print("4. Informações sobre o local atual")
+            print("4. Ver Pokedex")
             print("5. Ver NPCs na sala")
             print("6. Ver informações do treinador")
             print("7. Ver Pokemon")
@@ -468,13 +601,14 @@ def aventura_pokemon():
                 voltar(conn, id_treinador)
                 
             elif escolha == "4":
-                verificar_local_atual(conn, id_treinador)
-                
+                ver_pokedex(conn, id_treinador)
             elif escolha == "5":
                 verificar_se_ha_npc_na_sala(conn, id_treinador)
                 
             elif escolha == "6":
                 mostrar_treinador(conn, id_treinador)
+            elif escolha == "8":
+                ver_mochila(conn, id_treinador)
                 
 
     conn.close()
