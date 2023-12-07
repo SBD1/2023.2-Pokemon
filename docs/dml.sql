@@ -1,6 +1,7 @@
 TRUNCATE treinador RESTART identity cascade;
 TRUNCATE localidade RESTART identity cascade;
 TRUNCATE pokedex RESTART identity cascade;
+TRUNCATE catalogo_pokemart RESTART identity cascade;
 
 -- Inserir dados na tabela LOCALIDADE
 INSERT INTO LOCALIDADE (NOME, INFO, MAPA) VALUES
