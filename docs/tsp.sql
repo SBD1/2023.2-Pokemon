@@ -143,15 +143,15 @@ DECLARE
 BEGIN
 	select treinador_id into treinador from pokemon WHERE pokemon.pokemon_id = new.pokemon1;
 	select numero_pokedex into numero_dex from pokemon where pokemon.pokemon_id = NEW.pokemon1;
-	select count(*) into quant_descoberto from pokemons_descobertos WHERE treinador_id = treinador and numero_pokemon = numero_dex;
+	select count(*) into quant_descoberto from registro_pokedex WHERE treinador_id = treinador and numero_pokemon = numero_dex;
 	if quant_descoberto = 0 then
-		INSERT into pokemons_descobertos (treinador_id,numero_pokemon) values (treinador,numero_dex);
+		INSERT into registro_pokedex (treinador_id,numero_pokemon) values (treinador,numero_dex);
 	end if;
 
 	select numero_pokedex into numero_dex from pokemon where pokemon.pokemon_id = NEW.pokemon2;
-	select count(*) into quant_descoberto from pokemons_descobertos WHERE treinador_id = treinador and numero_pokemon = numero_dex;
+	select count(*) into quant_descoberto from registro_pokedex WHERE treinador_id = treinador and numero_pokemon = numero_dex;
 	if quant_descoberto = 0 then
-		INSERT into pokemons_descobertos (treinador_id,numero_pokemon) values (treinador,numero_dex);
+		INSERT into registro_pokedex (treinador_id,numero_pokemon) values (treinador,numero_dex);
 	end if;
 	RETURN NEW;
 END;
