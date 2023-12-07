@@ -389,15 +389,15 @@ def dialogo_leste_palet(conn, id_treinador):
     cursor = conn.cursor()
 
     # Verificar se a entrada já existe
-    cursor.execute("SELECT COUNT(*) FROM MOCHILA WHERE NOME_ITEM = 'Pokebola Comum' AND DONO = %s", (id_treinador,))
+    cursor.execute("SELECT COUNT(*) FROM MOCHILA WHERE NOME_ITEM = 'Pokeball' AND DONO = %s", (id_treinador,))
     quantidade_existente = cursor.fetchone()[0]
 
     if quantidade_existente == 0:
         # Se não existir, realizar a inserção
-        cursor.execute("INSERT INTO MOCHILA (NOME_ITEM, DONO, QUANTIDADE) VALUES ('Pokebola Comum', %s, 5)", (id_treinador,))
+        cursor.execute("INSERT INTO MOCHILA (NOME_ITEM, DONO, QUANTIDADE) VALUES ('Pokeball', %s, 5)", (id_treinador,))
     else:
         # Se existir, realizar a atualização
-        cursor.execute("UPDATE MOCHILA SET QUANTIDADE = QUANTIDADE + 5 WHERE NOME_ITEM = 'Pokebola Comum' AND DONO = %s", (id_treinador,))
+        cursor.execute("UPDATE MOCHILA SET QUANTIDADE = QUANTIDADE + 5 WHERE NOME_ITEM = 'Pokeball' AND DONO = %s", (id_treinador,))
 
     conn.commit()
 
@@ -405,66 +405,78 @@ def dialogo_leste_palet(conn, id_treinador):
     input("\nPressione Enter para continuar...")
     cursor.close()
 
-
-def interagir(conn, id_treinador):
+def usar_pokecenter(conn, id_treinador):
+    os.system('cls')
     cursor = conn.cursor()
 
     # Obtém a localização atual do treinador
     cursor.execute("SELECT localizacao FROM treinador WHERE treinador_id = %s", (id_treinador,))
     resultado_treinador = cursor.fetchone()
 
+    cursor.execute("SELECT nome FROM localidade WHERE localizacao = %s", (resultado_treinador[0],))
+    nome_localidade = cursor.fetchone()[0]
+
+    print(f"Você está no {nome_localidade}.\n")
+
     if resultado_treinador:
-        treinador_localizacao = resultado_treinador[0]
-
-        if treinador_localizacao == 1:
-            dialogo_quarto_treinador()
         
-        else:
-            # Obtém o NPC na mesma localização
-            cursor.execute("SELECT npc_id, info FROM npc WHERE localidade = %s", (treinador_localizacao,))
-            npc = cursor.fetchone()
+        # Obtém os Pokémon feridos do treinador (com HP menor que 100)
+        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND hp < 100", (id_treinador,))
+        pokemons_feridos = cursor.fetchall()
 
-            if npc:
-                npc_id, info = npc
+        if pokemons_feridos:
+            print("Pokémon(s) ferido(s) encontrados:")
+            for pokemon in pokemons_feridos:
+                print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
 
-                if info == 'Lojista':
-                    print("Você está no Pokemart.")
-                    comprar_item(conn, id_treinador)
-                elif info == 'Enfermeira':
-                    print("Você está no Centro Pokemon.")
-                    #curar_pokemon(conn, id_treinador)
-                elif info == 'Professor Oak':
-                   os.system('cls')
-                   print("Laboratório do Professor Carvalho:\n")
-                   escolher_pokemon(conn, id_treinador)
-                elif info == 'Mãe':
+            # Pergunta se deseja curar os Pokémon feridos
+            resposta = input("\nDeseja curar os Pokémon feridos? (S/N) (50$ por pokemon curado): ").strip().lower()
+
+            if resposta == 's':
+                # Obtém a quantidade de Pokémon feridos do treinador (com HP menor que 100)
+                cursor.execute("SELECT COUNT(*) FROM pokemon WHERE treinador_id = %s AND hp < 100", (id_treinador,))
+                quantidade_pokemon_feridos = cursor.fetchone()[0]
+
+                # Obtém o dinheiro do treinador
+                cursor.execute("SELECT dinheiro FROM treinador WHERE treinador_id = %s", (id_treinador,))
+                dinheiro_treinador = cursor.fetchone()[0]
+
+                # Calcula o custo total
+                custo_total = quantidade_pokemon_feridos * 50
+
+                if dinheiro_treinador >= custo_total:
+                    # Atualiza o HP de todos os Pokémon feridos do treinador
+                    cursor.execute("UPDATE pokemon SET hp = 100 WHERE treinador_id = %s AND hp < 100", (id_treinador,))
+
+                    # Atualiza o dinheiro do treinador
+                    novo_dinheiro = dinheiro_treinador - custo_total
+                    cursor.execute("UPDATE treinador SET dinheiro = %s WHERE treinador_id = %s", (novo_dinheiro, id_treinador))
+
+                    conn.commit()
                     os.system('cls')
-                    print("Sala de Casa:\n")
-                    dialogoMae()
-                elif info == 'Guia da Cidade Inicial':
-                    os.system('cls')
-                    print("Leste de Palet:\n")
-                    dialogo_leste_palet(conn, id_treinador)
-                elif info == 'Treinador de Campo':
-                    print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
-                    #batalha(conn, id_treinador, npc_id)
-                elif info == 'Brock':
-                    print('Brock: Olá, sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
-                    #batalha(conn, id_treinador, npc_id)
-                elif info == 'Treinador da Rota 4':
-                    print('Treinador da Rota 4: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
-                    #batalha(conn, id_treinador, npc_id)
-                elif info == 'Misty':
-                    print('Misty: Olá, sou Misty, a líder de ginásio de Cerulean, se você me vencer, eu te darei a insígnia da água!')
-                    #batalha(conn, id_treinador, npc_id)
+                    print("Os Pokémon feridos foram curados.")
+                    print(f"Valor total pago: {custo_total}$.")
+                    input("\nPressione Enter para continuar...")
                 else:
-                    print("Você está em uma localização desconhecida.")
+                    os.system('cls')
+                    print("Dinheiro insuficiente para curar os Pokémon feridos.")
+                    input("\nPressione Enter para continuar...")
             else:
-                print("Não há NPCs nesta localização.")
+                os.system('cls')
+                print("Os Pokémon feridos não foram curados.")
+                input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("O treinador não possui Pokémon feridos.")
+            input("\nPressione Enter para continuar...")
     else:
+        os.system('cls')
         print("Treinador não encontrado.")
+        input("\nPressione Enter para continuar...")
 
     cursor.close()
+
+
 
 def ver_mochila(conn, id_treinador):
     cursor = conn.cursor()
@@ -478,29 +490,185 @@ def ver_mochila(conn, id_treinador):
     if itens_mochila:
         for item in itens_mochila:
             print(f"{item[0]}: {item[1]}")
+        print("Deseja usar algum item? (S/N)")
+        resposta = input().strip().lower()
+        if resposta == 's':
+            usar_item(conn, id_treinador)
     else:
         print("A mochila está vazia.")
 
     input("\nPressione Enter para continuar...")
+
+def usar_item(conn, id_treinador):
+    cursor = conn.cursor()
+
+    # Seleciona todos os itens na mochila do treinador
+    cursor.execute("SELECT nome_item, quantidade FROM mochila WHERE dono = %s", (id_treinador,))
+    itens_mochila = cursor.fetchall()
+
+    os.system('cls')
+    print("Mochila do Treinador:")
+    if itens_mochila:
+        for item in itens_mochila:
+            print(f"{item[0]}: {item[1]}")
+        print("Digite o nome do item que deseja usar ou 0 para sair: ")
+        resposta = input().strip().lower()
+        if resposta == '0':
+            return
+        else:
+            # Verifica se o item escolhido está na mochila
+            item_na_mochila = next((item for item in itens_mochila if item[0].lower() == resposta.lower()), None)
+
+            if item_na_mochila:
+                nome_item, quantidade_item = item_na_mochila
+
+                if nome_item == 'Potion':
+                    usar_potion(conn, id_treinador, quantidade_item)
+                elif nome_item == 'Super Potion':
+                    usar_super_potion(conn, id_treinador, quantidade_item)
+                elif nome_item == 'Hyper Potion':
+                    usar_hyper_potion(conn, id_treinador, quantidade_item)
+                else:
+                    os.system('cls')
+                    print("Item não encontrado.")
+                    input("\nPressione Enter para continuar...")  
+                
+def usar_potion(conn, id_treinador, quantidade_item):
+    cursor = conn.cursor()
+
+    # Selecione apenas os pokemons que o Status não é 'Desmaiado'
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND (hp < 100 AND status != 'Desmaiado')", (id_treinador,))
+    pokemons_feridos = cursor.fetchall()
+
+    if pokemons_feridos:
+        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        for pokemon in pokemons_feridos:
+            print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
+        print("Digite o ID do Pokémon que deseja curar: ")
+        resposta = input().strip().lower()
+        pokemon_escolhido = next((pokemon for pokemon in pokemons_feridos if str(pokemon[0]) == resposta), None)
+        if pokemon_escolhido:
+            pokemon_id, nome_pokemon, hp = pokemon_escolhido
+
+            cura_hp = 20
+
+            novo_hp = min(100, hp + cura_hp)
+
+            cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'potion' AND dono = %s", (quantidade_item, id_treinador,))
+            conn.commit()
+            os.system('cls')
+            print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
+            input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("Pokémon não encontrado.")
+            input("\nPressione Enter para continuar...")
+    else:
+        os.system('cls')
+        print("Não há Pokémon feridos ou desmaiados para usar o item.")
+        input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
+def usar_super_potion(conn, id_treinador, quantidade_item):
+    cursor = conn.cursor()
+
+    # Selecione apenas os pokemons que o Status não é 'Desmaiado'
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND (hp < 100 AND status != 'Desmaiado')", (id_treinador,))
+    pokemons_feridos = cursor.fetchall()
+
+    if pokemons_feridos:
+        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        for pokemon in pokemons_feridos:
+            print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
+        print("Digite o ID do Pokémon que deseja curar: ")
+        resposta = input().strip().lower()
+        pokemon_escolhido = next((pokemon for pokemon in pokemons_feridos if str(pokemon[0]) == resposta), None)
+        if pokemon_escolhido:
+            pokemon_id, nome_pokemon, hp = pokemon_escolhido
+
+            cura_hp = 50
+
+            novo_hp = min(100, hp + cura_hp)
+
+            cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'superpotion' AND dono = %s", (quantidade_item, id_treinador,))
+            conn.commit()
+            os.system('cls')
+            print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
+            input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("Pokémon não encontrado.")
+            input("\nPressione Enter para continuar...")
+    else:
+        os.system('cls')
+        print("Não há Pokémon feridos ou desmaiados para usar o item.")
+        input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
+def usar_hyper_potion(conn, id_treinador, quantidade_item):
+    cursor = conn.cursor()
+
+    # Selecione apenas os pokemons que o Status não é 'Desmaiado'
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND (hp < 100 AND status != 'Desmaiado')", (id_treinador,))
+    pokemons_feridos = cursor.fetchall()
+
+    if pokemons_feridos:
+        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        for pokemon in pokemons_feridos:
+            print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
+        print("Digite o ID do Pokémon que deseja curar: ")
+        resposta = input().strip().lower()
+        pokemon_escolhido = next((pokemon for pokemon in pokemons_feridos if str(pokemon[0]) == resposta), None)
+        if pokemon_escolhido:
+            pokemon_id, nome_pokemon, hp = pokemon_escolhido
+
+            cura_hp = 100
+
+            novo_hp = min(100, hp + cura_hp)
+
+            cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'hyperpotion' AND dono = %s", (quantidade_item, id_treinador,))
+            conn.commit()
+            os.system('cls')
+            print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
+            input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("Pokémon não encontrado.")
+            input("\nPressione Enter para continuar...")
+    else:
+        os.system('cls')
+        print("Não há Pokémon feridos ou desmaiados para usar o item.")
+        input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
+
+
+
 
 def inserir_pokemon_base(conn):
     cursor = conn.cursor()
 
     # Dados dos Pokémon iniciais
     dados_pokemon = [
-        (1, 'Bulbasaur', 1, None, None, None, 'Audacioso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
-        (4, 'Charmander', 1, None, None, None, 'Docil', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
-        (7, 'Squirtle', 1, None, None, None, 'Bravo', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokebola Comum', 70, 70, 4),
-        (10, 'Caterpie', 1, None, None, None, 'Alegre', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (13, 'Weedle', 1, None, None, None, 'Calmo', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (16, 'Pidgey', 1, None, None, None, 'Cauteloso', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (19, 'Rattata', 1, None, None, None, 'Divertido', 5, 25, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudavel', 'Pokeball', 70, 70, 4),
+        (4, None, 'Charmander', 1, 2, None, None, 'Docil', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
+        (7, None, 'Squirtle', 1, 3, None, None, 'Bravo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
+        (10, None, 'Caterpie', 1, 18, None, None, 'Alegre', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (13, None, 'Weedle', 1, 18, None, None, 'Calmo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (16, None, 'Pidgey', 1, 8, None, None, 'Cauteloso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (19, None, 'Rattata', 1, 19, None, None, 'Divertido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
     ]
 
     for pokemon in dados_pokemon:
         cursor.execute("""
             INSERT INTO POKEMON (
-                NUMERO_POKEDEX, NOME_POKEMON_INS, HABILIDADE1, HABILIDADE2, HABILIDADE3, HABILIDADE4, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE,
+                NUMERO_POKEDEX, TREINADOR_ID, NOME_POKEMON_INS, HABILIDADE1, HABILIDADE2, HABILIDADE3, HABILIDADE4, NATURE, NIVEL, HP, DEFESA, ATAQUE, SP_ATAQUE, SP_DEFESA, VELOCIDADE,
                 SEXO, XP, STATUS, POKEBOLA, ALTURA, PESO, LOCALIZACAO
             ) VALUES %s;
         """, (pokemon,))
@@ -555,15 +723,42 @@ def ver_pokedex(conn, id_treinador):
 def ver_pokemon(conn, id_treinador):
     cursor = conn.cursor()
 
-    # Obtém os Pokémon do treinador
-    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, sexo, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+    # Obtém os Pokémon do treinador com informações de habilidades
+    cursor.execute("""
+        SELECT
+            POKEMON.POKEMON_ID,
+            POKEMON.NOME_POKEMON_INS,
+            POKEMON.NIVEL,
+            POKEMON.HP,
+            POKEMON.SEXO,
+            POKEMON.STATUS,
+            HABILIDADE1.NOME_HABILIDADE AS HABILIDADE1,
+            HABILIDADE2.NOME_HABILIDADE AS HABILIDADE2,
+            HABILIDADE3.NOME_HABILIDADE AS HABILIDADE3,
+            HABILIDADE4.NOME_HABILIDADE AS HABILIDADE4
+        FROM
+            POKEMON
+            LEFT JOIN HABILIDADE AS HABILIDADE1 ON POKEMON.HABILIDADE1 = HABILIDADE1.HABILIDADE_ID
+            LEFT JOIN HABILIDADE AS HABILIDADE2 ON POKEMON.HABILIDADE2 = HABILIDADE2.HABILIDADE_ID
+            LEFT JOIN HABILIDADE AS HABILIDADE3 ON POKEMON.HABILIDADE3 = HABILIDADE3.HABILIDADE_ID
+            LEFT JOIN HABILIDADE AS HABILIDADE4 ON POKEMON.HABILIDADE4 = HABILIDADE4.HABILIDADE_ID
+        WHERE
+            POKEMON.TREINADOR_ID = %s
+    """, (id_treinador,))
+
     pokemons_treinador = cursor.fetchall()
 
     if pokemons_treinador:
         os.system('cls')
-        print("Pokémons do Treinador:")
+        print("Pokémons do Treinador:\n")
         for pokemon in pokemons_treinador:
-            print(f"ID: {pokemon[0]}, Nome: {pokemon[1]}, Nível: {pokemon[2]}, HP: {pokemon[3]}, Sexo: {pokemon[4]}, Status: {pokemon[5]}")
+            print(f"Nome: {pokemon[1]}")
+            print(f"Nível: {pokemon[2]}, HP: {pokemon[3]}, Sexo: {pokemon[4]}, Status: {pokemon[5]}")
+            print(f"Habilidade 1: {pokemon[6] if pokemon[6] else 'Não aprendeu ainda'}")
+            print(f"Habilidade 2: {pokemon[7] if pokemon[7] else 'Não aprendeu ainda'}")
+            print(f"Habilidade 3: {pokemon[8] if pokemon[8] else 'Não aprendeu ainda'}")
+            print(f"Habilidade 4: {pokemon[9] if pokemon[9] else 'Não aprendeu ainda'}")
+            print("-" * 30)
     else:
         os.system('cls')
         print("O treinador não possui nenhum Pokémon.")
@@ -572,6 +767,65 @@ def ver_pokemon(conn, id_treinador):
 
     cursor.close()
 
+
+def interagir(conn, id_treinador):
+    cursor = conn.cursor()
+
+    # Obtém a localização atual do treinador
+    cursor.execute("SELECT localizacao FROM treinador WHERE treinador_id = %s", (id_treinador,))
+    resultado_treinador = cursor.fetchone()
+
+    if resultado_treinador:
+        treinador_localizacao = resultado_treinador[0]
+
+        if treinador_localizacao == 1:
+            dialogo_quarto_treinador()
+        
+        else:
+            # Obtém o NPC na mesma localização
+            cursor.execute("SELECT npc_id, info FROM npc WHERE localidade = %s", (treinador_localizacao,))
+            npc = cursor.fetchone()
+
+            if npc:
+                npc_id, info = npc
+
+                if info == 'Lojista':
+                    print("Você está no Pokemart.")
+                    comprar_item(conn, id_treinador)
+                elif info == 'Enfermeira':
+                    usar_pokecenter(conn, id_treinador)
+                elif info == 'Professor Oak':
+                   os.system('cls')
+                   print("Laboratório do Professor Carvalho:\n")
+                   escolher_pokemon(conn, id_treinador)
+                elif info == 'Mãe':
+                    os.system('cls')
+                    print("Sala de Casa:\n")
+                    dialogoMae()
+                elif info == 'Guia da Cidade Inicial':
+                    os.system('cls')
+                    print("Leste de Palet:\n")
+                    dialogo_leste_palet(conn, id_treinador)
+                elif info == 'Treinador de Campo':
+                    print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
+                    #batalha(conn, id_treinador, npc_id)
+                elif info == 'Brock':
+                    print('Brock: Olá, sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
+                    #batalha(conn, id_treinador, npc_id)
+                elif info == 'Treinador da Rota 4':
+                    print('Treinador da Rota 4: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
+                    #batalha(conn, id_treinador, npc_id)
+                elif info == 'Misty':
+                    print('Misty: Olá, sou Misty, a líder de ginásio de Cerulean, se você me vencer, eu te darei a insígnia da água!')
+                    #batalha(conn, id_treinador, npc_id)
+                else:
+                    print("Você está em uma localização desconhecida.")
+            else:
+                print("Não há NPCs nesta localização.")
+    else:
+        print("Treinador não encontrado.")
+
+    cursor.close()
 
 def aventura_pokemon():
     conn = connect_database()
