@@ -149,7 +149,7 @@ O MER é um modelo conceitual de alto nível de abstração que representa as en
 ![image](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/imagens/derv5.jpg)
 
 ## Para melhor visualização do diagrama
-Para visualizar o diagrama em melhor qualidade acesse: 
+Para visualizar o diagrama em melhor qualidade acesse: https://miro.com/app/board/uXjVNH71dJM=/?share_link_id=763107297566
 
 
 ## Histórico de versões
@@ -164,3 +164,4 @@ Para visualizar o diagrama em melhor qualidade acesse:
 | `1.5`  | 04/12/2023 | Atualização do DER pós correção do professor        | [Ian Costa](https://github.com/ian-dcg)  |
 | `1.6`  | 04/12/2023 | Atualização das entidades pós correção do professor | [Ian Costa](https://github.com/ian-dcg)  |
 | `1.7`  | 04/12/2023 | Atualização dos relacionamentos pós correção do professor | [Ian Costa](https://github.com/ian-dcg)  |
+| `1.8`  | 04/12/2023 | Adição do link do quadro Miro do DER                 | [Ian Costa](https://github.com/ian-dcg)  |
