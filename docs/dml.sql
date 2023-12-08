@@ -2,6 +2,7 @@ TRUNCATE treinador RESTART identity cascade;
 TRUNCATE localidade RESTART identity cascade;
 TRUNCATE pokedex RESTART identity cascade;
 TRUNCATE catalogo_pokemart RESTART identity cascade;
+TRUNCATE habilidade RESTART identity cascade;
 
 -- Inserir dados na tabela LOCALIDADE
 INSERT INTO LOCALIDADE (NOME, INFO, MAPA) VALUES
@@ -190,21 +191,22 @@ INSERT INTO POKEDEX (NUMERO_POKEDEX, NOME_POKEMON, TIPO1, TIPO2, NIVEL_EVOLUCAO,
     (7, 'Squirtle', 'Agua', NULL, 16, 45, 3, 'Kanto', 'Pequeno e ágil, ele é o Pokémon inicial de água em Kanto.'),
     (8, 'Wartortle', 'Agua', NULL, 36, 45, 3, 'Kanto', 'Cauda comprida e peluda é sinal de boa saúde.'),
     (9, 'Blastoise', 'Agua', NULL, NULL, 45, 3, 'Kanto', 'Tem canhões de água poderosos nas costas.'),
-    (10, 'Caterpie', 'Inseto', NULL, 7, 255, 1, 'Kanto', 'Evolui para Metapod.'),
-    (11, 'Metapod', 'Inseto', NULL, 10, 120, 1, 'Kanto', 'Evolui para Butterfree.'),
+    (10, 'Caterpie', 'Inseto', NULL, 7, 10, 1, 'Kanto', 'Evolui para Metapod.'),
+    (11, 'Metapod', 'Inseto', NULL, 10, 20, 1, 'Kanto', 'Evolui para Butterfree.'),
     (12, 'Butterfree', 'Inseto', 'Voador', NULL, 45, 1, 'Kanto', 'Têm pó que causa sono.'),
-    (13, 'Weedle', 'Inseto', 'Venenoso', 7, 255, 1, 'Kanto', 'Evolui para Kakuna.'),
-    (14, 'Kakuna', 'Inseto', 'Venenoso', 10, 120, 1, 'Kanto', 'Evolui para Beedrill.'),
-    (15, 'Beedrill', 'Inseto', 'Venenoso', NULL, 45, 1, 'Kanto', 'Muito agressivo, ataca com agulhas envenenadas.'),
-    (16, 'Pidgey', 'Normal', 'Voador', 18, 255, 1, 'Kanto', 'Um Pokémon comum encontrado em muitas áreas.'),
-    (17, 'Pidgeotto', 'Normal', 'Voador', 36, 120, 1, 'Kanto', 'Gosta de subir até grandes alturas.'),
+    (13, 'Weedle', 'Inseto', 'Venenoso', 7, 20, 1, 'Kanto', 'Evolui para Kakuna.'),
+    (14, 'Kakuna', 'Inseto', 'Venenoso', 10, 20, 1, 'Kanto', 'Evolui para Beedrill.'),
+    (15, 'Beedrill', 'Inseto', 'Venenoso', 20, 45, 1, 'Kanto', 'Muito agressivo, ataca com agulhas envenenadas.'),
+    (16, 'Pidgey', 'Normal', 'Voador', 18, 10, 1, 'Kanto', 'Um Pokémon comum encontrado em muitas áreas.'),
+    (17, 'Pidgeotto', 'Normal', 'Voador', 36, 25, 1, 'Kanto', 'Gosta de subir até grandes alturas.'),
     (18, 'Pidgeot', 'Normal', 'Voador', NULL, 45, 1, 'Kanto', 'Suas asas batem com força, criando ventos poderosos.'),
-    (19, 'Rattata', 'Normal', NULL, 20, 255, 4, 'Kanto', 'Rápido e ágil, ele é comum em muitas áreas urbanas.'),
-    (20, 'Raticate', 'Normal', NULL, NULL, 127, 4, 'Kanto', 'Altamente territorial, pode ser muito agressivo.');
+    (19, 'Rattata', 'Normal', NULL, 20, 5, 4, 'Kanto', 'Rápido e ágil, ele é comum em muitas áreas urbanas.'),
+    (20, 'Raticate', 'Normal', NULL, NULL, 20, 4, 'Kanto', 'Altamente territorial, pode ser muito agressivo.');
 
 -- Inserir dados na tabela EVOLUCAO
 INSERT INTO EVOLUCAO (ANTERIOR, SUCESSOR) VALUES
-  (1, 2);
+  (1, 2),
+  (2,3);
 
 -- Inserir dados na tabela REGISTRO_POKEDEX
 INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID) VALUES

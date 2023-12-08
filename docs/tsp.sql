@@ -16,42 +16,21 @@ END;
 $checa_tipo_pokemon$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE
-FUNCTION EVOLUI_POKEMON(ID_EVOLUIDO int, NUM_POKEDEX_EV int) RETURNS VOID AS $evolui_pokemon$
+FUNCTION EVOLUI_POKEMON(ID_EVOLUIDO int) RETURNS VOID AS $evolui_pokemon$
 declare
-	prox_pokedex int;
+	PROX_POKEDEX int;
+	NUM_POKEDEX_EV int;
+	nome_atual VARCHAR(20);
+	nome_proximo varchar(20);
 begin
-	select sucessor into prox_pokedex from evolucoes where antecessor = num_pokedex_ev;
-	INSERT into pokemon (
-		 numero_pokedex,
-		 treinador_id,
-		 habilidade1,
-		 habilidade2,
-		 habilidade3,
-		 habilidade4,
-		 nature,nivel,
-		 nivel_evolucao,
-		 hp,
-		 defesa,
-		 ataque,
-		 sp_ataque,
-		 sp_defesa,
-		 velocidade,
-		 acuracia,
-		 sexo,
-		 status,
-		 pokebola,
-		 taxa_captura,
-		 altura,
-		 peso,
-		 localizacao)
-		 VALUES (
-		 prox_pokedex,
-		 (select treinador_id,habilidade1,habilidade2,habilidade3,habilidade4,nature,nivel,xp from pokemon where pokemon_id = id_evoluido),
-		 (select nivel_evolucao from pokedex where numero_pokedex = prox_pokedex),
-		 (select hp,defesa,ataque,sp_ataque,sp_defesa,velocidade,acuracia,sexo,status,pokebola from pokemon where pokemon_id = id_evoluido),
-		 (select taxa_captura from pokedex where numero_pokedex = prox_pokedex),
-		 (select altura,peso,localizacao from pokemon where pokemon_id = id_evoluido)
-		 );
+	SELECT numero_pokedex into num_pokedex_ev from pokemon where pokemon_id = id_evoluido;
+	SELECT nome_pokemon_ins into nome_atual from pokemon where pokemon_id = id_evoluido;
+	select sucessor into prox_pokedex from evolucao where anterior = num_pokedex_ev;
+	SELECT nome_pokemon into nome_proximo from pokedex where numero_pokedex = prox_pokedex;
+	if nome_atual = (select nome_pokemon from pokedex WHERE numero_pokedex = num_pokedex_ev) THEN
+		update pokemon set nome_pokemon_ins = nome_proximo WHERE pokemon_id = id_evoluido;
+	end if;
+	update pokemon set numero_pokedex = prox_pokedex WHERE pokemon_id = id_evoluido;
 END;
 $evolui_pokemon$ LANGUAGE PLPGSQL;
 
@@ -68,13 +47,13 @@ begin
 		select nivel_evolucao into nivel_ev from pokedex where numero_pokedex = (select numero_pokedex from pokemon where pokemon_id = vencedor);
 		select nivel into nivel_atual from pokemon where pokemon_id = vencedor;
 		IF nivel_ev = nivel_atual + 1 THEN
-			update pokemon set pokemon.nivel = pokemon.nivel+1, pokemon.xp = pokemon.xp+10-100 WHERE pokemon.pokemon_id = pokemon;
-			select evolui_pokemon(vencedor,(select numero_pokedex from pokemon where pokemon_id = vencedor));
+			update pokemon set nivel = nivel+1, xp = xp+10-100 WHERE pokemon_id = VENCEDOR;
+			perform evolui_pokemon(vencedor);
 			return;
 		END IF;
-		update pokemon set pokemon.nivel = pokemon.nivel+1, pokemon.xp = pokemon.xp+10-100 WHERE pokemon.pokemon_id = pokemon;
+		update pokemon set nivel = nivel+1, xp = xp+10-100 WHERE pokemon_id = VENCEDOR;
 	else
-		update pokemon set pokemon.xp = pokemon.xp+10 WHERE pokemon.pokemon_id = pokemon;
+		update pokemon set xp = xp+10 WHERE pokemon_id = VENCEDOR;
 	end if;
 END;
 $ganha_batalha$ LANGUAGE PLPGSQL;
@@ -116,6 +95,31 @@ UPDATE
 				ON POKENPC
 
 			FOR EACH ROW EXECUTE PROCEDURE CHECA_TIPO_POKEMON();
+
+-- TSP POKEMON
+
+CREATE OR REPLACE
+FUNCTION CHECK_NOME_POKEMON() RETURNS TRIGGER AS $check_nome_pokemon$
+BEGIN
+	if new.nome_pokemon_ins is null then
+		select nome_pokemon into new.nome_pokemon_ins from pokedex where numero_pokedex = new.numero_pokedex;
+	end if;
+	RETURN new;
+END;
+$check_nome_pokemon$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS NOMEIA_POKEMON
+				ON POKEMON;
+CREATE TRIGGER NOMEIA_POKEMON
+
+BEFORE
+INSERT
+
+				OR
+UPDATE
+				ON POKEMON
+			FOR EACH ROW EXECUTE PROCEDURE CHECK_NOME_POKEMON();
+
 
 -- TSP BATALHA
 
