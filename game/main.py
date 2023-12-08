@@ -1,6 +1,10 @@
 import psycopg2
 import os
 from psycopg2 import sql
+import random
+
+mensagem_floresta = False
+
 
 def connect_database():
     try:
@@ -528,11 +532,93 @@ def usar_item(conn, id_treinador):
                     usar_super_potion(conn, id_treinador, quantidade_item)
                 elif nome_item == 'Hyper Potion':
                     usar_hyper_potion(conn, id_treinador, quantidade_item)
+                elif nome_item == 'Revive':
+                    usar_revive(conn, id_treinador, quantidade_item)
+                elif nome_item == 'Max Revive':
+                    usar_max_revive(conn, id_treinador, quantidade_item)
                 else:
                     os.system('cls')
                     print("Item não encontrado.")
                     input("\nPressione Enter para continuar...")  
-                
+
+def usar_max_revive(conn, id_treinador, quantidade_item):
+    cursor = conn.cursor()
+
+    # Selecione apenas os pokemons que o Status é 'Desmaiado'
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND status = 'Desmaiado'", (id_treinador,))
+    pokemons_desmaiados = cursor.fetchall()
+
+    if pokemons_desmaiados:
+        print("Pokémon(s) desmaiado(s) encontrados:")
+        for pokemon in pokemons_desmaiados:
+            print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
+        print("Digite o ID do Pokémon que deseja reviver: ")
+        resposta = input().strip().lower()
+        pokemon_escolhido = next((pokemon for pokemon in pokemons_desmaiados if str(pokemon[0]) == resposta), None)
+        if pokemon_escolhido:
+            pokemon_id, nome_pokemon, hp = pokemon_escolhido
+
+            cura_hp = 100
+
+            novo_hp = min(100, hp + cura_hp)
+
+            cursor.execute("UPDATE pokemon SET hp = %s, status = 'Saudável' WHERE pokemon_id = %s", (novo_hp, pokemon_id))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Max Revive' AND dono = %s", (quantidade_item, id_treinador,))
+
+            conn.commit()
+            os.system('cls')
+            print(f"{nome_pokemon} foi revivido com {cura_hp} HP.")
+            input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("Pokémon não encontrado.")
+            input("\nPressione Enter para continuar...")
+    else:
+        os.system('cls')
+        print("Não há Pokémon desmaiados para usar o item.")
+        input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
+def usar_revive(conn, id_treinador, quantidade_item):
+    cursor = conn.cursor()
+
+    # Selecione apenas os pokemons que o Status é 'Desmaiado'
+    cursor.execute("SELECT pokemon_id, nome_pokemon_ins, hp FROM pokemon WHERE treinador_id = %s AND status = 'Desmaiado'", (id_treinador,))
+    pokemons_desmaiados = cursor.fetchall()
+
+    if pokemons_desmaiados:
+        print("Pokémon(s) desmaiado(s) encontrados:")
+        for pokemon in pokemons_desmaiados:
+            print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
+        print("Digite o ID do Pokémon que deseja reviver: ")
+        resposta = input().strip().lower()
+        pokemon_escolhido = next((pokemon for pokemon in pokemons_desmaiados if str(pokemon[0]) == resposta), None)
+        if pokemon_escolhido:
+            pokemon_id, nome_pokemon, hp = pokemon_escolhido
+
+            cura_hp = 20
+
+            novo_hp = min(100, hp + cura_hp)
+
+            cursor.execute("UPDATE pokemon SET hp = %s, status = 'Saudável' WHERE pokemon_id = %s", (novo_hp, pokemon_id))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Revive' AND dono = %s", (quantidade_item, id_treinador,))
+
+            conn.commit()
+            os.system('cls')
+            print(f"{nome_pokemon} foi revivido com {cura_hp} HP.")
+            input("\nPressione Enter para continuar...")
+        else:
+            os.system('cls')
+            print("Pokémon não encontrado.")
+            input("\nPressione Enter para continuar...")
+    else:
+        os.system('cls')
+        print("Não há Pokémon desmaiados para usar o item.")
+        input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
 def usar_potion(conn, id_treinador, quantidade_item):
     cursor = conn.cursor()
 
@@ -555,7 +641,7 @@ def usar_potion(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'potion' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Potion' AND dono = %s", (quantidade_item, id_treinador,))
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
@@ -593,7 +679,7 @@ def usar_super_potion(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'superpotion' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Super Potion' AND dono = %s", (quantidade_item, id_treinador,))
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
@@ -656,7 +742,7 @@ def inserir_pokemon_base(conn):
 
     # Dados dos Pokémon iniciais
     dados_pokemon = [
-        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudavel', 'Pokeball', 70, 70, 4),
+        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (4, None, 'Charmander', 1, 2, None, None, 'Docil', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (7, None, 'Squirtle', 1, 3, None, None, 'Bravo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (10, None, 'Caterpie', 1, 18, None, None, 'Alegre', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
@@ -767,6 +853,55 @@ def ver_pokemon(conn, id_treinador):
 
     cursor.close()
 
+def floresta_viridian(conn, id_treinador):
+    global mensagem_floresta
+    os.system('cls')
+    if not mensagem_floresta:
+        print("Você está na Floresta de Viridian.\n")
+        print("Aqui você tem chance de encontrar Pokémons selvagens.\n")
+        input("\n\nPressione Enter para continuar...")
+        mensagem_floresta = True
+    cursor = conn.cursor()
+
+    # Verificar se há um Pokémon selvagem na floresta
+    chance_encontro = random.random()  # Gera um número aleatório entre 0 e 1
+    if chance_encontro < 0.8:  # Exemplo: 80% de chance de encontrar um Pokémon selvagem
+        # Selecionar um Pokémon selvagem aleatório
+        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, status, nature, numero_pokedex FROM pokemon WHERE treinador_id IS NULL ORDER BY RANDOM() LIMIT 1")
+        pokemon_selvagem = cursor.fetchone()
+
+        os.system('cls')
+        print("Um Pokémon selvagem apareceu!!!\n")
+
+        if pokemon_selvagem:
+            pokemon_id, nome_pokemon, nivel, hp, status, nature, numero_pokedex = pokemon_selvagem
+            print(f"{nome_pokemon} (Nível {nivel})")
+            print(f"HP: {hp} | Status: {status} | Natureza: {nature}")
+            print("\nEscolha uma opção:")
+            print("1. Batalhar")
+            print("2. Fugir")
+
+            escolha = input().strip()
+            if escolha == '1':
+                print("Você irá batalhar")
+                #batalhar(conn, id_treinador, pokemon_selvagem)
+            elif escolha == '2':
+                print("Você fugiu com segurança da batalha.")
+                 # Insira o Pokémon na tabela registro_pokedex
+                cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id) VALUES (%s, %s)", (numero_pokedex, id_treinador,))
+                conn.commit()
+            else:
+                print("Opção inválida.")
+    else:
+        os.system('cls')
+        print("Você explorou mas não encontrou nenhum Pokémon selvagem. Interaja novamente para continuar procurando!\n")
+
+    input("\nPressione Enter para continuar...")
+
+    cursor.close()
+
+    
+    
 
 def interagir(conn, id_treinador):
     cursor = conn.cursor()
@@ -780,6 +915,8 @@ def interagir(conn, id_treinador):
 
         if treinador_localizacao == 1:
             dialogo_quarto_treinador()
+        if treinador_localizacao == 5:
+            floresta_viridian(conn, id_treinador)
         
         else:
             # Obtém o NPC na mesma localização
@@ -806,8 +943,8 @@ def interagir(conn, id_treinador):
                     os.system('cls')
                     print("Leste de Palet:\n")
                     dialogo_leste_palet(conn, id_treinador)
-                elif info == 'Treinador de Campo':
-                    print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
+                #elif info == 'Treinador de Campo':
+                    #print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
                     #batalha(conn, id_treinador, npc_id)
                 elif info == 'Brock':
                     print('Brock: Olá, sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
