@@ -903,6 +903,92 @@ def floresta_viridian(conn, id_treinador):
 
     cursor.close()
 
+
+def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
+    cursor = conn.cursor()
+
+    pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
+
+    # Obter informações do Pokémon do treinador
+    cursor.execute("SELECT * FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+    pokemon_treinador = cursor.fetchone()
+
+    if pokemon_treinador:
+        pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+        os.system('cls')
+        print("Você está em uma batalha!\n")
+        print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+        print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+        print(f"{nome_pokemon_selvagem} (Nível {nivel_selvagem})")
+        print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
+
+    while True:
+        print("Escolha uma opção:")
+        print("1. Atacar")
+        print("2. Usar Item")
+        print("3. Tentar Capturar")
+
+        escolha = input().strip()
+
+        if escolha == '1':
+            # Atacar
+            print('Atacar')
+        elif escolha == '2':
+            # Usar item
+            print('Usar item')
+        elif escolha == '3':
+            # Tentar capturar
+            print("Tentar capturar")
+        else:
+            print("Opção inválida. Tente novamente.")
+
+        # Verifique se o Pokémon selvagem foi derrotado
+        cursor.execute("SELECT hp FROM pokemon WHERE pokemon_id = %s", (pokemon_id_selvagem,))
+        hp_atual_selvagem = cursor.fetchone()[0]
+
+        if hp_atual_selvagem == 100:
+            os.system('cls')
+            print(f"\nVocê derrotou o Pokémon selvagem!\n")
+            ganha_batalha(conn, pokemon_id_treinador)
+            print(f"Você ganhou 10 de XP!\n")
+            break
+
+        # Agora, o Pokémon selvagem ataca (você pode ajustar essa lógica conforme necessário)
+        print("\nO Pokémon selvagem atacou!\n")
+        # Implemente a lógica do ataque do Pokémon selvagem aqui
+        # ...
+
+        # Verifique se o seu Pokémon foi derrotado
+        cursor.execute("SELECT hp FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+        hp_pokemon_treinador = cursor.fetchone()[0]
+
+        if hp_pokemon_treinador <= 0:
+            print("\nSeu Pokémon foi derrotado! A batalha acabou.\n")
+            break
+
+    cursor.close()
+
+def ganha_batalha(conn, pokemon_id_treinador):
+    
+
+    # Criar um cursor
+    cursor = conn.cursor()
+
+    try:
+        # Chamar a stored procedure GANHA_BATALHA
+        cursor.execute("SELECT GANHA_BATALHA(%s);", (pokemon_id_treinador,))
+
+        # Commit das alterações
+        conn.commit()
+
+    except Exception as e:
+        print(f"Erro ao processar batalha: {e}")
+
+    finally:
+        # Fechar o cursor e a conexão
+        cursor.close()
+
     
     
 
