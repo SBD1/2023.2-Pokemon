@@ -4,6 +4,7 @@ from psycopg2 import sql
 import random
 
 mensagem_floresta = False
+batalha_terminada = False
 
 
 def connect_database():
@@ -345,7 +346,7 @@ def escolher_pokemon(conn, id_treinador):
                                 print("\nVocê obteve Pokédex!")
 
                                 # Registra o Pokémon na Pokédex
-                                cursor.execute("INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID) VALUES (%s, %s)",
+                                cursor.execute("INSERT INTO REGISTRO_POKEDEX (NUMERO_POKEMON, TREINADOR_ID, CAPTURADO) VALUES (%s, %s, 'Sim')",
                                                (numero_pokedex, id_treinador))
 
                                 conn.commit()
@@ -734,21 +735,25 @@ def usar_hyper_potion(conn, id_treinador, quantidade_item):
     cursor.close()
 
 
-
-
-
 def inserir_pokemon_base(conn):
     cursor = conn.cursor()
 
     # Dados dos Pokémon iniciais
     dados_pokemon = [
-        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
+        (1, 1, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (4, None, 'Charmander', 1, 2, None, None, 'Docil', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (7, None, 'Squirtle', 1, 3, None, None, 'Bravo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
         (10, None, 'Caterpie', 1, 18, None, None, 'Alegre', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (13, None, 'Weedle', 1, 18, None, None, 'Calmo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (16, None, 'Pidgey', 1, 8, None, None, 'Cauteloso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (11, None, 'Metapod', 1, 18, None, None, 'Curioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (12, None, 'Butterfree', 1, 18, None, None, 'Educado', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
+        (13, None, 'Weedle', 1, 18, None, None, 'Observador', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (14, None, 'Kakuna', 1, 18, None, None, 'Relaxado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (15, None, 'Beedrill', 1, 18, None, None, 'Valente', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
+        (16, None, 'Pidgey', 1, 8, None, None, 'Atrevido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (17, None, 'Pidgeotto', 1, 8, None, None, 'Exaltado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (18, None, 'Pidgeot', 1, 8, None, None, 'Empenhado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
         (19, None, 'Rattata', 1, 19, None, None, 'Divertido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (20, None, 'Raticate', 1, 19, None, None, 'Nervoso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
     ]
 
     for pokemon in dados_pokemon:
@@ -761,7 +766,6 @@ def inserir_pokemon_base(conn):
 
     conn.commit()
     cursor.close()
-
 
 def ver_pokedex(conn, id_treinador):
     cursor = conn.cursor()
@@ -808,6 +812,7 @@ def ver_pokedex(conn, id_treinador):
     input("\nPressione Enter para continuar...")
 
     cursor.close()
+
 
 def ver_pokemon(conn, id_treinador):
     cursor = conn.cursor()
@@ -856,6 +861,7 @@ def ver_pokemon(conn, id_treinador):
 
     cursor.close()
 
+
 def floresta_viridian(conn, id_treinador):
     global mensagem_floresta
     os.system('cls')
@@ -886,13 +892,22 @@ def floresta_viridian(conn, id_treinador):
 
             escolha = input().strip()
             if escolha == '1':
+                os.system('cls')
                 print("Você irá batalhar")
-                #batalhar(conn, id_treinador, pokemon_selvagem)
+                input("\nPressione Enter para continuar...")
+                batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem)
             elif escolha == '2':
-                print("Você fugiu com segurança da batalha.")
-                 # Insira o Pokémon na tabela registro_pokedex
-                cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id) VALUES (%s, %s)", (numero_pokedex, id_treinador,))
-                conn.commit()
+                # Verificar se o Pokémon já foi registrado pelo treinador
+                cursor.execute("SELECT * FROM registro_pokedex WHERE numero_pokemon = %s AND treinador_id = %s", (numero_pokedex, id_treinador,))
+                registro_existente = cursor.fetchone()
+
+                if registro_existente:
+                    print(f"{nome_pokemon} já está registrado na sua Pokédex.")
+                else:
+                    print("Você fugiu com segurança da batalha.")
+                    # Insira o Pokémon na tabela registro_pokedex
+                    cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (numero_pokedex, id_treinador, 'Não'))
+                    conn.commit()
             else:
                 print("Opção inválida.")
     else:
@@ -903,8 +918,9 @@ def floresta_viridian(conn, id_treinador):
 
     cursor.close()
 
-
 def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
+    global batalha_terminada
+    atacou_primeiro = None
     cursor = conn.cursor()
 
     pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
@@ -918,12 +934,25 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
 
         os.system('cls')
         print("Você está em uma batalha!\n")
+
+    while not batalha_terminada:
+
+        os.system('cls')
+        # Atualize a variável hp com o valor mais recente do banco de dados
+        cursor.execute("SELECT hp, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+        resultado_treinador = cursor.fetchone()
+        hp_treinador, status_treinador = resultado_treinador[0], resultado_treinador[1]
+        # Atualize a variável hp_selvagem com o valor mais recente do banco de dados
+        cursor.execute("SELECT hp, status FROM pokemon WHERE pokemon_id = %s", (pokemon_id_selvagem,))
+        resultado_selvagem = cursor.fetchone()
+        hp_selvagem, status_selvagem = resultado_selvagem[0], resultado_selvagem[1]
+
         print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
         print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
         print(f"{nome_pokemon_selvagem} (Nível {nivel_selvagem})")
         print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
 
-    while True:
         print("Escolha uma opção:")
         print("1. Atacar")
         print("2. Usar Item")
@@ -932,8 +961,61 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
         escolha = input().strip()
 
         if escolha == '1':
-            # Atacar
-            print('Atacar')
+            atacou_primeiro = check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
+            if atacou_primeiro:
+                display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
+            else:
+                habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador)
+            os.system('cls')
+            # Atualize a variável hp com o valor mais recente do banco de dados
+            cursor.execute("SELECT hp, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+            resultado_treinador = cursor.fetchone()
+            hp_treinador, status_treinador = resultado_treinador[0], resultado_treinador[1]
+            # Atualize a variável hp_selvagem com o valor mais recente do banco de dados
+            cursor.execute("SELECT hp, status FROM pokemon WHERE pokemon_id = %s", (pokemon_id_selvagem,))
+            resultado_selvagem = cursor.fetchone()
+            hp_selvagem, status_selvagem = resultado_selvagem[0], resultado_selvagem[1]
+
+            # Checa se o pokemon selvagem desmaiou e termina a batalha
+            if hp_selvagem <= 0:
+                print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+                print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
+                print(f"{nome_pokemon_selvagem} (Nível {nivel_selvagem})")
+                print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
+
+                print(f"{nome_pokemon_selvagem} selvagem desmaiou!\n")
+                input("\nPressione Enter para continuar...")
+
+                os.system('cls')
+                print(f"\nVocê derrotou o Pokémon selvagem!\n")
+                print(f"Você ganhou 10 de XP!\n")
+                batalha_terminada = True
+                break
+
+            # Checa se o pokemon selvagem desmaiou e termina a batalha
+            if hp_treinador <= 0:
+                print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+                print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
+                print(f"{nome_pokemon_selvagem} (Nível {nivel_selvagem})")
+                print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
+
+                print(f"{nome_pokemon_treinador} desmaiou!\n")
+                input("\nPressione Enter para continuar...")
+
+                os.system('cls')
+                print(f"\nVocê foi derrotado. A batalha acabou\n")
+                batalha_terminada = True
+                break
+
+            os.system('cls')
+            if not atacou_primeiro:
+                    display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
+            else:
+                os.system('cls')
+                habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador)
+
         elif escolha == '2':
             # Usar item
             print('Usar item')
@@ -943,54 +1025,206 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
         else:
             print("Opção inválida. Tente novamente.")
 
-        # Verifique se o Pokémon selvagem foi derrotado
-        cursor.execute("SELECT hp FROM pokemon WHERE pokemon_id = %s", (pokemon_id_selvagem,))
-        hp_atual_selvagem = cursor.fetchone()[0]
+        
+        atacou_primeiro = None
+    cursor.close()
 
-        if hp_atual_selvagem == 100:
-            os.system('cls')
-            print(f"\nVocê derrotou o Pokémon selvagem!\n")
-            ganha_batalha(conn, pokemon_id_treinador)
-            print(f"Você ganhou 10 de XP!\n")
-            break
+def check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_selvagem):
+    cursor = conn.cursor()
 
-        # Agora, o Pokémon selvagem ataca (você pode ajustar essa lógica conforme necessário)
-        print("\nO Pokémon selvagem atacou!\n")
-        # Implemente a lógica do ataque do Pokémon selvagem aqui
-        # ...
+    # Obter informações de velocidade dos Pokémon
+    cursor.execute("SELECT velocidade FROM pokemon WHERE treinador_id = %s AND pokemon_id = %s", (id_treinador, pokemon_treinador[0]))
+    velocidade_treinador = cursor.fetchone()[0]
 
-        # Verifique se o seu Pokémon foi derrotado
-        cursor.execute("SELECT hp FROM pokemon WHERE treinador_id = %s", (id_treinador,))
-        hp_pokemon_treinador = cursor.fetchone()[0]
+    cursor.execute("SELECT velocidade FROM pokemon WHERE pokemon_id = %s", (pokemon_selvagem[0],))
+    velocidade_selvagem = cursor.fetchone()[0]
 
-        if hp_pokemon_treinador <= 0:
-            print("\nSeu Pokémon foi derrotado! A batalha acabou.\n")
-            break
+    # Compara as velocidades para determinar quem ataca primeiro
+    if velocidade_treinador > velocidade_selvagem:
+        print(f"Seu Pokémon ataca primeiro!")
+        input("\nPressione Enter para continuar...")
+        return True
+    elif velocidade_treinador < velocidade_selvagem:
+        print(f"O Pokémon selvagem ataca primeiro!")
+        input("\nPressione Enter para continuar...")
+        return False
+    else:
+        print(f"Ambos os Pokémon têm a mesma velocidade. A ordem de ataque é aleatória.")
+        input("\nPressione Enter para continuar...")
+        return random.choice([True, False])
 
     cursor.close()
 
-def ganha_batalha(conn, pokemon_id_treinador):
-    
-
-    # Criar um cursor
+def habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador):
     cursor = conn.cursor()
 
-    try:
-        # Chamar a stored procedure GANHA_BATALHA
-        cursor.execute("SELECT GANHA_BATALHA(%s);", (pokemon_id_treinador,))
+    pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
 
+    # Obtém as habilidades do Pokémon selvagem
+    query = """
+    SELECT p.*, h1.NOME_HABILIDADE as habilidade1_nome, h2.NOME_HABILIDADE as habilidade2_nome,
+           h3.NOME_HABILIDADE as habilidade3_nome, h4.NOME_HABILIDADE as habilidade4_nome
+    FROM pokemon p
+    LEFT JOIN habilidade h1 ON p.HABILIDADE1 = h1.HABILIDADE_ID
+    LEFT JOIN habilidade h2 ON p.HABILIDADE2 = h2.HABILIDADE_ID
+    LEFT JOIN habilidade h3 ON p.HABILIDADE3 = h3.HABILIDADE_ID
+    LEFT JOIN habilidade h4 ON p.HABILIDADE4 = h4.HABILIDADE_ID
+    WHERE p.pokemon_id = %s
+    """
+    cursor.execute(query, (pokemon_id_selvagem,))
+    pokemon_info = cursor.fetchone()
+
+    if pokemon_info:
+        (
+            pokemon_id, numero_pokedex, treinador_id, nome_pokemon,
+            habilidade1_id, habilidade2_id, habilidade3_id, habilidade4_id,
+            nature, nivel, hp, defesa, ataque, sp_ataque, sp_defesa,
+            velocidade, sexo, xp, status, pokebola, altura, peso, localizacao,
+            habilidade1_nome, habilidade2_nome, habilidade3_nome, habilidade4_nome
+        ) = pokemon_info
+
+        os.system('cls')
+        print("O pokemon selvagem atacou!\n")
+        print(f"Pokémon: {nome_pokemon} (Nível {nivel})")
+        print(f"HP: {hp} | Status: {status} | Natureza: {nature}\n\n")
+
+        escolha = str(random.randint(1, 2)).strip()
+
+        habilidades = {
+            '1': habilidade1_nome,
+            '2': habilidade2_nome,
+            #'3': habilidade3_nome if habilidade3_nome else "Ainda não aprendeu",
+            #'4': habilidade4_nome if habilidade4_nome else "Ainda não aprendeu"
+        }
+
+        habilidade_id = {
+            '1': habilidade1_id,
+            '2': habilidade2_id,
+            #'3': habilidade3_id if habilidade3_id else None,
+            #'4': habilidade4_id if habilidade4_id else None
+        }
+
+        if escolha in habilidades:
+            # Atacar com a habilidade escolhida
+            print(f"{nome_pokemon} usou {habilidades[escolha]}\n")
+            if habilidade_id[escolha]:
+                calcular_dano_selvagem(conn, pokemon_selvagem, pokemon_treinador, habilidade_id[escolha])
+        else:
+            print("Opção inválida. Tente novamente.")
+    else:
+        print("Erro.")
+    input("\nPressione Enter para continuar...")
+    cursor.close()
+
+
+
+def display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem):
+    cursor = conn.cursor()
+
+    pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    # Obtém as habilidades do Pokémon do treinador
+    query = """
+    SELECT p.*, h1.NOME_HABILIDADE as habilidade1_nome, h2.NOME_HABILIDADE as habilidade2_nome,
+           h3.NOME_HABILIDADE as habilidade3_nome, h4.NOME_HABILIDADE as habilidade4_nome
+    FROM pokemon p
+    LEFT JOIN habilidade h1 ON p.HABILIDADE1 = h1.HABILIDADE_ID
+    LEFT JOIN habilidade h2 ON p.HABILIDADE2 = h2.HABILIDADE_ID
+    LEFT JOIN habilidade h3 ON p.HABILIDADE3 = h3.HABILIDADE_ID
+    LEFT JOIN habilidade h4 ON p.HABILIDADE4 = h4.HABILIDADE_ID
+    WHERE p.treinador_id = %s
+    """
+    cursor.execute(query, (id_treinador,))
+    pokemon_info = cursor.fetchone()
+
+    if pokemon_info:
+        (
+            pokemon_id, numero_pokedex, treinador_id, nome_pokemon,
+            habilidade1_id, habilidade2_id, habilidade3_id, habilidade4_id,
+            nature, nivel, hp, defesa, ataque, sp_ataque, sp_defesa,
+            velocidade, sexo, xp, status, pokebola, altura, peso, localizacao,
+            habilidade1_nome, habilidade2_nome, habilidade3_nome, habilidade4_nome
+        ) = pokemon_info
+
+        os.system('cls')
+        print("Você ataca!\n")
+        print(f"Seu Pokémon: {nome_pokemon} (Nível {nivel})")
+        print(f"HP: {hp} | Status: {status} | Natureza: {nature}\n")
+        print(f"1. {habilidade1_nome}")
+        print(f"2. {habilidade2_nome}")
+        print(f"3. {habilidade3_nome}" if habilidade3_nome else "3. (Ainda não aprendeu)")
+        print(f"4. {habilidade4_nome}" if habilidade4_nome else "4. (Ainda não aprendeu)")
+
+        escolha = input().strip()
+
+        habilidades = {
+            '1': habilidade1_nome,
+            '2': habilidade2_nome,
+            '3': habilidade3_nome if habilidade3_nome else "Ainda não aprendeu",
+            '4': habilidade4_nome if habilidade4_nome else "Ainda não aprendeu"
+        }
+
+        habilidade_id = {
+            '1': habilidade1_id,
+            '2': habilidade2_id,
+            '3': habilidade3_id if habilidade3_id else None,
+            '4': habilidade4_id if habilidade4_id else None
+        }
+
+        if escolha in habilidades:
+            # Atacar com a habilidade escolhida
+            print(f"\n{nome_pokemon} usou {habilidades[escolha]}")
+            if habilidade_id[escolha]:
+                calcular_dano(conn, pokemon_treinador, pokemon_selvagem, habilidade_id[escolha])
+        else:
+            print("Opção inválida. Tente novamente.")
+    else:
+        print("Treinador não possui Pokémon.")
+    input("\nPressione Enter para continuar...")
+    cursor.close()
+
+def calcular_dano(conn, pokemon_treinador, pokemon_selvagem, habilidade_id):
+    cursor = conn.cursor()
+
+    pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    try:
+        # Chama a stored procedure ATACA_BATALHA
+        cursor.execute("SELECT ATACA_BATALHA(%s, %s, %s);", (pokemon_id_treinador, pokemon_id_selvagem, habilidade_id ))
+        
         # Commit das alterações
         conn.commit()
 
     except Exception as e:
-        print(f"Erro ao processar batalha: {e}")
+        print(f"Erro ao calcular dano {e}")
 
     finally:
-        # Fechar o cursor e a conexão
+        # Fecha o cursor e a conexão
         cursor.close()
 
-    
-    
+def calcular_dano_selvagem(conn, pokemon_selvagem, pokemon_treinador, habilidade_id):
+    cursor = conn.cursor()
+
+    pokemon_id_selvagem, nome_pokemon_selvagem, nivel_selvagem, hp_selvagem, status_selvagem, nature_selvagem, numero_pokedex_selvagem = pokemon_selvagem
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    try:
+        # Chama a stored procedure ATACA_BATALHA
+        cursor.execute("SELECT ATACA_BATALHA(%s, %s, %s);", (pokemon_id_selvagem, pokemon_id_treinador, habilidade_id ))
+        
+        # Commit das alterações
+        conn.commit()
+
+    except Exception as e:
+        print(f"Erro ao calcular dano {e}")
+
+    finally:
+        # Fecha o cursor e a conexão
+        cursor.close()
+
 
 def interagir(conn, id_treinador):
     cursor = conn.cursor()
@@ -1037,13 +1271,11 @@ def interagir(conn, id_treinador):
                     #batalha(conn, id_treinador, npc_id)
                 elif info == 'Brock':
                     print('Brock: Olá, sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
-                    #batalha(conn, id_treinador, npc_id)
                 elif info == 'Treinador da Rota 4':
                     print('Treinador da Rota 4: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
                     #batalha(conn, id_treinador, npc_id)
                 elif info == 'Misty':
                     print('Misty: Olá, sou Misty, a líder de ginásio de Cerulean, se você me vencer, eu te darei a insígnia da água!')
-                    #batalha(conn, id_treinador, npc_id)
                 else:
                     print("Você está em uma localização desconhecida.")
             else:
