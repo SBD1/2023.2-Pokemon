@@ -774,7 +774,7 @@ def ver_pokedex(conn, id_treinador):
         # Obtém os Pokémon registrados na Pokédex com informações detalhadas
         cursor.execute("""
             SELECT rp.numero_pokemon, p.nome_pokemon, p.tipo1, p.tipo2, p.nivel_evolucao,
-                   p.taxa_captura, p.som_emitido, p.regiao, p.info
+                   p.taxa_captura, p.som_emitido, p.regiao, p.info, rp.capturado
             FROM registro_pokedex rp
             JOIN pokedex p ON rp.numero_pokemon = p.numero_pokedex
             WHERE rp.treinador_id = %s
@@ -786,12 +786,15 @@ def ver_pokedex(conn, id_treinador):
             os.system('cls')
             print("Pokédex do Treinador:")
             for pokemon in pokemons_registrados:
-                print(f"#{pokemon[0]} - {pokemon[1]}")
+                cor_nome = '\033[92m' if pokemon[9] == 'Sim' else '\033[91m'
+                cor_reset = '\033[0m'
+                print(f"#{pokemon[0]} - {cor_nome}{pokemon[1]}{cor_reset}")
                 print(f"Tipo(s): {pokemon[2]}{' / ' + pokemon[3] if pokemon[3] else ''}")
                 print(f"Nível de Evolução: {pokemon[4]}" if pokemon[4] else "")
                 print(f"Taxa de Captura: {pokemon[5]}")
-                print(f"Som Emitido: {pokemon[6]}")
+                #print(f"Som Emitido: {pokemon[6]}")
                 print(f"Região: {pokemon[7]}")
+                print(f"Capturado: {pokemon[9]}")
                 print(f"Informações: {pokemon[8]}")
                 print("\n" + "-"*40 + "\n")  # Adicione uma linha separadora entre os Pokémon
 
