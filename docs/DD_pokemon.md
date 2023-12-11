@@ -3,292 +3,236 @@
 
 > "Um dicionário de dados é uma coleção de nomes, atributos e definições sobre elementos de dados que estão sendo usados ​​em seu estudo. [...] O objetivo de um dicionário de dados é explicar o que todos os nomes e valores de variáveis ​​em sua planilha realmente significam. Em um dicionário de dados podem ser encontrados dados sobre os nomes das variáveis ​​exatamente como aparecem na planilha, nomes de variáveis ​​curtos (mas legíveis por humanos), o intervalo de valores ou valores aceitos para a variável, descrição da variável e outras informções pertinentes."(Dados Científicos: como construir metadados, descrição, readme, dicionário-de-dados e mais; Agência de Bibliotecas e Coleções Digitais da Universidade de São Paulo)
 
-## Entidade: Local
+## Entidade: Localidade
 
-#### Descrição: A entidade `Local` descreve a localização e informações sobre o local onde as entidades estão como: suas coordenadas, nome e particularidades.
+#### Descrição
+Representa uma localização no jogo, com informações detalhadas e um mapa associado.
 
-#### Observação: Apesar de várias coordenadas (`Localização`, que é o conjunto de X e Y) poderem pertencer a uma única cidade, nenhuma entidade ocupa a mesma coordenada.
+#### Observação
+A coluna `NOME` possui uma restrição de chave única `sk_nome_local`.
 
-| Nome Variável |     Tipo     |         Descrição         | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :-----------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  localização  | varchar[12]  | Localização das entidades |       ASCII        |          não           |    PK    |                   |
-|     nome      | varchar[50]  |       Nome do local       |       ASCII        |          não           |          |                   |
-|       x       |     int      |       Coordenada X        |      0-25000       |          não           |          |                   |
-|       y       |     int      |       Coordenada Y        |      0-25000       |          não           |          |                   |
-|     info      | varchar[255] | Informações sobre o Local |       ASCII        |          não           |          |                   |
+| Nome Variável | Tipo         | Descrição                    | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|------------------------------|--------------------|------------------------|----------|-------------------|
+| LOCALIZACAO   | serial       | Identificador único da localidade. | Autoincrementado | Não | PK |                   |
+| NOME          | VARCHAR(50)  | Nome da localidade.          | ASCII              | Não |    | UNIQUE            |
+| INFO          | VARCHAR(255) | Informações sobre a localidade. | ASCII           | Não |    |                   |
+| MAPA          | VARCHAR(255) | Mapa da localidade.          | ASCII              | Não |    |                   |
 
-## Entidade: Ginasio
+## Entidade: Caminho
 
-#### Descrição: A entidade `Ginasio` descreve um local de desafio de cada cidade que concede uma **insígnia** para a continuidade na história do jogo.
+#### Descrição
+Descreve o autorrelacionamento entre localidades, mostrando a sala a seguir e a sala anterior.
 
-#### Observação: O ginásio conta com líderes e treinadores, e e xiste apenas um líder para cada ginásio e apenas um ginásio para cada cidade. Possui uma chave estrangeira para a entidade `Local` do nome da cidade, outra para a entidade `Loot` para o id do loot recebido ao derrotar o ginásio e outra para a entidade `NPC` para o id do líder do ginásio.
+#### Observação
+A entidade possui a PK composta entre os dois caminhos `SALA_ATUAL` e `PROXIMA_SALA`, assim como as mesmas colunas são FK de `Localidade` referenciando a coluna `LOCALIZACAO`.
 
-| Nome Variável |    Tipo     |         Descrição          | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
-| nome_ginasio  | varchar[50] |      Nome do ginásio       |       ASCII        |          não           |    PK    |                   |
-|   lider_id    |     int     | Id do NPC lider do ginásio |      0-25000       |          não           |    FK    |                   |
-|     tipo1     | varchar[10] |       Tipo primário        |       ASCII        |          não           |          |                   |
-|     tipo2     | varchar[10] |      Tipo Secundário       |       ASCII        |          sim           |          |                   |
-|    cidade     | varchar[50] | Cidade que sitia o ginásio |       ASCII        |          não           |    FK    |                   |
-|     loot      |     int     |   Id do loot do ginásio    |      0-25000       |          não           |    FK    |                   |
-
-## Entidade: TMs
-
-#### Descrição: A entidade `TMs` descreve um item que pode ser usado para ensinar uma das tuplas de `Habilidades` a um Pokémon.
-
-#### Observação: A entidade `TMs` possui uma chave estrangeira para a entidade `Habilidades` para o id da habilidade que o TM ensina.
-
-| Nome Variável |    Tipo     |              Descrição               | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :----------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|   nome_item   | varchar[60] |              Nome do TM              |       ASCII        |          não           |    PK    |                   |
-|     dono      |     int     |          Id do Dono ou NULL          |      1-25000       |          sim           |  PK FK   |                   |
-|  quantidade   |     int     | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
-| habilidade_id |     int     |   Id da habilidade que ele ensina    |      0-25000       |          não           |  SK FK   |                   |
-
-## Entidade: Itens-Comuns
-
-#### Descrição: A entidade `Itens-Comuns` descreve itens comuns que podem ser encontrados no mundo Pokémon, como potions, repels, etc.
-
-#### Observação: Tem o mesmo princípio de quantidade que a entidade `TMs`.
-
-| Nome Variável |     Tipo     |              Descrição               | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :----------------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
-|   nome_item   | varchar[60]  |             Nome do item             |       ASCII        |          não           |    PK    |                   |
-|     dono      |     int      |          Id do Dono ou NULL          |      1-25000       |          sim           |  PK FK   |                   |
-|  quantidade   |     int      | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
-|    efeito     | varchar[150] |        Efeito ao usar o item         |       ASCII        |          não           |          |                   |
-
-## Entidade: Itens-Chave
-
-#### Descrição: A entidade `Itens-Chave` descreve itens chave que podem ser encontrados no mundo Pokémon, como insígnias, bikes, gliders, etc.
-
-#### Observação: Tem o mesmo princípio de quantidade que a entidade `TMs`.
-
-| Nome Variável |     Tipo     |              Descrição               | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :----------------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
-|   nome_item   | varchar[60]  |             Nome do item             |       ASCII        |          não           |    PK    |                   |
-|     dono      |     int      |          Id do Dono ou NULL          |      1-25000       |          sim           |  PK FK   |                   |
-|  quantidade   |     int      | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
-|   utilidade   | varchar[150] |          Utilidade do item           |       ASCII        |          não           |          |                   |
-
-## Entidade: Pokebolas
-
-#### Descrição: A entidade `Pokebolas` descreve pokebolas que servem para o treinador capturar pokemons e adicioná-los ao seu time, são exemplos a UltraBall, GreatBall, MasterBall, etc.
-
-#### Observação: Tem o mesmo princípio de quantidade que a entidade `TMs` e tem seu nome vinculado ao atributo `Pokebola` da entidade `Pokemon`.
-
-| Nome Variável |    Tipo     |                  Descrição                   | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :------------------------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
-|   nome_item   | varchar[60] |                 Nome do item                 |       ASCII        |          não           |    PK    |                   |
-|     dono      |     int     |              Id do Dono ou NULL              |      1-25000       |          sim           |  PK FK   |                   |
-|  quantidade   |     int     |     Quantidade do item associada ao dono     |      1-25000       |          sim           |          |                   |
-|     Força     |     int     | Quantidade de "força de captura" da pokebola |      1-25000       |          não           |          |                   |
-
-## Entidade: Ervas
-
-#### Descrição: A entidade `Ervas` descreve Ervas medicinais que servem para o treinador curar ou dar algum efeito aos seus pokemons, são exemplos a Energy Powder, Energy Root, Fresh Water, etc.
-
-#### Observação: Tem o mesmo princípio de quantidade que a entidade `TMs`.
-
-| Nome Variável |     Tipo     |              Descrição               | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :----------------------------------: | :----------------: | :--------------------: | :------: | ----------------- |
-|   nome_item   | varchar[60]  |             Nome da erva             |       ASCII        |          não           |    PK    |                   |
-|     dono      |     int      |          Id do Dono ou NULL          |      1-25000       |          sim           |  PK FK   |                   |
-|  quantidade   |     int      | Quantidade do item associada ao dono |      1-25000       |          sim           |          |                   |
-|    efeito     | varchar[150] |        Efeito ao usar a erva         |       ASCII        |          não           |          |                   |
-
-## Entidade: PokeMart
-
-#### Descrição: A entidade `PokeMart` descreve uma loja que pode ser encontrada no mundo Pokémon, onde o treinador pode comprar e vender itens.
-
-#### Observação: Esta entidade é chave estrangeira para `Vendedor`, onde mostra quais NPC vendedores trabalham na loja.
-
-| Nome Variável |     Tipo     |                         Descrição                         | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :-------------------------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    pokemart_id    |     int      |                        Id da loja                         |      0-25000       |          não           |    PK    |                   |
-|     nome      | varchar[60]  |                       Nome da loja                        |       ASCII        |          não           |          |                   |
-|     local     | varchar[12]  |            Local em que a cidade está sitiada             |       ASCII        |          não           |  SK FK   |                   |
-|     info      | varchar[150] | Informações sobre o que a loja vende e como ela se parece |       ASCII        |          não           |          |                   |
-
-## Entidade: Loot
-
-#### Descrição: A entidade `Loot` descreve itens que são encontrados em locais específicos do mundo Pokémon - como cavernas, matagais - ou dados a partir de vitórias de ginásios.
-
-#### Observação: Neste banco de dados não estamos considerando que batalhas pokemon não associadas à um ginásio podem dar loot.
-
-| Nome Variável |    Tipo     |           Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :----------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    loot_id    |     int     |           Id do loot           |      0-25000       |          não           |    PK    |                   |
-|   nome_item   | varchar[60] |       Nome do item dado        |       ASCII        |          não           |  PK FK   |                   |
-|  quantidade   |     int     |    Quantidade do item dado     |      1-25000       |          não           |    FK    |                   |
-|     local     | varchar[12] | Local onde o loot é encontrado |       ASCII        |          não           |    FK    |                   |
-
-## Entidade: Habilidades
-
-#### Descrição: A entidade `Habilidades` descreve as habilidades que um Pokémon pode ter.
-
-#### Observação: Esta entidade é chave estrangeira para `Pokemon`, onde mostra quais habilidades o pokemon associado possui. O atributo alcance somente admite um char de tamanho 1, que pode ser: 'f' de físico, 'd' de à distância. O atributo alvo somente admite um char de tamanho 1, que pode ser: 's' para si próprio, 'e' para um inimigo, 't' para o próprio time, 'i' para o time inimigo e 'a' para todos no campo.
-
-|  Nome Variável  |     Tipo     |                Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-------------: | :----------: | :-------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-| nome_habilidade | varchar[60]  |           Nome da habilidade            |       ASCII        |          não           |    PK    |                   |
-|      tipo       | varchar[10]  |       Tipo primário da habilidade       |       ASCII        |          não           |          |                   |
-|     alcance     |  varchar[1]  |          Alcance da habilidade          |       ASCII        |          não           |          |                   |
-|      alvo       |  varchar[1]  |          Alvo(s) da habilidade          |       ASCII        |          não           |          |                   |
-|      dano       |     int      |           Dano da habilidadde           |      1-25000       |          sim           |          |                   |
-|    acuracia     |     int      |         Acurácia da habilidade          |       1-100        |          não           |          |                   |
-|     efeito      |     int      | Id do efeito que habilidade pode causar |      1-25000       |          sim           |    FK    |                   |
-|      info       | varchar[150] |     Informações sobre a habilidade      |       ASCII        |          não           |          |      UNIQUE       |
-
-## Entidade: Efeitos
-
-#### Descrição: A entidade `Efeitos` descreve os efeitos que uma habilidade pode inferir.
-
-#### Observação: Esta entidade é chave estrangeira para `Habilidades`, onde mostra qual efeito a habilidade associada possui.
-
-| Nome Variável |     Tipo     |         Descrição          | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  efeito_nome  | varchar[30]  |       Nome do efeito       |       ASCII        |          não           |    PK    |                   |
-|   acuracia    |     int      |     Acurácia do efeito     |       1-100        |          não           |          |                   |
-|     dano      |     int      |       Dano do efeito       |      1-25000       |          sim           |          |                   |
-|     info      | varchar[150] | Informações sobre o efeito |       ASCII        |          não           |          |                   |
-
-## Entidade: Pokemon
-
-#### Descrição: A entidade `Pokemon` descreve um Pokémon.
-
-#### Observação: Esta entidade é chave estrangeira para `Batalha`, onde identifica os pokemons que estão batalhando, além de ser registrada também na entidade `Pokedex`.
-
-| Nome Variável |    Tipo     |                Descrição                 | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :--------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  pokemon_id   |     int     |              Id do pokemon               |      0-25000       |          não           |    PK    |                   |
-|   treinador   |     int     |        Id do treinador do pokemon        |      0-25000       |          não           |  PK FK   |                   |
-| nome_pokemon  | varchar[60] |             Nome do pokemon              |       ASCII        |          não           |          |                   |
-|     tipo1     | varchar[10] |         Tipo primário do pokemon         |       ASCII        |          não           |          |                   |
-|     tipo2     | varchar[10] |        Tipo secundário do pokemon        |       ASCII        |          sim           |          |                   |
-|  habilidade1  | varchar[60] |              1ª habilidade               |       ASCII        |          não           |    FK    |                   |
-|  habilidade2  | varchar[60] |              2ª habilidade               |       ASCII        |          sim           |    FK    |                   |
-|  habilidade3  | varchar[60] |              3ª habilidade               |       ASCII        |          sim           |    FK    |                   |
-|  habilidade4  | varchar[60] |              4ª habilidade               |       ASCII        |          sim           |    FK    |                   |
-|    nature     | varchar[10] |            Nature do pokemon             |       ASCII        |          não           |          |                   |
-|     nivel     |  small int  |             Nível do pokemon             |        1-80        |          não           |          |                   |
-|      hp       |  small int  |      Quantidade de vida do pokemon       |       1-2000       |          não           |          |                   |
-|    defesa     |  small int  |     Quantidade de defesa do pokemon      |       1-2000       |          não           |          |                   |
-|    ataque     |  small int  |     Quantidade de ataque do pokemon      |       1-2000       |          não           |          |                   |
-|   sp_defesa   |  small int  | Quantidade de defesa especial do pokemon |       1-2000       |          não           |          |                   |
-|   sp_ataque   |  small int  | Quantidade de ataque especial do pokemon |       1-2000       |          não           |          |                   |
-|  velocidade   |  small int  |   Quantidade de velocidade do pokemon    |       1-2000       |          não           |          |                   |
-|   acuracia    |  small int  |           Acurácia do pokemon            |       1-2000       |          não           |          |                   |
-|     sexo      | varchar[1]  |             Sexo do pokemon              |       ASCII        |          não           |          |                   |
-|    status     | varchar[10] |            Status do pokemon             |       ASCII        |          sim           |          |                   |
-|   pokebola    | varchar[60] |     Pokebola que capturou o pokemon      |       ASCII        |          não           |    FK    |                   |
-
-## Entidade: Batalha
-
-#### Descrição: A entidade `Batalha` descreve uma batalha entre dois pokemons.
-
-#### Observação: Nesta bese de dados não estamos considerando que há batalhas entre mais de dois pokemons. A entidade possui duas chaves estrageiras de `Pokemon`, onde mostra quais pokemons estão batalhando.
-
-| Nome Variável | Tipo |       Descrição       | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :--: | :-------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  batalha_id   | int  |     Id da batalha     |      1-25000       |          não           |    PK    |                   |
-|   pokemon1    | int  | 1º pokemon da batalha |      1-25000       |          não           |    FK    |                   |
-|   pokemon2    | int  | 2º pokemon da batalha |      1-25000       |          não           |    FK    |                   |
+| Nome Variável | Tipo | Descrição | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|------|-----------|--------------------|------------------------|----------|-------------------|
+| SALA_ATUAL    | int  | Id da sala atual. | 1-25000 | Não | PK, FK |                   |
+| PROXIMA_SALA  | int  | Id da próxima sala. | 1-25000 | Não | PK, FK |                   |
 
 ## Entidade: Treinador
 
-#### Descrição: A entidade `Treinador` descreve um treinador Pokemon.
+#### Descrição
+Descreve um personagem do jogo que possui pokémons, seja PC ou NPC. A tabela descreve atributos gerais de treinador como nome, sexo, localização, etc.
 
-#### Observação: `Treinador` é chave estrangeira para todos os tipos de item e para a entidade `NPC`. O atributo sexo recebe apenas um char, sendo ele: 'F' para feminino e 'M' para masculino.
+#### Observação
+A entidade é FK para algumas outras tabelas e possui uma FK de `Localidade` referenciando a coluna `LOCALIZACAO` para demonstrar o local onde o Treinador se encontra. A coluna `TREINADOR_ID` possui o tipo _serial_ em que possui seus valores auto-incrementados sozinhos pelo banco.
 
-|  Nome Variável  |    Tipo     |               Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-------------: | :---------: | :------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|  treinador_id   |     int     |            Id do treinador             |      0-25000       |          não           |    PK    |                   |
-|      nome       | varchar[60] |           Nome do treinador            |       ASCII        |          não           |          |                   |
-| ultima_insignia | varchar[60] | Última insignia que o treinador ganhou |       ASCII        |          não           |          |                   |
-|  tamanho_time   |   tinyint   |            Tamanho do time             |        0-6         |          não           |          |                   |
-|      sexo       | varchar[1]  |           Sexo do treinador            |       ASCII        |          não           |          |                   |
-|    dinheiro     |     int     |         Dinheiro do treinador          |     0-1000000      |          não           |          |                   |
+| Nome Variável       | Tipo        | Descrição | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------------|-------------|-----------|--------------------|------------------------|----------|-------------------|
+| TREINADOR_ID        | serial      | Identificador único do treinador. | Autoincrementado | Não | PK |                   |
+| NOME_TREINADOR      | VARCHAR(50) | Nome do treinador. | ASCII | Não |    |                   |
+| SEXO                | CHAR(1)     | Sexo do treinador. | 'F' ou 'M' | Não |    |                   |
+| LOCALIZACAO         | int         | Localização atual do treinador. | 1-25000 | Não | FK |                   |
+| QUANT_INSIGNIAS     | int         | Quantidade de insígnias conquistadas pelo treinador. | 0-10 | Não |    |                   |
+| QUANT_PK_CAPTURADOS | int         | Quantidade de pokémons capturados pelo treinador. | 0-25000 | Não |    |                   |
+| DINHEIRO            | int         | Quantidade de dinheiro que o treinador possui. | 0-25000 | Não |    |                   |
 
-## Entidade: Pokedex
+## Entidade: Tipo_Item
 
-#### Descrição: A entidade `Pokedex` descreve um catálogo de todos os pokemons vistos e capiturados pelo treinador.
+#### Descrição
+Define os tipos de itens disponíveis no jogo.
 
-#### Observação: `Pokedex` recebe uma chave estrangeira de `Pokemon` para consultar seus atributos.
+#### Observação
+A entidade `Tipo_Item` é utilizada como referência para outras tabelas de itens.
 
-| Nome Variável |     Tipo     |             Descrição             | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :-------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-| treinador_id  |     int      |          Id do treinador          |      0-25000       |          não           |    PK    |                   |
-|    pokemon    |     int      |           Id do pokemon           |      0-25000       |          não           |    PK    |                   |
-|  localidade   | varchar[60]  | Local onde o pokemon é encontrado |       ASCII        |          sim           |          |                   |
-|     info      | varchar[255] |    Informações sobre o pokemon    |       ASCII        |          não           |          |      UNIQUE       |
+| Nome Variável | Tipo      | Descrição              | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|-----------|------------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60) | Nome do tipo de item. | ASCII              | Não | PK |                   |
+| TIPO_ITEM     | CHAR(1)   | Categoria do item.     | ASCII              | Não |    |                   |
 
-## Entidade: NPC
+## Entidade: Item_Comum
 
-#### Descrição: A entidade `NPC` descreve um personagem não jogável do jogo.
+#### Descrição
+Representa itens comuns que podem ser utilizados pelos treinadores no jogo.
 
-#### Observação: A entidade `NPC` recebe uma chave estrangeira de `Treinador` para consultar seus atributos, porém nem todo NPC é treinador. `NPC` recebe uma chave estrangeira de `Ginasio` pois há NPCs que participam dos ginásios mesmo não sendo líderes. Quanto ao atributo sexo, ele recebe apenas um char, sendo ele: 'F' para feminino e 'M' para masculino.
+#### Observação
+A entidade `Item_Comum` é uma especialização da entidade `Tipo_Item`.
 
-| Nome Variável |     Tipo     |              Descrição              | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :----------: | :---------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    npc_id     |     int      |              Id do NPC              |      0-25000       |          não           |    PK    |                   |
-|   treinador   |     int      |           Id do treinador           |      0-25000       |          sim           |    FK    |                   |
-|  localidade   | varchar[12]  |        Local onde o NPC fica        |       ASCII        |          não           |    FK    |                   |
-|     sexo      |  varchar[1]  |             Sexo do NPC             |       ASCII        |          não           |          |                   |
-|    ginasio    | varchar[50]  | Nome do ginásio que o NPC participa |       ASCII        |          sim           |    FK    |                   |
-|     info      | varchar[150] |       Informações sobre o NPC       |       ASCII        |          não           |          |                   |
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60)  | Nome do item comum.  | ASCII              | Não | PK, FK |                   |
+| EFEITO        | VARCHAR(150) | Efeito do item.      | ASCII              | Sim |    |                   |
 
-## Entidade: Itens-vendidos
+## Entidade: Item_Chave
 
-#### Descrição: A entidade `Itens-vendidos` descreve os itens vendidos por uma loja.
+#### Descrição
+Representa itens chave que são essenciais para o progresso no jogo.
 
-#### Observação: A entidade `Itens-vendidos` recebe uma chave estrangeira de `PokeMart` para identificá-la e outra de alguma entidate-item. A quantidade nula significa infinitos itens a venda.
+#### Observação
+A entidade `Item_Chave` é uma especialização da entidade `Tipo_Item`.
 
-| Nome Variável |    Tipo     |                Descrição                | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :---------: | :-------------------------------------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    pokemart_id    |     int     |               Id da loja                |      0-25000       |          não           |  PK FK   |                   |
-|   nome_item   | varchar[60] |          Nome do item vendido           |       ASCII        |          não           |  PK FK   |                   |
-|  quantidade   |     int     | Quantidade de itens disponíveis a venda |      1-25000       |          sim           |          |                   |
-|     preco     |     int     |              Preço do item              |      0-25000       |          não           |          |                   |
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60)  | Nome do item chave.  | ASCII              | Não | PK, FK |                   |
+| UTILIDADE     | VARCHAR(150) | Utilidade do item.   | ASCII              | Sim |    |                   |
 
-## Entidade: Vendedor
+## Entidade: Fruta
 
-#### Descrição: A entidade `Vendedor` identifica a loja e o NPC que trabalha nela.
+#### Descrição
+Representa frutas que podem ser utilizadas pelos treinadores para diversos efeitos no jogo.
 
-#### Observação: A entidade `Vendedor` recebe uma chave estrangeira de `PokeMart` para identificá-la e outra de `NPC` para identificar o NPC que trabalha na loja.
+#### Observação
+A entidade `Fruta` é uma especialização da entidade `Tipo_Item`.
 
-| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    pokemart_id    | int  | Id da loja |      0-25000       |          não           |  PK FK   |                   |
-|    npc_id     | int  | Id do NPC  |      0-25000       |          não           |  PK FK   |                   |
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60)  | Nome da fruta.       | ASCII              | Não | PK, FK |                   |
+| EFEITO        | VARCHAR(150) | Efeito da fruta.     | ASCII              | Sim |    |                   |
 
-## Entidade: PokeCenter
+## Entidade: Tipo
 
-#### Descrição: A entidade `PokeCenter` descreve um "hospital" que pode ser encontrada no mundo Pokémon, onde o treinador pode curar seus Pokémons.
+#### Descrição
+Define os tipos de pokémons e habilidades no jogo.
 
+#### Observação
+A entidade `Tipo` é utilizada como referência para a entidade `Habilidade`.
 
-#### Observação: A entidade `PokeCenter` recebe uma chave estrangeira de `Local` para identificá-la.
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_TIPO     | VARCHAR(15)  | Nome do tipo.        | ASCII              | Não | PK |                   |
 
-| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    pokecenter_id    | int  | Id do PokeCenter |      0-25000       |          não           |  PK   |                   |
-|    cura_disponivel     | int  | Quantidade de cura disponível  |      0-25000       |          não           |     |      |
-|  localidade   | varchar[12]  |        Local onde o PokeCenter fica        |       ASCII        |          não           |   SK FK    |                   |
-|     info      | varchar[150] |       Informações sobre o NPC       |       ASCII        |          não           |          |                   |
+## Entidade: Efeito
 
+#### Descrição
+Define os efeitos que as habilidades podem ter no jogo.
+
+#### Observação
+A entidade `Efeito` é utilizada como referência para a entidade `Habilidade`.
+
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_EFEITO   | VARCHAR(15)  | Nome do efeito.      | ASCII              | Não | PK |                   |
+| ACURACIA      | SMALLINT     | Acurácia do efeito.  | 0-100              | Não |    |                   |
+| DANO          | SMALLINT     | Dano causado pelo efeito. | 0-100          | Sim |    |                   |
+| INFO          | VARCHAR(150) | Informações sobre o efeito. | ASCII       | Não |    |                   |
+
+## Entidade: Habilidade
+
+#### Descrição
+Define as habilidades que os pokémons podem aprender e utilizar no jogo.
+
+#### Observação
+A entidade `Habilidade` possui chaves estrangeiras referenciando as entidades `Tipo` e `Efeito`.
+
+| Nome Variável   | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-----------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| HABILIDADE_ID   | serial       | Identificador único da habilidade. | Autoincrementado | Não | PK |                   |
+| NOME_HABILIDADE | VARCHAR(20)  | Nome da habilidade.  | ASCII              | Não |    | UNIQUE            |
+| TIPO_DANO       | CHAR(1)      | Tipo de dano da habilidade. | ASCII       | Não |    |                   |
+| DANO            | SMALLINT     | Dano causado pela habilidade. | Numérico  | Sim |    |                   |
+| TIPO            | VARCHAR(15)  | Tipo da habilidade.  | ASCII              | Não | FK |                   |
+| ACURACIA        | int          | Acurácia da habilidade. | Numérico       | Não |    |                   |
+| EFEITO          | VARCHAR(15)  | Efeito da habilidade. | ASCII             | Sim | FK |                   |
+| INFO            | VARCHAR(150) | Informações sobre a habilidade. | ASCII   | Não |    |                   |
+
+## Entidade: TM
+
+#### Descrição
+Representa os TMs (Technical Machines) que ensinam habilidades aos pokémons.
+
+#### Observação
+A entidade `TM` possui uma chave estrangeira referenciando a entidade `Habilidade`.
+
+| Nome Variável   | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-----------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM       | VARCHAR(60)  | Nome do TM.          | ASCII              | Não | PK, FK |                   |
+| HABILIDADE_ID   | int          | Identificador da habilidade associada ao TM. | Numérico | Não | FK | UNIQUE            |
+
+## Entidade: Pokebola
+
+#### Descrição
+Define os diferentes tipos de pokébolas usadas para capturar pokémons.
+
+#### Observação
+A entidade `Pokebola` possui uma restrição de verificação para garantir que a força esteja dentro de um intervalo válido.
+
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60)  | Nome da pokébola.    | ASCII              | Não | PK, FK |                   |
+| FORCA         | SMALLINT     | Força da pokébola.   | 0-100              | Não |    | CHECK (FORCA >= 0 AND FORCA <= 100) |
 
 ## Entidade: Mochila
 
-#### Descrição: A entidade `Mochila` descreve um meio de armazenar itens do universo Pokemon.
+#### Descrição
+Representa a mochila de um treinador, contendo itens.
 
+#### Observação
+A entidade `Mochila` possui chaves estrangeiras referenciando as entidades `Treinador` e `Tipo_Item`.
 
-#### Observação: A entidade `Mochila` recebe uma chave estrangeira de `Treinador` para identificá-la.
+| Nome Variável | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_ITEM     | VARCHAR(60)  | Nome do item na mochila. | ASCII          | Não | PK, FK |                   |
+| DONO          | int          | Identificador do treinador dono da mochila. | Numérico | Não | FK |                   |
+| QUANTIDADE    | SMALLINT     | Quantidade do item na mochila. | Numérico  | Não |    |                   |
 
-| Nome Variável | Tipo | Descrição  | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
-| :-----------: | :--: | :--------: | :----------------: | :--------------------: | :------: | :---------------: |
-|    classificação_item    | int  | Classificação do item |      0-25000       |          não           |  PK   |                   |
-| dono  |     int      |          Id do treinador          |      0-25000       |          não           |    PK    |                   |
-|    slot    | int  | Slot disponível para item |      0-25000       |          não           |     |                   |                  |
+## Entidade: Pokedex
+
+#### Descrição
+Representa a Pokedex, um dispositivo eletrônico que fornece informações sobre as espécies de pokémons.
+
+#### Observação
+A entidade `Pokedex` possui chaves estrangeiras referenciando a entidade `Tipo` e restrições de verificação para garantir que os valores estejam dentro de intervalos válidos.
+
+| Nome Variável   | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-----------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NUMERO_POKEDEX  | int          | Número único na Pokedex para o pokémon. | Numérico | Não | PK |                   |
+| NOME_POKEMON    | VARCHAR(20)  | Nome do pokémon.     | ASCII              | Sim |    | UNIQUE            |
+| TIPO1           | VARCHAR(15)  | Tipo primário do pokémon. | ASCII         | Não | FK |                   |
+| TIPO2           | VARCHAR(15)  | Tipo secundário do pokémon. | ASCII       | Sim | FK |                   |
+| NIVEL_EVOLUCAO  | SMALLINT     | Nível de evolução do pokémon. | Numérico  | Sim |    |                   |
+| TAXA_CAPTURA    | smallint     | Taxa de captura do pokémon. | 0-100       | Não |    | CHECK (taxa_captura >= 0 AND taxa_captura <= 100) |
+| SOM_EMITIDO     | int          | Identificador do som emitido pelo pokémon. | Numérico | Não |    |                   |
+| REGIAO          | VARCHAR(20)  | Região onde o pokémon é encontrado. | ASCII | Não |    |                   |
+| INFO            | VARCHAR(100) | Informações adicionais sobre o pokémon. | ASCII | Não |    |                   |
+
+## Entidade: Evolucao
+
+#### Descrição
+Representa a relação de evolução entre diferentes espécies de pokémons.
+
+#### Observação
+A entidade `Evolucao` possui chaves estrangeiras referenciando a entidade `Pokedex`.
+
+| Nome Variável | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|---------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| ANTERIOR      | int  | Número na Pokedex do pokémon anterior na cadeia evolutiva. | Numérico | Não | PK, FK |                   |
+| SUCESSOR      | int  | Número na Pokedex do pokémon sucessor na cadeia evolutiva. | Numérico | Não | FK | UNIQUE            |
+
+## Entidade: Registro_Pokedex
+
+#### Descrição
+Registra quais pokémons foram capturados por um treinador.
+
+#### Observação
+A entidade `Registro_Pokedex` possui chaves estrangeiras referenciando as entidades `Pokedex` e `Treinador`.
+
+| Nome Variável   | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-----------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NUMERO_POKEMON  | int          | Número do pokémon na Pokedex. | Numérico | Não | PK, FK |                   |
+| TREINADOR_ID    | int          | Identificador do treinador. | Numérico   | Não | PK, FK |                   |
+| CAPTURADO       | VARCHAR(5)   | Indica se o pokémon foi capturado. | 'SIM' ou 'NAO' | Não |    |                   |
 
 
 
