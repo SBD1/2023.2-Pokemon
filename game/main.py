@@ -6,6 +6,7 @@ import random
 primeira_vez_leste_pallet = True
 mensagem_floresta = False
 batalha_terminada = False
+esta_em_batalha = False
 
 cor_verde = '\033[92m'
 cor_amarelo = '\033[93m'
@@ -522,10 +523,10 @@ def ver_mochila(conn, id_treinador):
     if itens_mochila:
         for item in itens_mochila:
             print(f"{item[0]}: {item[1]}")
-        print("Deseja usar algum item? (S/N)")
+        print("\nDeseja usar algum item? (S/N)")
         resposta = input().strip().lower()
         if resposta == 's':
-            usar_item(conn, id_treinador)
+            return usar_item(conn, id_treinador)
     else:
         print("A mochila está vazia.")
 
@@ -543,7 +544,7 @@ def usar_item(conn, id_treinador):
     if itens_mochila:
         for item in itens_mochila:
             print(f"{item[0]}: {item[1]}")
-        print("Digite o nome do item que deseja usar ou 0 para sair: ")
+        print("\nDigite o nome do item que deseja usar ou 0 para sair: ")
         resposta = input().strip().lower()
         if resposta == '0':
             return
@@ -564,10 +565,24 @@ def usar_item(conn, id_treinador):
                     usar_revive(conn, id_treinador, quantidade_item)
                 elif nome_item == 'Max Revive':
                     usar_max_revive(conn, id_treinador, quantidade_item)
+                elif nome_item == 'Pokeball':
+                    return usar_pokeball(conn, id_treinador, quantidade_item, nome_item)
                 else:
                     os.system('cls')
                     print("Item não encontrado.")
                     input("\nPressione Enter para continuar...")  
+
+def usar_pokeball(conn, id_treinador, quantidade_item, nome_item):
+    global esta_em_batalha
+    cursor = conn.cursor()
+    if not esta_em_batalha:
+        os.system('cls')
+        print("Você não pode usar uma pokeball fora de uma batalha.")
+        input("\nPressione Enter para continuar...")
+    else:
+        return nome_item
+        
+
 
 def usar_max_revive(conn, id_treinador, quantidade_item):
     cursor = conn.cursor()
@@ -577,7 +592,7 @@ def usar_max_revive(conn, id_treinador, quantidade_item):
     pokemons_desmaiados = cursor.fetchall()
 
     if pokemons_desmaiados:
-        print("Pokémon(s) desmaiado(s) encontrados:")
+        print("\nPokémon(s) desmaiado(s) encontrados:")
         for pokemon in pokemons_desmaiados:
             print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
         print("Digite o ID do Pokémon que deseja reviver: ")
@@ -591,7 +606,7 @@ def usar_max_revive(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s, status = 'Saudável' WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Max Revive' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - 1 WHERE nome_item = 'Max Revive' AND dono = %s", (1, id_treinador,))
 
             conn.commit()
             os.system('cls')
@@ -616,7 +631,7 @@ def usar_revive(conn, id_treinador, quantidade_item):
     pokemons_desmaiados = cursor.fetchall()
 
     if pokemons_desmaiados:
-        print("Pokémon(s) desmaiado(s) encontrados:")
+        print("\nPokémon(s) desmaiado(s) encontrados:")
         for pokemon in pokemons_desmaiados:
             print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
         print("Digite o ID do Pokémon que deseja reviver: ")
@@ -630,7 +645,7 @@ def usar_revive(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s, status = 'Saudável' WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Revive' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Revive' AND dono = %s", (1, id_treinador,))
 
             conn.commit()
             os.system('cls')
@@ -655,7 +670,7 @@ def usar_potion(conn, id_treinador, quantidade_item):
     pokemons_feridos = cursor.fetchall()
 
     if pokemons_feridos:
-        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        print("\nPokémon(s) ferido(s) e não desmaiado(s) encontrados:")
         for pokemon in pokemons_feridos:
             print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
         print("Digite o ID do Pokémon que deseja curar: ")
@@ -669,7 +684,7 @@ def usar_potion(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Potion' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Potion' AND dono = %s", (1, id_treinador,))
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
@@ -693,7 +708,7 @@ def usar_super_potion(conn, id_treinador, quantidade_item):
     pokemons_feridos = cursor.fetchall()
 
     if pokemons_feridos:
-        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        print("\nPokémon(s) ferido(s) e não desmaiado(s) encontrados:")
         for pokemon in pokemons_feridos:
             print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
         print("Digite o ID do Pokémon que deseja curar: ")
@@ -707,7 +722,7 @@ def usar_super_potion(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Super Potion' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'Super Potion' AND dono = %s", (1, id_treinador,))
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
@@ -731,7 +746,7 @@ def usar_hyper_potion(conn, id_treinador, quantidade_item):
     pokemons_feridos = cursor.fetchall()
 
     if pokemons_feridos:
-        print("Pokémon(s) ferido(s) e não desmaiado(s) encontrados:")
+        print("\nPokémon(s) ferido(s) e não desmaiado(s) encontrados:")
         for pokemon in pokemons_feridos:
             print(f"- {pokemon[1]} (ID: {pokemon[0]}, HP: {pokemon[2]})")
         print("Digite o ID do Pokémon que deseja curar: ")
@@ -745,7 +760,7 @@ def usar_hyper_potion(conn, id_treinador, quantidade_item):
             novo_hp = min(100, hp + cura_hp)
 
             cursor.execute("UPDATE pokemon SET hp = %s WHERE pokemon_id = %s", (novo_hp, pokemon_id))
-            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'hyperpotion' AND dono = %s", (quantidade_item, id_treinador,))
+            cursor.execute("UPDATE mochila SET quantidade = quantidade - %s WHERE nome_item = 'hyperpotion' AND dono = %s", (1, id_treinador,))
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
@@ -775,7 +790,7 @@ def inserir_pokemon_base(conn):
         #(12, None, 'Butterfree', 1, 18, None, None, 'Educado', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
         #(13, None, 'Weedle', 1, 18, None, None, 'Observador', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
         #(14, None, 'Kakuna', 1, 18, None, None, 'Relaxado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(15, None, 'Beedrill', 1, 18, None, None, 'Valente', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
+        (15, 2, 'Onix', 1, 18, None, None, 'Valente', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
         #(16, None, 'Pidgey', 1, 8, None, None, 'Atrevido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
         #(17, None, 'Pidgeotto', 1, 8, None, None, 'Exaltado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
         #(18, None, 'Pidgeot', 1, 8, None, None, 'Empenhado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
@@ -858,7 +873,8 @@ def ver_pokemon(conn, id_treinador):
             HABILIDADE1.NOME_HABILIDADE AS HABILIDADE1,
             HABILIDADE2.NOME_HABILIDADE AS HABILIDADE2,
             HABILIDADE3.NOME_HABILIDADE AS HABILIDADE3,
-            HABILIDADE4.NOME_HABILIDADE AS HABILIDADE4
+            HABILIDADE4.NOME_HABILIDADE AS HABILIDADE4,
+            POKEMON.XP
         FROM
             POKEMON
             LEFT JOIN HABILIDADE AS HABILIDADE1 ON POKEMON.HABILIDADE1 = HABILIDADE1.HABILIDADE_ID
@@ -875,8 +891,9 @@ def ver_pokemon(conn, id_treinador):
         os.system('cls')
         print("Pokémons do Treinador:\n")
         for pokemon in pokemons_treinador:
-            print(f"Nome: {pokemon[1]}")
-            print(f"Nível: {pokemon[2]}, HP: {pokemon[3]}, Sexo: {pokemon[4]}, Status: {pokemon[5]}")
+            print(f"Nome: {pokemon[1]}\n")
+            print(f"HP: {pokemon[3]}, Status: {pokemon[5]}, Sexo: {pokemon[4]}")
+            print(f"Nível: {pokemon[2]}, XP: {pokemon[10]}\n")
             print(f"Habilidade 1: {pokemon[6] if pokemon[6] else 'Não aprendeu ainda'}")
             print(f"Habilidade 2: {pokemon[7] if pokemon[7] else 'Não aprendeu ainda'}")
             print(f"Habilidade 3: {pokemon[8] if pokemon[8] else 'Não aprendeu ainda'}")
@@ -958,6 +975,8 @@ def floresta_viridian(conn, id_treinador):
 def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, registro_existente):
     os.system('cls')
     global batalha_terminada
+    global esta_em_batalha
+    esta_em_batalha = True
     batalha_terminada = False
     atacou_primeiro = None
     cursor = conn.cursor()
@@ -1059,58 +1078,64 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, registro_exis
                 habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador)
 
         elif escolha == '2':
-            # Usar item
-            print('Usar item')
+            ver_mochila(conn, id_treinador)
         elif escolha == '3':
-            capturar_pokemon(conn, pokemon_id_selvagem, 'Pokeball', id_treinador)
+            nome_pokebola_utilizada = ver_mochila(conn, id_treinador)
+            capturar_pokemon(conn, pokemon_id_selvagem, nome_pokebola_utilizada, id_treinador, registro_existente, pokemon_selvagem)
             input("\nPressione Enter para continuar...")
+            if not batalha_terminada:
+                habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador)
         elif escolha == '4':
             fugir_batalha(conn, id_treinador, registro_existente, pokemon_selvagem)
         else:
             print("Opção inválida. Tente novamente.")
 
         #atacou_primeiro = None
+    esta_em_batalha = False
     cursor.close()
 
-def capturar_pokemon(conn, pokemon_id, pokebola, treinador_id):
-    cursor = None
+
+def capturar_pokemon(conn, pokemon_id, pokebola, id_treinador, registro_existente, pokemon_selvagem):
+    global batalha_terminada
+
     try:
-        # Habilitar o autocommit antes de iniciar a transação
-        conn.autocommit = True
-
-        # Iniciar a transação explicitamente
-        conn.begin()
-
         cursor = conn.cursor()
 
-        # Desabilitar o autocommit novamente
-        conn.autocommit = False
-
         # Chamar a função JOGA_POKEBOLA no banco de dados
-        cursor.execute("SELECT JOGA_POKEBOLA(%s, %s, %s);", (pokemon_id, pokebola, treinador_id))
-
-        # Exibir mensagens de aviso
+        cursor.execute("SELECT JOGA_POKEBOLA(%s, %s, %s);", (pokemon_id, pokebola, id_treinador,))
+        os.system('cls')
+        print(f"O treinador jogou uma {pokebola}!!!\n")
+        input("\nPressione Enter para continuar...")
+        os.system('cls')
+        print("Capturando...\n")
+        input("\nPressione Enter para continuar...")
+        os.system('cls')
         for notice in conn.notices:
-            print(f"Aviso do PostgreSQL: {notice}")
+                if 'A captura falhou!' in notice:
+                    print('A captura falhou.\n')
+                elif 'Pokemon capturado!' in notice:       
+                    print('Pokemon capturado!\n')
+                    if not registro_existente:
+                        # Insira o Pokémon na tabela registro_pokedex
+                        cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (pokemon_selvagem[6], id_treinador, 'Sim'))
+                        conn.commit()
+                        print(f"\n{cor_verde}{pokemon_selvagem[1]}{reset_cor} foi registrado na Pokédex!\n")
+                    batalha_terminada = True
+        conn.notices.clear()
 
         # Commit das alterações
         conn.commit()
 
-        # Exibir mensagem de sucesso
-        print("Captura de Pokémon concluída com sucesso!")
-
     except psycopg2.Error as e:
         # Exibir mensagem de erro em caso de falha
-        print(f"Erro ao capturar Pokémon: {e}")
+        conn.rollback()
+        message = str(e).split('CONTEXT')[0]
+        print(f"{message}")
 
     finally:
-        # Limpar as mensagens de aviso
-        conn.notices = []
+        # Fechar o cursor
+        cursor.close()
 
-        # Fechar o cursor, se estiver definido
-        if cursor:
-            cursor.close()
-                       
 def fugir_batalha(conn, id_treinador, registro_existente, pokemon_selvagem):
     global batalha_terminada
     cursor = conn.cursor()
@@ -1328,6 +1353,337 @@ def calcular_dano_selvagem(conn, pokemon_selvagem, pokemon_treinador, habilidade
         # Fechar o cursor e a conexão
         cursor.close()
 
+def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
+    os.system('cls')
+    global batalha_terminada
+    global esta_em_batalha
+    esta_em_batalha = True
+    batalha_terminada = False
+    atacou_primeiro = None
+    cursor = conn.cursor()
+
+    pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
+
+    # Obter informações do Pokémon do treinador
+    cursor.execute("SELECT * FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+    pokemon_treinador = cursor.fetchone()
+
+    if pokemon_treinador:
+        pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+        os.system('cls')
+        print(f"Você jogou {nome_pokemon_treinador}!\n")
+        input("\nPressione Enter para continuar...")
+
+    #Obter informações do nome do adversário
+    cursor.execute("SELECT nome_treinador FROM treinador WHERE treinador_id = %s", (npc_id,))
+    nometreinador_npc = cursor.fetchone()[0]
+
+    if pokemon_npc:
+        os.system('cls')
+        print(f"{nometreinador_npc} jogou {nome_pokemon_npc}!!\n")
+        input("\nPressione Enter para continuar...")
+
+
+    while not batalha_terminada:
+
+        os.system('cls')
+        
+        # Atualize a variável hp com o valor mais recente do banco de dados
+        cursor.execute("SELECT hp, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+        resultado_treinador = cursor.fetchone()
+        hp_treinador, status_treinador = resultado_treinador[0], resultado_treinador[1]
+        print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+        print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
+        # Atualize a variável hp_npc com o valor mais recente do banco de dados
+        cursor.execute("SELECT hp, status FROM pokemon WHERE pokemon_id = %s", (pokemon_id_npc,))
+        resultado_npc = cursor.fetchone()
+        hp_npc, status_npc = resultado_npc[0], resultado_npc[1]
+        print(f"{nome_pokemon_npc} (Nível {nivel_npc})")
+        print(f"HP: {hp_npc} | Status: {status_npc} | Natureza: {nature_npc}\n")
+
+        print("Escolha uma opção:")
+        print("1. Atacar")
+        print("2. Usar Item")
+        print("3. Tentar Capturar")
+        print("4. Fugir")
+
+        escolha = input().strip()
+
+        if escolha == '1':
+            atacou_primeiro = check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_npc)
+            if atacou_primeiro:
+                display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_npc)
+            else:
+                habilidades_pokemon_npc(conn, id_treinador, pokemon_npc, pokemon_treinador)
+            os.system('cls')
+            # Atualize a variável hp com o valor mais recente do banco de dados
+            cursor.execute("SELECT hp, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
+            resultado_treinador = cursor.fetchone()
+            hp_treinador, status_treinador = resultado_treinador[0], resultado_treinador[1]
+            # Atualize a variável hp_npc com o valor mais recente do banco de dados
+            cursor.execute("SELECT hp, status FROM pokemon WHERE pokemon_id = %s", (pokemon_id_npc,))
+            resultado_npc = cursor.fetchone()
+            hp_npc, status_npc = resultado_npc[0], resultado_npc[1]
+
+            # Checa se o pokemon npc desmaiou e termina a batalha
+            if hp_npc <= 0:
+                print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+                print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
+                print(f"{nome_pokemon_npc} (Nível {nivel_npc})")
+                print(f"HP: {hp_npc} | Status: {status_npc} | Natureza: {nature_npc}\n")
+
+                print(f"{nome_pokemon_npc} desmaiou!\n")
+                input("\nPressione Enter para continuar...")
+
+                os.system('cls')
+                print(f"\nVocê derrotou {nome_pokemon_npc}!\n")
+                print(f"Você ganhou 10 de XP!\n")
+                input("\nPressione Enter para continuar...")
+                os.system('cls')
+                print(f"\nVocê derrotou {nometreinador_npc}!\n")
+                print(f"{nometreinador_npc}: Muito bem! Você conseguiu me derrotar.\nComo prometido, aqui está sua insígnia!\n")
+                if nometreinador_npc == 'Brock':
+                    print(f"\nVocê ganhou a insígnia da Pedra!\n")
+                elif nometreinador_npc == 'Misty':
+                    print(f"\nVocê ganhou a insígnia da Água!\n")
+                print(f"Você ganhou 500$ pela vitória!\n")
+                cursor.execute("UPDATE treinador SET quant_insignias = quant_insignias + 1 WHERE treinador_id = %s", (id_treinador,))
+                cursor.execute("UPDATE treinador SET dinheiro = dinheiro + 500 WHERE treinador_id = %s", (id_treinador,))
+                input("\nPressione Enter para continuar...")
+                batalha_terminada = True
+                break
+
+            # Checa se o pokemon npc desmaiou e termina a batalha
+            if hp_treinador <= 0:
+                print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+                print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
+                print(f"{nome_pokemon_npc} (Nível {nivel_npc})")
+                print(f"HP: {hp_npc} | Status: {status_npc} | Natureza: {nature_npc}\n")
+
+                print(f"{nome_pokemon_treinador} desmaiou!\n")
+                input("\nPressione Enter para continuar...")
+
+                os.system('cls')
+                print(f"\nVocê foi derrotado. A batalha acabou\n")
+                input("\nPressione Enter para continuar...")
+                batalha_terminada = True
+                break
+
+            os.system('cls')
+            if not atacou_primeiro:
+                display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_npc)
+            else:
+                os.system('cls')
+                habilidades_pokemon_npc(conn, id_treinador, pokemon_npc, pokemon_treinador)
+
+        elif escolha == '2':
+            ver_mochila(conn, id_treinador)
+        else:
+            print("Opção inválida. Tente novamente.")
+
+        #atacou_primeiro = None
+    esta_em_batalha = False
+    cursor.close()
+
+def check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_npc):
+    cursor = conn.cursor()
+
+    # Obter informações de velocidade dos Pokémon
+    cursor.execute("SELECT velocidade FROM pokemon WHERE treinador_id = %s AND pokemon_id = %s", (id_treinador, pokemon_treinador[0]))
+    velocidade_treinador = cursor.fetchone()[0]
+
+    cursor.execute("SELECT velocidade FROM pokemon WHERE pokemon_id = %s", (pokemon_npc[0],))
+    velocidade_npc = cursor.fetchone()[0]
+
+    # Compara as velocidades para determinar quem ataca primeiro
+    if velocidade_treinador > velocidade_npc:
+        print(f"Seu Pokémon ataca primeiro!")
+        input("\nPressione Enter para continuar...")
+        return True
+    elif velocidade_treinador < velocidade_npc:
+        print(f"O Pokémon oponente ataca primeiro!")
+        input("\nPressione Enter para continuar...")
+        return False
+    else:
+        print(f"Ambos os Pokémon têm a mesma velocidade. A ordem de ataque é aleatória.")
+        input("\nPressione Enter para continuar...")
+        return random.choice([True, False])
+
+    cursor.close()
+
+def habilidades_pokemon_npc(conn, id_treinador, pokemon_npc, pokemon_treinador):
+    cursor = conn.cursor()
+
+    pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    # Obtém as habilidades do Pokémon npc
+    query = """
+    SELECT p.*, h1.NOME_HABILIDADE as habilidade1_nome, h2.NOME_HABILIDADE as habilidade2_nome,
+           h3.NOME_HABILIDADE as habilidade3_nome, h4.NOME_HABILIDADE as habilidade4_nome
+    FROM pokemon p
+    LEFT JOIN habilidade h1 ON p.HABILIDADE1 = h1.HABILIDADE_ID
+    LEFT JOIN habilidade h2 ON p.HABILIDADE2 = h2.HABILIDADE_ID
+    LEFT JOIN habilidade h3 ON p.HABILIDADE3 = h3.HABILIDADE_ID
+    LEFT JOIN habilidade h4 ON p.HABILIDADE4 = h4.HABILIDADE_ID
+    WHERE p.pokemon_id = %s
+    """
+    cursor.execute(query, (pokemon_id_npc,))
+    pokemon_info = cursor.fetchone()
+
+    if pokemon_info:
+        (
+            pokemon_id, numero_pokedex, treinador_id, nome_pokemon,
+            habilidade1_id, habilidade2_id, habilidade3_id, habilidade4_id,
+            nature, nivel, hp, defesa, ataque, sp_ataque, sp_defesa,
+            velocidade, sexo, xp, status, pokebola, altura, peso, localizacao,
+            habilidade1_nome, habilidade2_nome, habilidade3_nome, habilidade4_nome
+        ) = pokemon_info
+
+        os.system('cls')
+        print("O pokemon oponente atacou!\n")
+        print(f"Pokémon: {nome_pokemon} (Nível {nivel})")
+        print(f"HP: {hp} | Status: {status} | Natureza: {nature}\n\n")
+
+        escolha = str(random.randint(1, 2)).strip()
+
+        habilidades = {
+            '1': habilidade1_nome,
+            '2': habilidade2_nome,
+            #'3': habilidade3_nome if habilidade3_nome else "Ainda não aprendeu",
+            #'4': habilidade4_nome if habilidade4_nome else "Ainda não aprendeu"
+        }
+
+        habilidade_id = {
+            '1': habilidade1_id,
+            '2': habilidade2_id,
+            #'3': habilidade3_id if habilidade3_id else None,
+            #'4': habilidade4_id if habilidade4_id else None
+        }
+
+        if escolha in habilidades:
+            # Atacar com a habilidade escolhida
+            print(f"{nome_pokemon} usou {habilidades[escolha]}\n")
+            if habilidade_id[escolha]:
+                calcular_dano_npc(conn, pokemon_npc, pokemon_treinador, habilidade_id[escolha])
+        else:
+            print("Opção inválida. Tente novamente.")
+    else:
+        print("Erro.")
+    input("\nPressione Enter para continuar...")
+    cursor.close()
+
+
+
+def display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_npc):
+    cursor = conn.cursor()
+
+    pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    # Obtém as habilidades do Pokémon do treinador
+    query = """
+    SELECT p.*, h1.NOME_HABILIDADE as habilidade1_nome, h2.NOME_HABILIDADE as habilidade2_nome,
+           h3.NOME_HABILIDADE as habilidade3_nome, h4.NOME_HABILIDADE as habilidade4_nome
+    FROM pokemon p
+    LEFT JOIN habilidade h1 ON p.HABILIDADE1 = h1.HABILIDADE_ID
+    LEFT JOIN habilidade h2 ON p.HABILIDADE2 = h2.HABILIDADE_ID
+    LEFT JOIN habilidade h3 ON p.HABILIDADE3 = h3.HABILIDADE_ID
+    LEFT JOIN habilidade h4 ON p.HABILIDADE4 = h4.HABILIDADE_ID
+    WHERE p.treinador_id = %s
+    """
+    cursor.execute(query, (id_treinador,))
+    pokemon_info = cursor.fetchone()
+
+    if pokemon_info:
+        (
+            pokemon_id, numero_pokedex, treinador_id, nome_pokemon,
+            habilidade1_id, habilidade2_id, habilidade3_id, habilidade4_id,
+            nature, nivel, hp, defesa, ataque, sp_ataque, sp_defesa,
+            velocidade, sexo, xp, status, pokebola, altura, peso, localizacao,
+            habilidade1_nome, habilidade2_nome, habilidade3_nome, habilidade4_nome
+        ) = pokemon_info
+
+        os.system('cls')
+        print("Você ataca!\n")
+        print(f"Seu Pokémon: {nome_pokemon} (Nível {nivel})")
+        print(f"HP: {hp} | Status: {status} | Natureza: {nature}\n")
+        print(f"1. {habilidade1_nome}")
+        print(f"2. {habilidade2_nome}")
+        print(f"3. {habilidade3_nome}" if habilidade3_nome else "3. (Ainda não aprendeu)")
+        print(f"4. {habilidade4_nome}" if habilidade4_nome else "4. (Ainda não aprendeu)")
+
+        escolha = input().strip()
+
+        habilidades = {
+            '1': habilidade1_nome,
+            '2': habilidade2_nome,
+            '3': habilidade3_nome if habilidade3_nome else "Ainda não aprendeu",
+            '4': habilidade4_nome if habilidade4_nome else "Ainda não aprendeu"
+        }
+
+        habilidade_id = {
+            '1': habilidade1_id,
+            '2': habilidade2_id,
+            '3': habilidade3_id if habilidade3_id else None,
+            '4': habilidade4_id if habilidade4_id else None
+        }
+
+        if escolha in habilidades:
+            # Atacar com a habilidade escolhida
+            print(f"\n{nome_pokemon} usou {habilidades[escolha]}")
+            if habilidade_id[escolha]:
+                calcular_dano(conn, pokemon_treinador, pokemon_npc, habilidade_id[escolha])
+        else:
+            print("Opção inválida. Tente novamente.")
+    else:
+        print("Treinador não possui Pokémon.")
+    input("\nPressione Enter para continuar...")
+    cursor.close()
+
+def calcular_dano(conn, pokemon_treinador, pokemon_npc, habilidade_id):
+    cursor = conn.cursor()
+
+    pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    try:
+        # Chamar a stored procedure ATACA_BATALHA
+        cursor.execute("SELECT ATACA_BATALHA(%s, %s, %s);", (pokemon_id_treinador, pokemon_id_npc, habilidade_id ))
+        
+        # Commit das alterações
+        conn.commit()
+
+    except Exception as e:
+        print(f"Erro ao calcular dano {e}")
+
+    finally:
+        # Fechar o cursor e a conexão
+        cursor.close()
+
+def calcular_dano_npc(conn, pokemon_npc, pokemon_treinador, habilidade_id):
+    cursor = conn.cursor()
+
+    pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
+    pokemon_id_treinador, numero_pokedex_treinador, treinador_id_treinador, nome_pokemon_treinador, habilidade1_treinador, habilidade2_treinador, habilidade3_treinador, habilidade4_treinador, nature_treinador, nivel_treinador, hp_treinador, defesa_treinador, ataque_treinador, sp_ataque_treinador, sp_defesa_treinador, velocidade_treinador, sexo_treinador, xp_treinador, status_treinador, pokebola_treinador, altura_treinador, peso_treinador, localizacao_treinador = pokemon_treinador
+
+    try:
+        # Chamar a stored procedure ATACA_BATALHA
+        cursor.execute("SELECT ATACA_BATALHA(%s, %s, %s);", (pokemon_id_npc, pokemon_id_treinador, habilidade_id ))
+        
+        # Commit das alterações
+        conn.commit()
+
+    except Exception as e:
+        print(f"Erro ao calcular dano {e}")
+
+    finally:
+        # Fechar o cursor e a conexão
+        cursor.close()
 
 def interagir(conn, id_treinador):
     cursor = conn.cursor()
@@ -1373,8 +1729,21 @@ def interagir(conn, id_treinador):
                     #print('Treinador de Campo: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
                     #batalha(conn, id_treinador, npc_id)
                 elif info == 'Brock':
-                    print('Brock: Olá, sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
-                    #batalha(conn, id_treinador, npc_id)
+                    os.system('cls')
+                    print("Ginásio de Pewter:\n")
+                    print('Brock: Olá, Bem vindo! Sou Brock, o líder de ginásio de Pewter, se você me vencer, eu te darei a insígnia da rocha!')
+                    input("\nPressione Enter para continuar...")
+                    os.system('cls')
+                    print('\nDesafiar Brock? (S/N)')
+                    escolha = input().strip().upper()
+                    input("\nPressione Enter para continuar...")
+                    if escolha == 'S': 
+                        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, status, nature, numero_pokedex FROM pokemon WHERE treinador_id = %s", ('2'))
+                        pokemon_npc = cursor.fetchone()
+                        batalha_pokemon_npc(conn, id_treinador, pokemon_npc, 2)
+                    else:
+                        print('Brock: Tudo bem, até mais!')
+                    
                 elif info == 'Treinador da Rota 4':
                     print('Treinador da Rota 4: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
                     #batalha(conn, id_treinador, npc_id)
@@ -1401,21 +1770,25 @@ def aventura_pokemon():
         cursor.execute("TRUNCATE treinador RESTART IDENTITY CASCADE;")
 
         conn.commit()
-        print("\nOlá! Bem-vindo ao Mundo Pokemon!\n\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
+        #print("\nOlá! Bem-vindo ao Mundo Pokemon!\n\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
 
-        genero = input("\nPrimeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
+        #genero = input("\nPrimeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
 
-        nome_treinador = input(f"\nQual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
+        #nome_treinador = input(f"\nQual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
 
         # Bloco adicional para criar um treinador
-        if genero in ['M', 'F'] and nome_treinador:
-            novo_treinador(conn, genero, nome_treinador)
-            inserir_pokemon_base(conn)
-            os.system('cls')
-            print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
-            input("\nPressione Enter para continuar...")
+        #if genero in ['M', 'F'] and nome_treinador:
+        novo_treinador(conn, 'M', 'Ian')
+        novo_treinador(conn, 'M', 'Brock')
+        inserir_pokemon_base(conn)
+            #os.system('cls')
+            #print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
+            #input("\nPressione Enter para continuar...")
 
         id_treinador = 1  
+        
+        cursor.execute("INSERT into MOCHILA VALUES (%s, %s, %s)", ('Pokeball', id_treinador,  1))
+        cursor.execute("INSERT into MOCHILA VALUES (%s, %s, %s)", ('Potion', id_treinador,  5))
 
         while True:
             os.system('cls')
