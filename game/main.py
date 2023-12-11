@@ -6,6 +6,12 @@ import random
 mensagem_floresta = False
 batalha_terminada = False
 
+cor_verde = '\033[92m'
+cor_amarelo = '\033[93m'
+cor_azul = '\033[36m'
+cor_vermelho = '\033[91m'
+reset_cor = '\033[0m'
+
 
 def connect_database():
     try:
@@ -40,7 +46,7 @@ def mostrar_treinador(conn, id_treinador):
         print(f"Pokemons capturados: {treinador[5]}")
         print(f"Dinheiro: {treinador[6]}")
 
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Treinador não encontrado!")
@@ -92,7 +98,7 @@ def verificar_se_ha_npc_na_sala(conn, id_treinador):
         os.system('cls')
         print("Erro: Treinador não encontrado.")
     
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
 def comprar_item(conn, id_treinador):
     cursor = conn.cursor()
@@ -159,23 +165,23 @@ def comprar_item(conn, id_treinador):
                     conn.commit()
                     os.system('cls')
                     print(f"Compra realizada com sucesso! Você comprou {quantidade_desejada} {nome_item}(s).")
-                    input("\nPressione Enter para continuar...")
+                    input("Pressione Enter para continuar...")
                 else:
                     os.system('cls')
                     print("Dinheiro insuficiente para comprar o item.")
-                    input("\nPressione Enter para continuar...")
+                    input("Pressione Enter para continuar...")
             else:
                 os.system('cls')
                 print("Item não encontrado no catálogo.")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Não está no Pokemart.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Erro: Treinador não encontrado.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -301,10 +307,21 @@ def escolher_pokemon(conn, id_treinador):
                 pokemons = cursor.fetchall()
 
                 if pokemons:
-                    print("Professor: Bem-vindo! Venha escolher o seu primeiro pokémon.\n")
+                    print("Professor: Bem-vindo! Venha escolher o seu primeiro Pokémon.\n")
                     print("Pokémons Iniciais disponíveis:\n")
                     for pokemon in pokemons:
-                        print(f"Nome: {pokemon[2]}")
+                        nome_pokemon = pokemon[2]
+
+                        if nome_pokemon == 'Bulbasaur':
+                            nome_pokemon_colorido = f"{cor_verde}{nome_pokemon}{reset_cor}"
+                        elif nome_pokemon == 'Charmander':
+                            nome_pokemon_colorido = f"{cor_vermelho}{nome_pokemon}{reset_cor}"
+                        elif nome_pokemon == 'Squirtle':
+                            nome_pokemon_colorido = f"{cor_azul}{nome_pokemon}{reset_cor}"
+                        else:
+                            nome_pokemon_colorido = nome_pokemon
+
+                        print(f"Nome: {nome_pokemon_colorido}")
 
                     # Solicita ao treinador que escolha um Pokémon Inicial
                     while True:
@@ -313,7 +330,7 @@ def escolher_pokemon(conn, id_treinador):
                         if escolha_pokemon == '0':
                             os.system('cls')
                             print("Escolha de Pokémon Inicial cancelada.")
-                            input("\nPressione Enter para continuar...")
+                            input("Pressione Enter para continuar...")
                             break
 
                         # Verifica se o Pokémon escolhido está disponível
@@ -329,7 +346,7 @@ def escolher_pokemon(conn, id_treinador):
                             if pokemon_treinador:
                                 os.system('cls')
                                 print("O treinador já tem um Pokémon.")
-                                input("\nPressione Enter para continuar...")
+                                input("Pressione Enter para continuar...")
                             else:
                                 # Adiciona o Pokémon ao treinador
                                 cursor.execute("UPDATE pokemon SET treinador_id = %s WHERE pokemon_id = %s", (id_treinador, pokemon_id))
@@ -340,7 +357,7 @@ def escolher_pokemon(conn, id_treinador):
                                 
                                 os.system('cls')
                                 print(f"{nome_pokemon} foi adicionado à sua equipe como seu Pokémon Inicial!")
-                                input("\nPressione Enter para continuar...")
+                                input("Pressione Enter para continuar...")
                                 
                                 # Diálogo após a escolha do Pokémon
                                 os.system('cls')
@@ -353,29 +370,30 @@ def escolher_pokemon(conn, id_treinador):
 
                                 conn.commit()
                                 print(f"\n{nome_pokemon} foi registrado na Pokédex!")
-                                input("\nPressione Enter para continuar...")
+                                input("Pressione Enter para continuar...")
 
                                 break
                         else:
+                            os.system('cls')
                             print("Escolha inválida. Tente novamente.")
-                            input("\nPressione Enter para continuar...")
+                            input("Pressione Enter para continuar...")
 
                 else:
                     os.system('cls')
                     print("Não há Pokémons Iniciais disponíveis.")
-                    input("\nPressione Enter para continuar...")
+                    input("Pressione Enter para continuar...")
             else:
                 os.system('cls')
                 print("Você não está em um local adequado para escolher um Pokémon Inicial.")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Não há NPCs nesta localização.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Treinador não encontrado.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -384,11 +402,11 @@ def dialogo_quarto_treinador():
     print("Quarto do treinador:\n")
     print("8:00 AM - Seu quarto.")
     print("(Pensamento): Que belo dia! Acho que vou descer as escadas e conversar com minha mãe!")
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
 def dialogoMae():
     print("Mãe: Bom dia, Filho! Chegou o grande dia, vá até o laboratório do Professor Carvalho para ganhar o seu primeiro Pokémon. Ah, e não se esqueça de tomar seu café!\n")
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
 def dialogo_leste_palet(conn, id_treinador):
     print("Guia da cidade inicial: Olá, bem-vindo à cidade de Pallet, aqui é onde sua jornada começa. Você pode ir seguir para o norte para chegar ao laboratório do Professor Carvalho ou voltar para o sul para ir para sua casa.\nTome aqui esse presente para te ajudar na sua jornada.\n\n")
@@ -409,7 +427,7 @@ def dialogo_leste_palet(conn, id_treinador):
     conn.commit()
 
     print("Você recebeu 5 Pokébolas!")
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
     cursor.close()
 
 def usar_pokecenter(conn, id_treinador):
@@ -463,23 +481,23 @@ def usar_pokecenter(conn, id_treinador):
                     os.system('cls')
                     print("Os Pokémon feridos foram curados.")
                     print(f"Valor total pago: {custo_total}$.")
-                    input("\nPressione Enter para continuar...")
+                    input("Pressione Enter para continuar...")
                 else:
                     os.system('cls')
                     print("Dinheiro insuficiente para curar os Pokémon feridos.")
-                    input("\nPressione Enter para continuar...")
+                    input("Pressione Enter para continuar...")
             else:
                 os.system('cls')
                 print("Os Pokémon feridos não foram curados.")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("O treinador não possui Pokémon feridos.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Treinador não encontrado.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -504,7 +522,7 @@ def ver_mochila(conn, id_treinador):
     else:
         print("A mochila está vazia.")
 
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
 def usar_item(conn, id_treinador):
     cursor = conn.cursor()
@@ -542,7 +560,7 @@ def usar_item(conn, id_treinador):
                 else:
                     os.system('cls')
                     print("Item não encontrado.")
-                    input("\nPressione Enter para continuar...")  
+                    input("Pressione Enter para continuar...")  
 
 def usar_max_revive(conn, id_treinador, quantidade_item):
     cursor = conn.cursor()
@@ -571,15 +589,15 @@ def usar_max_revive(conn, id_treinador, quantidade_item):
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi revivido com {cura_hp} HP.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Pokémon não encontrado.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Não há Pokémon desmaiados para usar o item.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -610,15 +628,15 @@ def usar_revive(conn, id_treinador, quantidade_item):
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi revivido com {cura_hp} HP.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Pokémon não encontrado.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Não há Pokémon desmaiados para usar o item.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -648,15 +666,15 @@ def usar_potion(conn, id_treinador, quantidade_item):
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Pokémon não encontrado.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Não há Pokémon feridos ou desmaiados para usar o item.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -686,15 +704,15 @@ def usar_super_potion(conn, id_treinador, quantidade_item):
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Pokémon não encontrado.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Não há Pokémon feridos ou desmaiados para usar o item.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -724,15 +742,15 @@ def usar_hyper_potion(conn, id_treinador, quantidade_item):
             conn.commit()
             os.system('cls')
             print(f"{nome_pokemon} foi curado em {cura_hp} HP.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
         else:
             os.system('cls')
             print("Pokémon não encontrado.")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
     else:
         os.system('cls')
         print("Não há Pokémon feridos ou desmaiados para usar o item.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -792,9 +810,9 @@ def ver_pokedex(conn, id_treinador):
             os.system('cls') or None
             print("Pokédex do Treinador:")
             for pokemon in pokemons_registrados:
-                cor_nome = '\033[92m' if pokemon[9] == 'Sim' else '\033[91m'
-                cor_reset = '\033[0m'
-                print(f"#{pokemon[0]} - {cor_nome}{pokemon[1]}{cor_reset}")
+                cor_nome = cor_verde if pokemon[9] == 'Sim' else cor_vermelho
+
+                print(f"#{pokemon[0]} - {cor_nome}{pokemon[1]}{reset_cor}")
                 print(f"Tipo(s): {pokemon[2]}{' / ' + pokemon[3] if pokemon[3] else ''}")
                 print(f"Nível de Evolução: {pokemon[4]}" if pokemon[4] else "")
                 print(f"Taxa de Captura: {pokemon[5]}")
@@ -811,7 +829,7 @@ def ver_pokedex(conn, id_treinador):
         os.system('cls')
         print("O treinador não possui a Pokédex e nenhum Pokémon capturado.")
 
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -859,7 +877,7 @@ def ver_pokemon(conn, id_treinador):
         os.system('cls')
         print("O treinador não possui nenhum Pokémon.")
 
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
 
     cursor.close()
 
@@ -870,7 +888,7 @@ def floresta_viridian(conn, id_treinador):
     if not mensagem_floresta:
         print("Você está na Floresta de Viridian.\n")
         print("Aqui você tem chance de encontrar Pokémons selvagens.\n")
-        input("\n\nPressione Enter para continuar...")
+        input("\nPressione Enter para continuar...")
         mensagem_floresta = True
     cursor = conn.cursor()
 
@@ -886,11 +904,24 @@ def floresta_viridian(conn, id_treinador):
 
         if pokemon_selvagem:
             pokemon_id, nome_pokemon, nivel, hp, status, nature, numero_pokedex = pokemon_selvagem
-            print(f"{nome_pokemon} (Nível {nivel})")
+
+            # Verifica se o Pokémon já está registrado na Pokédex
+            cursor.execute("SELECT * FROM registro_pokedex WHERE numero_pokemon = %s AND treinador_id = %s", (numero_pokedex, id_treinador,))
+            registro_existente = cursor.fetchone()
+
+            # Define a cor do nome do Pokémon com base na existência do registro
+            cor_nome = cor_verde if registro_existente else cor_vermelho
+
+            print(f"{cor_nome}{nome_pokemon}{reset_cor} (Nível {nivel})")
             print(f"HP: {hp} | Status: {status} | Natureza: {nature}")
             print("\nEscolha uma opção:")
-            print("1. Batalhar")
+            print("1. Batalhar (irá registrá-lo na Pokédex)")
             print("2. Fugir")
+
+            if registro_existente:
+                print(f"\n{cor_nome}{nome_pokemon}{reset_cor} já está registrado na sua Pokédex.\n")
+            else:
+                print(f"\n{cor_vermelho}{nome_pokemon}{reset_cor} ainda não está registrado na sua Pokédex.\n")
 
             escolha = input().strip()
             if escolha == '1':
@@ -906,18 +937,17 @@ def floresta_viridian(conn, id_treinador):
                     cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (numero_pokedex, id_treinador, 'Não'))
                     conn.commit()
                 print("Você irá batalhar")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
                 batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem)
             elif escolha == '2':
                 print("Você fugiu da batalha.")
+                input("Pressione Enter para continuar...")
             else:
                 print("Opção inválida.")
     else:
         os.system('cls')
         print("Você explorou mas não encontrou nenhum Pokémon selvagem. Interaja novamente para continuar procurando!\n")
-
-    input("\nPressione Enter para continuar...")
-
+        input("Pressione Enter para continuar...")
     cursor.close()
 
 def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
@@ -942,18 +972,18 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
     while not batalha_terminada:
 
         os.system('cls')
+        
         # Atualize a variável hp com o valor mais recente do banco de dados
         cursor.execute("SELECT hp, status FROM pokemon WHERE treinador_id = %s", (id_treinador,))
         resultado_treinador = cursor.fetchone()
         hp_treinador, status_treinador = resultado_treinador[0], resultado_treinador[1]
+        print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
+        print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
+
         # Atualize a variável hp_selvagem com o valor mais recente do banco de dados
         cursor.execute("SELECT hp, status FROM pokemon WHERE pokemon_id = %s", (pokemon_id_selvagem,))
         resultado_selvagem = cursor.fetchone()
         hp_selvagem, status_selvagem = resultado_selvagem[0], resultado_selvagem[1]
-
-        print(f"Seu Pokémon: {nome_pokemon_treinador} (Nível {nivel_treinador})")
-        print(f"HP: {hp_treinador} | Status: {status_treinador} | Natureza: {nature_treinador}\n")
-
         print(f"{nome_pokemon_selvagem} (Nível {nivel_selvagem})")
         print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
 
@@ -990,11 +1020,12 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
                 print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
 
                 print(f"{nome_pokemon_selvagem} selvagem desmaiou!\n")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
 
                 os.system('cls')
                 print(f"\nVocê derrotou o Pokémon selvagem!\n")
                 print(f"Você ganhou 10 de XP!\n")
+                input("Pressione Enter para continuar...")
                 batalha_terminada = True
                 break
 
@@ -1007,16 +1038,17 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
                 print(f"HP: {hp_selvagem} | Status: {status_selvagem} | Natureza: {nature_selvagem}\n")
 
                 print(f"{nome_pokemon_treinador} desmaiou!\n")
-                input("\nPressione Enter para continuar...")
+                input("Pressione Enter para continuar...")
 
                 os.system('cls')
                 print(f"\nVocê foi derrotado. A batalha acabou\n")
+                input("Pressione Enter para continuar...")
                 batalha_terminada = True
                 break
 
             os.system('cls')
             if not atacou_primeiro:
-                    display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
+                display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
             else:
                 os.system('cls')
                 habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_treinador)
@@ -1032,8 +1064,7 @@ def batalha_pokemon_selvagem(conn, id_treinador, pokemon_selvagem):
         else:
             print("Opção inválida. Tente novamente.")
 
-        
-        atacou_primeiro = None
+        #atacou_primeiro = None
     cursor.close()
 
 def fugir_batalha(conn, id_treinador):
@@ -1043,11 +1074,13 @@ def fugir_batalha(conn, id_treinador):
     sucesso_fuga = random.choice([True, False])
 
     if sucesso_fuga:
-        print("Você conseguiu fugir!\n")
+        print("Você fugiu da batalha!")
+        input("Pressione Enter para continuar...")
         batalha_terminada = True
     else:
-        print("Não foi possível fugir. A batalha continua!\n")
-        input("\nPressione Enter para continuar...")
+        print("Você não conseguiu fugir!")
+        input("Pressione Enter para continuar...")
+
     cursor.close()
 
 def check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_selvagem):
@@ -1063,15 +1096,15 @@ def check_ataca_primeiro(conn, id_treinador, pokemon_treinador, pokemon_selvagem
     # Compara as velocidades para determinar quem ataca primeiro
     if velocidade_treinador > velocidade_selvagem:
         print(f"Seu Pokémon ataca primeiro!")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
         return True
     elif velocidade_treinador < velocidade_selvagem:
         print(f"O Pokémon selvagem ataca primeiro!")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
         return False
     else:
         print(f"Ambos os Pokémon têm a mesma velocidade. A ordem de ataque é aleatória.")
-        input("\nPressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
         return random.choice([True, False])
 
     cursor.close()
@@ -1135,7 +1168,7 @@ def habilidades_pokemon_selvagem(conn, id_treinador, pokemon_selvagem, pokemon_t
             print("Opção inválida. Tente novamente.")
     else:
         print("Erro.")
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
     cursor.close()
 
 
@@ -1203,7 +1236,7 @@ def display_habilidades(conn, id_treinador, pokemon_treinador, pokemon_selvagem)
             print("Opção inválida. Tente novamente.")
     else:
         print("Treinador não possui Pokémon.")
-    input("\nPressione Enter para continuar...")
+    input("Pressione Enter para continuar...")
     cursor.close()
 
 def calcular_dano(conn, pokemon_treinador, pokemon_selvagem, habilidade_id):
@@ -1330,7 +1363,7 @@ def aventura_pokemon():
             inserir_pokemon_base(conn)
             os.system('cls')
             print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
-            input("\nPressione Enter para continuar...")
+            input("Pressione Enter para continuar...")
 
         id_treinador = 1  
 
