@@ -276,4 +276,11 @@ INSERT INTO LOJISTA (POKEMART_ID, NPC_ID) VALUES
 
 -- Inserir dados na tabela CATALOGO_POKEMART
 INSERT INTO CATALOGO_POKEMART (POKEMART_ID, ITEM_NOME, QUANTIDADE, PRECO) VALUES
-  (1, 'Potion', 5, 200);
+  (1, 'Potion', 5, 200),
+  (1, 'Pokeball', 10, 100),
+  (1, 'Revive', 3, 500),
+  (2, 'Super Potion', 7, 300),
+  (2, 'Hyper Potion', 2, 500),
+  (2, 'Revive', 5, 500),
+  (2, 'Max Revive', 2, 800),
+  (2, 'Pokeball', 10, 100);
