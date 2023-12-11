@@ -413,20 +413,32 @@ $NOVO_CAMINHO$ LANGUAGE PLPGSQL;
 
 -- SP NPCs
 
-CREATE OR REPLACE FUNCTION NOVO_POKENPC(ATUAL VARCHAR(50),  PROXIMO VARCHAR(50)) RETURNS VOID AS $NOVO_CAMINHO$
+CREATE OR REPLACE FUNCTION NOVO_POKENPC(NOME_NPC VARCHAR(50),SEXO_NPC CHAR(1),TIPO1_NPC VARCHAR(15),TIPO2_NPC VARCHAR(15), LOCALIDADE_NPC int, GINASIO_NPC VARCHAR(15),LOOT_NPC int, DINHEIRO_NPC int) RETURNS VOID AS $NOVO_POKENPC$
 DECLARE
-	id_atual INT;
-	id_proximo INT;
+	id_npc INT;
+	id_treinador INT;
 BEGIN
-    IF (SELECT nome FROM localidade WHERE localidade.nome = atual) IS NULL THEN
-        RAISE EXCEPTION 'Localidade atual não encontrada';
-        RETURN;
-    elsif (SELECT nome FROM localidade WHERE localidade.nome = proximo) IS NULL THEN
-		RAISE EXCEPTION 'Próxima localidade não encontrada';
-        RETURN;
+    IF sexo_npc not in ('M', 'F') THEN
+		raise exception 'Sexo inválido';
+		return;
+	elsIF (select count(*) from treinador where nome_treinador = Nome_NPC) > 0 THEN
+		raise exception 'NPC já inserido';
+		RETURN;
+	elsIF (select count(*) from npc where info = Nome_NPC) > 0 THEN
+		raise exception 'NPC já inserido';
+		RETURN;
 	end if;
-	SELECT localizacao INTO id_atual from localidade WHERE localidade.nome = atual;
-	SELECT localizacao INTO id_proximo from localidade WHERE localidade.nome = proximo;
-    INSERT into caminho (sala_atual,proxima_sala) VALUES (id_atual, id_proximo);
+	INSERT INTO TREINADOR (NOME_TREINADOR, SEXO, LOCALIZACAO, QUANT_INSIGNIAS, QUANT_PK_CAPTURADOS, DINHEIRO) VALUES
+	(Nome_NPC, sexo_npc,localidade_npc,0,6,dinheiro_npc);
+	select treinador_id into id_treinador from treinador where nome_treinador = nome_npc and sexo = sexo_npc and localizacao = localidade_npc and quant_insignias = 0 and quant_pk_capturados = 6 and dinheiro = dinheiro_npc;
+	
+	INSERT INTO NPC (LOCALIDADE, SEXO, INFO) VALUES
+	(localidade_npc, sexo_npc, nome_npc);
+	select npc_id into id_npc from npc where localidade = localidade_npc and sexo = sexo_npc and info = nome_npc;
+	
+	INSERT INTO POKENPC (NPC_TREINADOR_ID, TREINADOR, TIPO1,tipo2, LOCALIDADE, GINASIO, LOOT) VALUES
+	(id_npc,id_treinador,tipo1_npc,tipo2_npc,localidade_npc,ginasio_npc,loot_npc);
+	
+	raise notice 'PokeNPC inserido com sucesso';
 END;
-$NOVO_CAMINHO$ LANGUAGE PLPGSQL;
+$NOVO_POKENPC$ LANGUAGE PLPGSQL;
