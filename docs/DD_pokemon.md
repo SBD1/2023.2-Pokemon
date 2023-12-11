@@ -403,3 +403,4 @@ Representa o catálogo de itens disponíveis para venda em um Pokemart.
 | `1.0`  | 01/10/2023 | Criação do DD                                       | [Felipe de Sousa](https://github.com/fsousac)  |
 | `1.1`  | 01/10/2023 | Modularização do documento para um arquivo separado | [Felipe de Sousa](https://github.com/fsousac) |
 | `1.2`  | 02/10/2023 | Adição de dados | [Murilo Perazzo](https://github.com/murilopbs) |
+| `1.3`  | 11/12/2023 | Corrigindo recomendações do professor | [Murilo Perazzo](https://github.com/murilopbs) |
