@@ -234,6 +234,97 @@ A entidade `Registro_Pokedex` possui chaves estrangeiras referenciando as entida
 | TREINADOR_ID    | int          | Identificador do treinador. | Numérico   | Não | PK, FK |                   |
 | CAPTURADO       | VARCHAR(5)   | Indica se o pokémon foi capturado. | 'SIM' ou 'NAO' | Não |    |                   |
 
+## Entidade: Pokemon
+
+#### Descrição
+Representa os pokémons que os treinadores podem capturar e treinar.
+
+| Nome Variável     | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKEMON_ID        | serial       | Identificador único do pokémon. | Autoincrementado | Não | PK |                   |
+| NUMERO_POKEDEX    | int          | Número do pokémon na Pokedex. | Numérico | Não | FK |                   |
+| TREINADOR_ID      | int          | Identificador do treinador do pokémon. | Numérico | Sim | FK |                   |
+| nome_pokemon_ins  | varchar(20)  | Nome de inscrição do pokémon. | ASCII | Não |    |                   |
+| HABILIDADE1       | int          | Primeira habilidade do pokémon. | Numérico | Não | FK |                   |
+| HABILIDADE2       | int          | Segunda habilidade do pokémon. | Numérico | Sim | FK |                   |
+| HABILIDADE3       | int          | Terceira habilidade do pokémon. | Numérico | Sim | FK |                   |
+| HABILIDADE4       | int          | Quarta habilidade do pokémon. | Numérico | Sim | FK |                   |
+| NATURE            | VARCHAR(15)  | Natureza do pokémon. | ASCII | Não |    |                   |
+| NIVEL             | smallint     | Nível do pokémon. | Numérico | Não |    |                   |
+| HP                | smallint     | Pontos de vida do pokémon. | Numérico | Não |    |                   |
+| DEFESA            | smallint     | Defesa do pokémon. | Numérico | Não |    |                   |
+| ATAQUE            | smallint     | Ataque do pokémon. | Numérico | Não |    |                   |
+| SP_ATAQUE         | smallint     | Ataque especial do pokémon. | Numérico | Não |    |                   |
+| SP_DEFESA         | smallint     | Defesa especial do pokémon. | Numérico | Não |    |                   |
+| VELOCIDADE        | smallint     | Velocidade do pokémon. | Numérico | Não |    |                   |
+| SEXO              | CHAR(1)      | Sexo do pokémon. | 'F' ou 'M' | Não |    |                   |
+| XP                | SMALLINT     | Experiência do pokémon. | 0-100 | Não |    | CHECK (xp >= 0 AND xp <= 100) |
+| STATUS            | VARCHAR(20)  | Status do pokémon. | ASCII | Sim |    |                   |
+| POKEBOLA          | VARCHAR(60)  | Pokébola usada para capturar o pokémon. | ASCII | Sim | FK |                   |
+| ALTURA            | smallint     | Altura do pokémon. | Numérico | Não |    |                   |
+| PESO              | smallint     | Peso do pokémon. | Numérico | Não |    |                   |
+| LOCALIZACAO       | int          | Localização atual do pokémon. | Numérico | Sim | FK |                   |
+
+## Entidade: Equipe
+
+#### Descrição
+Representa a equipe de pokémons de um treinador.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| TREINADOR_ID      | int  | Identificador do treinador. | Numérico | Não | PK, FK |                   |
+| POKEMON           | int  | Identificador do pokémon na equipe. | Numérico | Não | PK, FK |                   |
+
+## Entidade: Batalha
+
+#### Descrição
+Registra as batalhas entre pokémons.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| BATALHA_ID        | serial | Identificador único da batalha. | Autoincrementado | Não | PK |                   |
+| POKEMON1          | int  | Identificador do primeiro pokémon na batalha. | Numérico | Não | FK |                   |
+| POKEMON2          | int  | Identificador do segundo pokémon na batalha. | Numérico | Não | FK |                   |
+
+## Entidade: NPC
+
+#### Descrição
+Representa os personagens não jogáveis (NPCs) no jogo.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| NPC_ID            | serial | Identificador único do NPC. | Autoincrementado | Não | PK |                   |
+| LOCALIDADE        | int  | Localização do NPC. | Numérico | Não | FK |                   |
+| SEXO              | VARCHAR(1) | Sexo do NPC. | 'F' ou 'M' | Não |    |                   |
+| INFO              | VARCHAR(150) | Informações sobre o NPC. | ASCII | Não |    |                   |
+
+## Entidade: Loot
+
+#### Descrição
+Representa os itens que podem ser encontrados em uma localidade.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| LOOT_ID           | serial | Identificador único do loot. | Autoincrementado | Não | PK |                   |
+| NOME_ITEM         | VARCHAR(60) | Nome do item no loot. | ASCII | Não | FK |                   |
+| QUANTIDADE        | int  | Quantidade do item no loot. | Numérico | Não |    |                   |
+| LOCALIDADE        | int  | Localização onde o loot pode ser encontrado. | Numérico | Não | FK |                   |
+
+## Entidade: Ginasio
+
+#### Descrição
+Representa os ginásios onde os treinadores podem desafiar líderes para ganhar insígnias.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| NOME_GINASIO      | VARCHAR(50) | Nome do ginásio. | ASCII | Não | PK |                   |
+| LIDER_ID          | int  | Identificador do líder do ginásio. | Numérico | Não | FK |                   |
+| TIPO1             | VARCHAR(15) | Tipo primário do ginásio. | ASCII | Não | FK |                   |
+| TIPO2             | VARCHAR(15) | Tipo secundário do ginásio. | ASCII | Sim | FK |                   |
+| CIDADE            | int  | Cidade onde o ginásio está localizado. | Numérico | Não | FK |                   |
+| LOOT              | int  | Identificador do loot associado ao ginásio. | Numérico | Não | FK |                   |
+
+
 
 
 ## Histórico de versões
