@@ -324,6 +324,75 @@ Representa os ginásios onde os treinadores podem desafiar líderes para ganhar 
 | CIDADE            | int  | Cidade onde o ginásio está localizado. | Numérico | Não | FK |                   |
 | LOOT              | int  | Identificador do loot associado ao ginásio. | Numérico | Não | FK |                   |
 
+## Entidade: POKENPC
+
+#### Descrição
+Representa os NPCs treinadores de pokémons.
+
+| Nome Variável     | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| NPC_TREINADOR_ID  | int          | Identificador único do NPC treinador. | Numérico | Não | PK |                   |
+| TREINADOR         | int          | Identificador do treinador associado. | Numérico | Não | FK |                   |
+| TIPO1             | VARCHAR(15)  | Tipo primário do NPC treinador. | ASCII | Não | FK |                   |
+| TIPO2             | VARCHAR(15)  | Tipo secundário do NPC treinador. | ASCII | Sim | FK |                   |
+| LOCALIDADE        | int          | Localização do NPC treinador. | Numérico | Não | FK |                   |
+| GINASIO           | VARCHAR(50)  | Ginásio associado ao NPC treinador. | ASCII | Sim | FK |                   |
+| LOOT              | int          | Loot associado ao NPC treinador. | Numérico | Sim | FK |                   |
+
+## Entidade: POKECENTER
+
+#### Descrição
+Representa os centros Pokémon onde os treinadores podem curar seus pokémons.
+
+| Nome Variável     | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKECENTER_ID     | serial       | Identificador único do Pokecenter. | Autoincrementado | Não | PK |                   |
+| CURA_DISPONIVEL   | int          | Quantidade de curas disponíveis. | Numérico | Sim |    |                   |
+| LOCALIDADE        | int          | Localização do Pokecenter. | Numérico | Não | FK |                   |
+| INFO              | VARCHAR(50)  | Informações sobre o Pokecenter. | ASCII | Sim |    |                   |
+
+## Entidade: ENFERMEIRA
+
+#### Descrição
+Associa enfermeiras aos Pokecenters.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKECENTER_ID     | int  | Identificador do Pokecenter. | Numérico | Não | PK, FK |                   |
+| NPC_ID            | int  | Identificador da enfermeira NPC. | Numérico | Não | PK, FK |                   |
+
+## Entidade: POKEMART
+
+#### Descrição
+Representa as lojas Pokémon onde os treinadores podem comprar itens.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKEMART_ID       | int  | Identificador único do Pokemart. | Numérico | Não | PK |                   |
+| LOCALIDADE        | int  | Localização do Pokemart. | Numérico | Não | FK |                   |
+| INFO              | VARCHAR(50)  | Informações sobre o Pokemart. | ASCII | Sim |    |                   |
+
+## Entidade: LOJISTA
+
+#### Descrição
+Associa lojistas aos Pokemarts.
+
+| Nome Variável     | Tipo | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKEMART_ID       | int  | Identificador do Pokemart. | Numérico | Não | PK, FK |                   |
+| NPC_ID            | int  | Identificador do lojista NPC. | Numérico | Não | PK, FK |                   |
+
+## Entidade: CATALOGO_POKEMART
+
+#### Descrição
+Representa o catálogo de itens disponíveis para venda em um Pokemart.
+
+| Nome Variável     | Tipo         | Descrição            | Valores permitidos | Permite valores nulos? | É chave? | Outras Restrições |
+|-------------------|--------------|----------------------|--------------------|------------------------|----------|-------------------|
+| POKEMART_ID       | int          | Identificador do Pokemart. | Numérico | Não | PK, FK |                   |
+| ITEM_NOME         | VARCHAR(60)  | Nome do item à venda. | ASCII | Não | PK, FK |                   |
+| QUANTIDADE        | int          | Quantidade do item disponível. | Numérico | Não |    |                   |
+| PRECO             | int          | Preço do item. | Numérico | Não |    |                   |
 
 
 
