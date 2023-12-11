@@ -308,7 +308,7 @@ Representa os itens que podem ser encontrados em uma localidade.
 | LOOT_ID           | serial | Identificador único do loot. | Autoincrementado | Não | PK |                   |
 | NOME_ITEM         | VARCHAR(60) | Nome do item no loot. | ASCII | Não | FK |                   |
 | QUANTIDADE        | int  | Quantidade do item no loot. | Numérico | Não |    |                   |
-| LOCALIDADE        | int  | Localização onde o loot pode ser encontrado. | Numérico | Não | FK |                   |
+| LOCALIDADE        | int  | Localização onde o loot pode ser encontrado. | Numérico | Sim | FK |                   |
 
 ## Entidade: Ginasio
 
