@@ -201,7 +201,12 @@ INSERT INTO POKEDEX (NUMERO_POKEDEX, NOME_POKEMON, TIPO1, TIPO2, NIVEL_EVOLUCAO,
     (17, 'Pidgeotto', 'Normal', 'Voador', 36, 25, 1, 'Kanto', 'Gosta de subir até grandes alturas.'),
     (18, 'Pidgeot', 'Normal', 'Voador', NULL, 45, 1, 'Kanto', 'Suas asas batem com força, criando ventos poderosos.'),
     (19, 'Rattata', 'Normal', NULL, 20, 5, 4, 'Kanto', 'Rápido e ágil, ele é comum em muitas áreas urbanas.'),
-    (20, 'Raticate', 'Normal', NULL, NULL, 20, 4, 'Kanto', 'Altamente territorial, pode ser muito agressivo.');
+    (20, 'Raticate', 'Normal', NULL, NULL, 20, 4, 'Kanto', 'Altamente territorial, pode ser muito agressivo.'),
+    (21, 'Geodude', 'Pedra', 'Terra', 40, 20, 1, 'Kanto', 'Conhecido por sua força, rola montanha abaixo para se mover.'),
+    (22, 'Onix', 'Pedra', 'Terra', 101, 45, 1, 'Kanto', 'Este Pokémon massivo pode rapidamente cavar túneis no subsolo.'),
+    (23, 'Goldeen', 'Água', NULL, 45, 15, 1, 'Kanto', 'Nada graciosamente em águas límpidas e cristalinas.'),
+    (24, 'Staryu', 'Água', NULL, 35, 30, 1, 'Kanto', 'Quando a noite cai, seu núcleo central brilha com uma luz vermelha.');
+
 
 -- Inserir dados na tabela EVOLUCAO
 INSERT INTO EVOLUCAO (ANTERIOR, SUCESSOR) VALUES
