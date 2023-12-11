@@ -45,7 +45,21 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 
 #### [Triggers e Stored Procedures](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/tsp.sql)
 
-#### [Criação do FrontEnd]()
+#### [Criação do FrontEnd](https://github.com/SBD1/2023.2-Pokemon/tree/main/game)
+
+### Módulo 4
+
+#### [DD](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/DD_pokemon.md)
+
+#### [MER](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/MER_pokemon.md)
+
+#### [Criação do banco](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/ddl.sql)
+
+#### [Consultas no banco](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/dml.sql)
+
+#### [Triggers e Stored Procedures](https://github.com/SBD1/2023.2-Pokemon/blob/main/docs/tsp.sql)
+
+#### [Atualização do FrontEnd](https://github.com/SBD1/2023.2-Pokemon/tree/main/game)
 
 ## Histórico de versões
 
@@ -60,4 +74,5 @@ Foi realizada para a entrega do módulo 1 a modelagem do banco de dados do jogo,
 | `2.0`  | 20/10/2023 | Criação dos tópicos para a entrega 2  | [Felipe de Sousa](https://github.com/fsousac)  |
 | `2.1`  | 30/10/2023 | Adicionando o DML para a entrega 2    | [Murilo Perazzo](https://github.com/murilopbs)  |
 | `3.0`  | 30/11/2023 | Inserindo links da entrega 2 e 3    | [Felipe de Sousa](https://github.com/fsousac)  |
+| `4.0`  | 30/11/2023 | Inserindo links da entrega 4   | [Felipe de Sousa](https://github.com/fsousac)  |
 
