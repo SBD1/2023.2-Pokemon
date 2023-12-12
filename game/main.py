@@ -89,18 +89,19 @@ def verificar_se_ha_npc_na_sala(conn, id_treinador):
         npcs_na_mesma_sala = cursor.fetchall()
 
         if npcs_na_mesma_sala:
-            os.system('cls')
-            print("NPCs na sala:")
+            #os.system('cls')
+            print("\nPersonagens no local atual:")
             for npc in npcs_na_mesma_sala:
-                print(f"ID: {npc[0]}, Função: {npc[1]}")
+                print(f"{npc[1]}")
         else:
-            os.system('cls')
-            print("Não há NPCs neste local.")
+            #os.system('cls')
+            print("\nNão há NPCs neste local.")
+            print("(Você pode interagir mesmo que não haja NPCs no local.)")
     else:
         os.system('cls')
         print("Erro: Treinador não encontrado.")
     
-    input("\nPressione Enter para continuar...")
+    #input("\nPressione Enter para continuar...")
 
 def comprar_item(conn, id_treinador):
     cursor = conn.cursor()
@@ -118,12 +119,12 @@ def comprar_item(conn, id_treinador):
 
         if esta_no_pokemart:
             os.system('cls')
-            print("Catálogo de itens disponíveis:\n")
+            print("Catálogo de itens disponíveis:\n\n")
             cursor.execute("SELECT item_nome, quantidade, preco FROM catalogo_pokemart")
             catalogo = cursor.fetchall()
 
             for item in catalogo:
-                print(f"Item: {item[0]}, Quantidade: {item[1]}, Preço: {item[2]}")
+                print(f"Item: {item[0]}, Quantidade: {item[1]}, Preço: {item[2]}\n")
 
             # Solicitar ao treinador que escolha um item para comprar
             item_escolhido = input("\nDigite o nome do item que deseja comprar: ")
@@ -358,6 +359,7 @@ def escolher_pokemon(conn, id_treinador):
                                                (id_treinador,))
                                 
                                 os.system('cls')
+                                cursor.execute("INSERT into equipe (treinador_id, pokemon) VALUES (%s, %s)", (id_treinador, pokemon_id,))
                                 print(f"{nome_pokemon} foi adicionado à sua equipe como seu Pokémon Inicial!")
                                 input("\nPressione Enter para continuar...")
                                 
@@ -780,22 +782,31 @@ def usar_hyper_potion(conn, id_treinador, quantidade_item):
 def inserir_pokemon_base(conn):
     cursor = conn.cursor()
 
-    # Dados dos Pokémon iniciais
     dados_pokemon = [
-        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
-        (4, 1, 'Charmander', 1, 2, None, None, 'Docil', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
-        (7, None, 'Squirtle', 1, 3, None, None, 'Bravo', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 70, 70, 4),
-        #(10, None, 'Caterpie', 1, 18, None, None, 'Alegre', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(11, None, 'Metapod', 1, 18, None, None, 'Curioso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(12, None, 'Butterfree', 1, 18, None, None, 'Educado', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
-        #(13, None, 'Weedle', 1, 18, None, None, 'Observador', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(14, None, 'Kakuna', 1, 18, None, None, 'Relaxado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        (15, 2, 'Onix', 1, 18, None, None, 'Valente', 5, 100, 15, 20, 18, 18, 20, 'F', 0, 'Saudável', None, 70, 70, 4),
-        #(16, None, 'Pidgey', 1, 8, None, None, 'Atrevido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(17, None, 'Pidgeotto', 1, 8, None, None, 'Exaltado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(18, None, 'Pidgeot', 1, 8, None, None, 'Empenhado', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(19, None, 'Rattata', 1, 19, None, None, 'Divertido', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
-        #(20, None, 'Raticate', 1, 19, None, None, 'Nervoso', 5, 100, 15, 20, 18, 18, 20, 'M', 0, 'Saudável', None, 70, 70, 4),
+        (1, None, 'Bulbasaur', 1, 4, None, None, 'Audacioso', 5, 100, 15, 10, 20, 18, 20, 'M', 0, 'Saudável', 'Pokeball', 20, 10, 4),
+        (2, None, 'Ivysaur', 1, 4, None, None, 'Audacioso', 5, 100, 25, 12, 40, 18, 25, 'M', 0, 'Saudável', 'Pokeball', 40, 20, 4),
+        (3, None, 'Venusaur', 1, 4, None, None, 'Audacioso', 5, 100, 45, 14, 60, 18, 35, 'M', 0, 'Saudável', 'Pokeball', 100, 200, 4),
+        (4, None, 'Charmander', 1, 2, None, None, 'Docil', 5, 100, 15, 20, 15, 18, 30, 'M', 0, 'Saudável', 'Pokeball', 30, 30, 4),
+        (5, None, 'Charmeleon', 1, 2, None, None, 'Docil', 5, 100, 25, 35, 18, 18, 37, 'M', 0, 'Saudável', 'Pokeball', 60, 50, 4),
+        (6, None, 'Charizard', 1, 2, None, None, 'Docil', 5, 100, 45, 50, 22, 18, 45, 'M', 0, 'Saudável', 'Pokeball', 180, 150, 4),
+        (7, None, 'Squirtle', 1, 3, None, None, 'Bravo', 5, 100, 15, 12, 20, 18, 28, 'M', 0, 'Saudável', 'Pokeball', 30, 30, 4),
+        (8, None, 'Wartortle', 1, 3, None, None, 'Bravo', 5, 100, 25, 22, 40, 18, 34, 'M', 0, 'Saudável', 'Pokeball', 60, 50, 4),
+        (9, None, 'Blastoise', 1, 3, None, None, 'Bravo', 5, 100, 45, 47, 60, 18, 45, 'M', 0, 'Saudável', 'Pokeball', 150, 200, 4),
+        (10, None, 'Caterpie', 1, 18, None, None, 'Alegre', 5, 100, 5, 5, 10, 18, 10, 'M', 0, 'Saudável', None, 5, 2, 4),
+        (11, None, 'Metapod', 1, 18, None, None, 'Curioso', 5, 100, 10, 5, 15, 18, 10, 'M', 0, 'Saudável', None, 7, 3, 4),
+        (12, None, 'Butterfree', 1, 18, None, None, 'Educado', 5, 100, 7, 4, 30, 18, 35, 'F', 0, 'Saudável', None, 15, 3, 4),
+        (13, None, 'Weedle', 1, 18, None, None, 'Observador', 5, 100, 9, 4, 15, 18, 15, 'M', 0, 'Saudável', None, 5, 3, 4),
+        (14, None, 'Kakuna', 1, 18, None, None, 'Relaxado', 5, 100, 20, 4, 18, 18, 17, 'M', 0, 'Saudável', None, 7, 3, 4),
+        (15, None, 'Beedrill', 1, 18, None, None, 'Valente', 5, 100, 35, 20, 18, 18, 35, 'F', 0, 'Saudável', None, 20, 3, 4),
+        (16, None, 'Pidgey', 1, 8, None, None, 'Atrevido', 5, 100, 10, 20, 12, 18, 20, 'M', 0, 'Saudável', None, 20, 5, 4),
+        (17, None, 'Pidgeotto', 1, 8, None, None, 'Exaltado', 5, 100, 20, 30, 25, 18, 30, 'M', 0, 'Saudável', None, 35, 10, 4),
+        (18, None, 'Pidgeot', 1, 8, None, None, 'Empenhado', 5, 100, 40, 40, 35, 18, 37, 'M', 0, 'Saudável', None, 45, 25, 4),
+        (19, None, 'Rattata', 1, 19, None, None, 'Divertido', 5, 100, 10, 10, 5, 18, 22, 'M', 0, 'Saudável', None, 7, 5, 4),
+        (20, None, 'Raticate', 1, 19, None, None, 'Nervoso', 5, 100, 27, 15, 7, 18, 27, 'M', 0, 'Saudável', None, 16, 10, 4),
+        #(74, 2, 'Geodude', 6, 11, None, None, 'Nervoso', 5, 100, 30, 30, 5, 18, 12, 'M', 0, 'Saudável', 'Pokeball', 40, 60, 4),
+        (95, 2, 'Onix', 6, 11, None, None, 'Nervoso', 5, 100, 50, 40, 15, 18, 10, 'M', 0, 'Saudável', 'Pokeball', 400, 1000, 4),
+        #(118, 3, 'Goldeen', 3, 20, None, None, 'Tranquilo', 5, 100, 16, 10, 25, 18, 26, 'F', 0, 'Saudável', 'Pokeball', 30, 15, 4),
+        (120, 3, 'Staryu', 3, 20, None, None, 'Relaxado', 5, 100, 12, 10, 18, 18, 20, 'F', 0, 'Saudável', 'Pokeball', 15, 2, 4),
     ]
 
     for pokemon in dados_pokemon:
@@ -922,8 +933,9 @@ def floresta_viridian(conn, id_treinador):
     chance_encontro = random.random()  # Gera um número aleatório entre 0 e 1
     if chance_encontro < 0.8:  # Exemplo: 80% de chance de encontrar um Pokémon selvagem
         # Selecionar um Pokémon selvagem aleatório
-        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, status, nature, numero_pokedex FROM pokemon WHERE treinador_id IS NULL ORDER BY RANDOM() LIMIT 1")
+        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, status, nature, numero_pokedex FROM pokemon WHERE treinador_id IS NULL AND pokebola IS NULL ORDER BY RANDOM() LIMIT 1")
         pokemon_selvagem = cursor.fetchone()
+
 
         os.system('cls')
         print("Um Pokémon selvagem apareceu!!!\n")
@@ -934,7 +946,7 @@ def floresta_viridian(conn, id_treinador):
             # Verifica se o Pokémon já está registrado na Pokédex
             cursor.execute("SELECT * FROM registro_pokedex WHERE numero_pokemon = %s AND treinador_id = %s", (numero_pokedex, id_treinador,))
             registro_existente = cursor.fetchone()
-
+            
             # Define a cor do nome do Pokémon com base na existência do registro
             cor_nome = cor_verde if registro_existente else cor_vermelho
 
@@ -1115,6 +1127,7 @@ def capturar_pokemon(conn, pokemon_id, pokebola, id_treinador, registro_existent
                     print('A captura falhou.\n')
                 elif 'Pokemon capturado!' in notice:       
                     print('Pokemon capturado!\n')
+                    cursor.execute("INSERT INTO equipe (treinador_id, pokemon) VALUES (%s, %s)", (id_treinador, pokemon_id,))
                     if not registro_existente:
                         # Insira o Pokémon na tabela registro_pokedex
                         cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (pokemon_selvagem[6], id_treinador, 'Sim'))
@@ -1363,7 +1376,7 @@ def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
     cursor = conn.cursor()
 
     pokemon_id_npc, nome_pokemon_npc, nivel_npc, hp_npc, status_npc, nature_npc, numero_pokedex_npc = pokemon_npc
-
+    
     # Obter informações do Pokémon do treinador
     cursor.execute("SELECT * FROM pokemon WHERE treinador_id = %s", (id_treinador,))
     pokemon_treinador = cursor.fetchone()
@@ -1380,8 +1393,8 @@ def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
     nometreinador_npc = cursor.fetchone()[0]
 
     if pokemon_npc:
-        os.system('cls')
-        print(f"{nometreinador_npc} jogou {nome_pokemon_npc}!!\n")
+        print("\n")
+        print(f"\n{nometreinador_npc} jogou {nome_pokemon_npc}!!\n")
         input("\nPressione Enter para continuar...")
 
 
@@ -1406,8 +1419,6 @@ def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
         print("Escolha uma opção:")
         print("1. Atacar")
         print("2. Usar Item")
-        print("3. Tentar Capturar")
-        print("4. Fugir")
 
         escolha = input().strip()
 
@@ -1441,6 +1452,15 @@ def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
                 os.system('cls')
                 print(f"\nVocê derrotou {nome_pokemon_npc}!\n")
                 print(f"Você ganhou 10 de XP!\n")
+
+                cursor.execute("SELECT * FROM registro_pokedex WHERE numero_pokemon = %s AND treinador_id = %s", (numero_pokedex_npc, id_treinador,))
+                registro_existente = cursor.fetchone()
+                if registro_existente:
+                    print(f"\n{cor_verde}{nome_pokemon_npc}{reset_cor} já está registrado na sua Pokédex.\n")
+                else:
+                    cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (numero_pokedex_npc, id_treinador, 'Não'))
+                    print(f"\n{cor_verde}{nome_pokemon_npc}{reset_cor} foi registrado na Pokédex.\n")
+
                 input("\nPressione Enter para continuar...")
                 os.system('cls')
                 print(f"\nVocê derrotou {nometreinador_npc}!\n")
@@ -1469,6 +1489,13 @@ def batalha_pokemon_npc(conn, id_treinador, pokemon_npc, npc_id):
 
                 os.system('cls')
                 print(f"\nVocê foi derrotado. A batalha acabou\n")
+                cursor.execute("SELECT * FROM registro_pokedex WHERE numero_pokemon = %s AND treinador_id = %s", (numero_pokedex_npc, id_treinador,))
+                registro_existente = cursor.fetchone()
+                if registro_existente:
+                    print(f"\n{cor_verde}{nome_pokemon_npc}{reset_cor} já está registrado na sua Pokédex.\n")
+                else:
+                    cursor.execute("INSERT INTO registro_pokedex (numero_pokemon, treinador_id, capturado) VALUES (%s, %s, %s)", (numero_pokedex_npc, id_treinador, 'Não'))
+                    print(f"\n{cor_verde}{nome_pokemon_npc}{reset_cor} foi registrado na Pokédex.\n")
                 input("\nPressione Enter para continuar...")
                 batalha_terminada = True
                 break
@@ -1747,9 +1774,23 @@ def interagir(conn, id_treinador):
                 elif info == 'Treinador da Rota 4':
                     print('Treinador da Rota 4: Olá, sou um treinador pokémon, vamos batalhar! Se você me vencer, eu te darei uma recompensa!')
                     #batalha(conn, id_treinador, npc_id)
+
                 elif info == 'Misty':
-                    print('Misty: Olá, sou Misty, a líder de ginásio de Cerulean, se você me vencer, eu te darei a insígnia da água!')
-                    #batalha(conn, id_treinador, npc_id)
+                    os.system('cls')
+                    print("Ginásio de Cerulean:\n")
+                    print('Misty: Olá, Bem vindo! Sou Misty, a líder de ginásio de Cerulean, se você me vencer, eu te darei a insígnia da água!')
+                    input("\nPressione Enter para continuar...")
+                    os.system('cls')
+                    print('\nDesafiar Misty? (S/N)')
+                    escolha = input().strip().upper()
+                    input("\nPressione Enter para continuar...")
+                    if escolha == 'S': 
+                        cursor.execute("SELECT pokemon_id, nome_pokemon_ins, nivel, hp, status, nature, numero_pokedex FROM pokemon WHERE treinador_id = %s", ('3'))
+                        pokemon_npc = cursor.fetchone()
+                        batalha_pokemon_npc(conn, id_treinador, pokemon_npc, 3)
+                    else:
+                        print('Misty: Tudo bem, até mais!')
+                    
                 else:
                     print("Você está em uma localização desconhecida.")
             else:
@@ -1764,35 +1805,36 @@ def aventura_pokemon():
     conn = connect_database()
     if conn:
         cursor = conn.cursor()
-    
 
         # Em seguida, exclua todas as tuplas da tabela treinador
         cursor.execute("TRUNCATE treinador RESTART IDENTITY CASCADE;")
 
         conn.commit()
-        #print("\nOlá! Bem-vindo ao Mundo Pokemon!\n\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
+        print("\nOlá! Bem-vindo ao Mundo Pokemon!\n\nEu sou o professor Carvalho, e vou te ajudar a começar sua aventura!\n")
 
-        #genero = input("\nPrimeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
+        genero = input("\nPrimeiramente, você é um garoto (M) ou uma garota (F)? ").upper()
 
-        #nome_treinador = input(f"\nQual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
+        nome_treinador = input(f"\nQual é o seu nome, treinador{'a' if genero == 'F' else ''}? ")
 
         # Bloco adicional para criar um treinador
-        #if genero in ['M', 'F'] and nome_treinador:
-        novo_treinador(conn, 'M', 'Ian')
-        novo_treinador(conn, 'M', 'Brock')
-        inserir_pokemon_base(conn)
-            #os.system('cls')
-            #print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
-            #input("\nPressione Enter para continuar...")
-
+        if genero in ['M', 'F'] and nome_treinador:
+            novo_treinador(conn, genero, nome_treinador) #1
+            novo_treinador(conn, 'M', 'Brock') #2
+            novo_treinador(conn, 'M', 'Misty') #3
+            inserir_pokemon_base(conn)
+            os.system('cls')
+            print(f"\n{nome_treinador}! Um mundo de aventuras cheio de Pokemons está te esperando, vamos nessa!")
+            input("\nPressione Enter para continuar...")
+        
         id_treinador = 1  
         
-        cursor.execute("INSERT into MOCHILA VALUES (%s, %s, %s)", ('Pokeball', id_treinador,  1))
+        cursor.execute("INSERT into MOCHILA VALUES (%s, %s, %s)", ('Pokeball', id_treinador,  10))
         cursor.execute("INSERT into MOCHILA VALUES (%s, %s, %s)", ('Potion', id_treinador,  5))
 
         while True:
             os.system('cls')
             verificar_local_atual(conn, id_treinador)
+            verificar_se_ha_npc_na_sala(conn, id_treinador)
             print("\nEscolha uma ação:")
             print("1. Interagir")
             print("2. Andar")
@@ -1836,8 +1878,6 @@ def aventura_pokemon():
                 break
             else:
                 print("Escolha inválida. Tente novamente.")
-
-                
 
     conn.close()
 
