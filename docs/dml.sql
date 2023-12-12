@@ -204,8 +204,8 @@ INSERT INTO POKEDEX (NUMERO_POKEDEX, NOME_POKEMON, TIPO1, TIPO2, NIVEL_EVOLUCAO,
     (20, 'Raticate', 'Normal', NULL, NULL, 20, 4, 'Kanto', 'Altamente territorial, pode ser muito agressivo.'),
     (21, 'Geodude', 'Pedra', 'Terra', 40, 20, 1, 'Kanto', 'Conhecido por sua força, rola montanha abaixo para se mover.'),
     (22, 'Onix', 'Pedra', 'Terra', 101, 45, 1, 'Kanto', 'Este Pokémon massivo pode rapidamente cavar túneis no subsolo.'),
-    (23, 'Goldeen', 'Água', NULL, 45, 15, 1, 'Kanto', 'Nada graciosamente em águas límpidas e cristalinas.'),
-    (24, 'Staryu', 'Água', NULL, 35, 30, 1, 'Kanto', 'Quando a noite cai, seu núcleo central brilha com uma luz vermelha.');
+    (23, 'Goldeen', 'Agua', NULL, 45, 15, 1, 'Kanto', 'Nada graciosamente em águas límpidas e cristalinas.'),
+    (24, 'Staryu', 'Agua', NULL, 35, 30, 1, 'Kanto', 'Quando a noite cai, seu núcleo central brilha com uma luz vermelha.');
 
 
 -- Inserir dados na tabela EVOLUCAO
@@ -279,8 +279,6 @@ INSERT INTO CATALOGO_POKEMART (POKEMART_ID, ITEM_NOME, QUANTIDADE, PRECO) VALUES
   (1, 'Potion', 5, 200),
   (1, 'Pokeball', 10, 100),
   (1, 'Revive', 3, 500),
-  (2, 'Super Potion', 7, 300),
-  (2, 'Hyper Potion', 2, 500),
-  (2, 'Revive', 5, 500),
-  (2, 'Max Revive', 2, 800),
-  (2, 'Pokeball', 10, 100);
+  (1, 'Super Potion', 7, 300),
+  (1, 'Hyper Potion', 2, 500),
+  (1, 'Max Revive', 2, 800);
